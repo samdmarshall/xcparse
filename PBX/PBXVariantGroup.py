@@ -19,3 +19,5 @@ class PBXVariantGroup(PBX_Base):
             self.path = dictionary['path'];
         if 'children' in dictionary.keys():
             self.children = self.parseProperty('children', lookup_func, dictionary, project, True);
+        if 'sourceTree' in dictionary.keys():
+            self.sourceTree = dictionary['sourceTree'];
