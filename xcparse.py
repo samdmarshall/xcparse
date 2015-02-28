@@ -18,29 +18,32 @@ class xcparse(object):
             self.name = os.path.basename(path);
             if self.name.endswith('.xcodeproj') or self.name.endswith('.pbproj'):
                 project_file = xcodeproj(self.root_path);
-                self.projects = [];
+                self._projects = [];
                 for project in project_file.projects():
-                    self.projects.append(project);
+                    self._projects.append(project);
                 self.root = project_file;
             elif self.name.endswith('.xcworkspace'):
                 workspace_file = xcworkspace(self.root_path);
                 self.root = workspace_file;
-                projects = [];
+                self._projects = [];
                 for project_file in workspace_file.projects():
-                    projects.append(project_file);
-                self.projects = projects;
+                    self._projects.append(project_file);
             else:
                 print 'Invalid file!';
         else:
             print 'Could not find file!';
     
+    def projects(self):
+        project_list = [self.root];
+        project_list.extend(self._projects);
+        return project_list;
+    
     def schemes(self):
         project_schemes = [];
-        for project_file in self.projects:
+        for project_file in self.projects():
             for scheme in project_file.schemes():
                 project_schemes.append(scheme);
-        root_schemes = self.root.schemes();
-        return root_schemes + project_schemes;
+        return project_schemes;
     
     def schemeNameSet(self):
         return set(list(map(XCSchemeName, self.schemes())));
@@ -49,9 +52,7 @@ class xcparse(object):
         scheme = {};
         container = {};
         found = False;
-        searchableItems = self.projects;
-        searchableItems.append(self.root);
-        for project in searchableItems:
+        for project in self.projects():
             result = project.hasSchemeWithName(scheme_name);
             found = result[0];
             if found == True:

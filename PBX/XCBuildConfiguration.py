@@ -9,7 +9,8 @@ class XCBuildConfiguration(PBX_Base):
     # buildSettings = {};
     # name = '';
     
-    def __init__(self, lookup_func, dictionary, project):
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
         if 'buildSettings' in dictionary.keys():
             self.buildSettings = dictionary['buildSettings'];
         if 'name' in dictionary.keys():

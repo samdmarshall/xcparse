@@ -11,7 +11,8 @@ class XCConfigurationList(PBX_Base):
     # defaultConfigurationIsVisible = 0;
     # defaultConfigurationName = '';
     
-    def __init__(self, lookup_func, dictionary, project):
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
         if 'buildConfigurations' in dictionary.keys():
             self.buildConfigurations = self.parseProperty('buildConfigurations', lookup_func, dictionary, project, True);
         if 'defaultConfigurationName' in dictionary.keys():

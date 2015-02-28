@@ -29,7 +29,7 @@ class xcodeproj(object):
                         self.identifier  = self.contents['rootObject'];
                         result = PBXResolver(self.objects()[self.identifier])
                         if result[0] == True:
-                            self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self);
+                            self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
                         else:
                             self.rootObject = {};
                     else:

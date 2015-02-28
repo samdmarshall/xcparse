@@ -18,7 +18,8 @@ class PBXProject(PBX_Base):
     # projectRoot = '';
     # targets = [];
     
-    def __init__(self, lookup_func, dictionary, project):
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
         if 'attributes' in dictionary.keys():
             self.attributes = dictionary['attributes'];
         if 'buildConfigurationList' in dictionary.keys():

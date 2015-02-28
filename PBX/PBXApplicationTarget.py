@@ -16,7 +16,8 @@ class PBXApplicationTarget(PBX_Base_Target):
     # productReference = {};
     # productSettingsXML = '';
     
-    def __init__(self, lookup_func, dictionary, project):
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
         if 'buildConfigurationList' in dictionary.keys():
             self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'buildPhases' in dictionary.keys():

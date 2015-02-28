@@ -11,7 +11,8 @@ class PBXReferenceProxy(PBX_Base):
     # sourceTree = '';
     # remoteRef = {};
     
-    def __init__(self, lookup_func, dictionary, project):
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
         self.containerPortal = project.rootObject();
         if 'fileType' in dictionary.keys():
             self.fileType = dictionary['fileType'];

@@ -11,8 +11,9 @@ class PBXContainerItemProxy(PBX_Base):
     # remoteGlobalIDString = '';
     # remoteInfo = '';
     
-    def __init__(self, lookup_func, dictionary, project):
-        self.containerPortal = {};#project.rootObject;
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
+        self.containerPortal = project.contents['rootObject'];
         if 'proxyType' in dictionary.keys():
             self.proxyType = dictionary['proxyType'];
         if 'remoteGlobalIDString' in dictionary.keys():

@@ -11,7 +11,8 @@ class PBXFrameworksBuildPhase(PBX_Base_Phase):
     # files = [];
     # runOnlyForDeploymentPostprocessing = 0;
     
-    def __init__(self, lookup_func, dictionary, project):
+    def __init__(self, lookup_func, dictionary, project, identifier):
+        self.identifier = identifier;
         if 'buildActionMask' in dictionary.keys():
             self.buildActionMask = dictionary['buildActionMask'];
         if 'files' in dictionary.keys():
