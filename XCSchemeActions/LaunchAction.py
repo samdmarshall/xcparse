@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 
-class LaunchAction(object):
+from .Base_Action import *
+
+class LaunchAction(Base_Action):
     # contents = {};
     # children = [];
     # selectedDebuggerIdentifier = '';
@@ -30,6 +32,3 @@ class LaunchAction(object):
             self.debugDocumentVersioning = self.contents.get('debugDocumentVersioning');
         if 'allowLocationSimulation' in self.contents.keys():
             self.allowLocationSimulation = self.contents.get('allowLocationSimulation');
-        
-    def performAction(self, container, project_constructor, scheme_config_settings):
-        print 'implement me!';

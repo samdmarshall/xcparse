@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
 from ..xcrun import *
+from .Base_Action import *
 
-class TestAction(object):
+class TestAction(Base_Action):
     # contents = {};
     # children = [];
     # selectedDebuggerIdentifier = '';

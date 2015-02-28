@@ -4,8 +4,9 @@ import Foundation
 import os
 
 from .PBXResolver import *
+from .PBX_Base_Target import *
 
-class PBXNativeTarget(object):
+class PBXNativeTarget(PBX_Base_Target):
     # buildConfigurationList = {};
     # buildPhases = [];
     # buildRules = [];
@@ -17,36 +18,19 @@ class PBXNativeTarget(object):
     
     def __init__(self, lookup_func, dictionary, project):
         if 'buildConfigurationList' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['buildConfigurationList']])
-            if result[0] == True:
-                self.buildConfigurationList = result[1](lookup_func, project.objects()[dictionary['buildConfigurationList']], project);
+            self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'buildPhases' in dictionary.keys():
-            phaseList = [];
-            for phase in dictionary['buildPhases']:
-                result = lookup_func(project.objects()[phase]);
-                if result[0] == True:
-                    phaseList.append(result[1](lookup_func, project.objects()[phase], project));
-            self.buildPhases = phaseList;
-        if 'buildRules' in dictionary.keys():
-            ruleList = [];
-            for rule in dictionary['buildRules']:
-                result = lookup_func(project.objects()[rule]);
-                if result[0] == True:
-                    ruleList.append(result[1](lookup_func, project.objects()[rule], project));
-            self.buildRules = ruleList;
+            self.buildPhases = self.parseProperty('buildPhases', lookup_func, dictionary, project, True);
         if 'dependencies' in dictionary.keys():
-            dependencies = [];
-            for dep in dictionary['dependencies']:
-                # this may need to be changed to PBXTargetDependency
-                dependencies.append(dep);
-            self.dependencies = dependencies;
+            self.dependencies = self.parseProperty('dependencies', lookup_func, dictionary, project, True);
+        if 'buildRules' in dictionary.keys():
+            self.buildRules = self.parseProperty('buildRules', lookup_func, dictionary, project, True);
         if 'name' in dictionary.keys():
             self.name = dictionary['name'];
         if 'productName' in dictionary.keys():
             self.productName = dictionary['productName'];
         if 'productReference' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['productReference']]);
-            if result[0] == True:
-                self.productReference = result[1](lookup_func, project.objects()[dictionary['productReference']], project);
+            self.productReference = self.parseProperty('productReference', lookup_func, dictionary, project, False);
         if 'productType' in dictionary.keys():
             self.productType = dictionary['productType'];
+            

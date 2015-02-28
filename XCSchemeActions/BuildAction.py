@@ -4,8 +4,9 @@ import xml.etree.ElementTree as xml
 from .BuildActionEntry import *
 from ..xcrun import *
 from ..PBX.PBXResolver import *
+from .Base_Action import *
 
-class BuildAction(object):
+class BuildAction(Base_Action):
     # contents = {};
     # children = [];
     # parallel = False;

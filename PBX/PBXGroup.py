@@ -4,8 +4,9 @@ import Foundation
 import os
 
 from .PBXResolver import *
+from .PBX_Base import *
 
-class PBXGroup(object):
+class PBXGroup(PBX_Base):
     # name = '';
     # path = '';
     # children = [];
@@ -14,9 +15,4 @@ class PBXGroup(object):
         if 'name' in dictionary.keys():
             self.name = dictionary['name'];
         if 'children' in dictionary.keys():
-            children = [];
-            for child in dictionary['children']:
-                result = lookup_func(project.objects()[child]);
-                if result[0] == True:
-                    children.append(result[1](lookup_func, project.objects()[child], project));
-            self.children = children;
+            self.children = self.parseProperty('children', lookup_func, dictionary, project, True);

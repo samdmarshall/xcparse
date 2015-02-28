@@ -1,4 +1,9 @@
 from .PBXResolver import *
+
+from .PBX_Base import *
+from .PBX_Base_Phase import *
+from .PBX_Base_Target import *
+
 from .PBXBuildFile import *
 from .PBXFileReference import *
 from .PBXFrameworkBuildPhase import *

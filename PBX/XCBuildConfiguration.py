@@ -3,7 +3,9 @@ import Cocoa
 import Foundation
 import os
 
-class XCBuildConfiguration(object):
+from .PBX_Base import *
+
+class XCBuildConfiguration(PBX_Base):
     # buildSettings = {};
     # name = '';
     

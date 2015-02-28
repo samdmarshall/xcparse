@@ -6,9 +6,10 @@ import os
 from .PBXResolver import *
 from .PBX_Base import *
 
-class PBXBuildFile(PBX_Base):
-    # fileRef = {};
+class PBX_Base_Phase(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project):
-        if 'fileRef' in dictionary.keys():
-            self.fileRef = self.parseProperty('fileRef', lookup_func, dictionary, project, False);
+        self.name = 'PBX_BASE_PHASE';
+        
+    def performPhase(self):
+        print 'implement me!';

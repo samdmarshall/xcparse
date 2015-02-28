@@ -4,8 +4,9 @@ import Foundation
 import os
 
 from .PBXResolver import *
+from .PBX_Base_Target import *
 
-class PBXAggregateTarget(object):
+class PBXAggregateTarget(PBX_Base_Target):
     # buildConfigurationList = {};
     # buildPhases = [];
     # dependencies = [];
@@ -18,20 +19,8 @@ class PBXAggregateTarget(object):
         if 'productName' in dictionary.keys():
             self.productName = dictionary['productName'];
         if 'buildConfigurationList' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['buildConfigurationList']])
-            if result[0] == True:
-                self.buildConfigurationList = result[1](lookup_func, project.objects()[dictionary['buildConfigurationList']], project);
+            self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'buildPhases' in dictionary.keys():
-            phaseList = [];
-            for phase in dictionary['buildPhases']:
-                result = lookup_func(project.objects()[phase]);
-                if result[0] == True:
-                    result = result[1](lookup_func, project.objects()[phase], project);
-                    phaseList.append(result);
-            self.buildPhases = phaseList;
+            self.buildPhases = self.parseProperty('buildPhases', lookup_func, dictionary, project, True);
         if 'dependencies' in dictionary.keys():
-            dependencies = [];
-            for dep in dictionary['dependencies']:
-                # this may need to be changed to PBXTargetDependency
-                dependencies.append(dep);
-            self.dependencies = dependencies;
+            self.dependencies = self.parseProperty('dependencies', lookup_func, dictionary, project, True);

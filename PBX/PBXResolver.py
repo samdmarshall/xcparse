@@ -5,7 +5,7 @@ import os
 
 from .PBXBuildFile import *
 from .PBXFileReference import *
-from .PBXFrameworkBuildPhase import *
+from .PBXFrameworksBuildPhase import *
 from .PBXGroup import *
 from .PBXNativeTarget import *
 from .PBXHeadersBuildPhase import *
@@ -29,7 +29,7 @@ from .PBXLegacyTarget import *
 PBX_TYPE_RESOLVER = {
     'PBXBuildFile': PBXBuildFile,
     'PBXFileReference': PBXFileReference,
-    'PBXFrameworkBuildPhase': PBXFrameworkBuildPhase,
+    'PBXFrameworksBuildPhase': PBXFrameworksBuildPhase,
     'PBXGroup': PBXGroup,
     'PBXNativeTarget': PBXNativeTarget,
     'PBXHeadersBuildPhase': PBXHeadersBuildPhase,

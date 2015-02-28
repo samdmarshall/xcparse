@@ -7,6 +7,9 @@ from .xcworkspace import *
 from .xcscheme import *
 
 
+from .PBX.PBX_Base import PBX_Base
+from .PBX.PBX_Base_Phase import PBX_Base_Phase
+from .PBX.PBX_Base_Target import PBX_Base_Target
 from .PBX.PBXResolver import PBXResolver
 from .PBX.PBXBuildFile import PBXBuildFile
 from .PBX.PBXFileReference import PBXFileReference
@@ -32,7 +35,7 @@ from .PBX.PBXAppleScriptBuildPhase import PBXAppleScriptBuildPhase
 from .PBX.PBXLegacyTarget import PBXLegacyTarget
 
 
-
+from .XCSchemeActions.Base_Action import Base_Action
 from .XCSchemeActions.BuildAction import BuildAction
 from .XCSchemeActions.TestAction import TestAction
 from .XCSchemeActions.LaunchAction import LaunchAction

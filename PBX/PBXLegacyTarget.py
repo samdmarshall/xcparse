@@ -4,8 +4,9 @@ import Foundation
 import os
 
 from .PBXResolver import *
+from .PBX_Base_Target import *
 
-class PBXLegacyTarget(object):
+class PBXLegacyTarget(PBX_Base_Target):
     # buildConfigurationList = {};
     # buildPhases = [];
     # dependencies = [];
@@ -17,22 +18,11 @@ class PBXLegacyTarget(object):
     
     def __init__(self, lookup_func, dictionary, project):
         if 'buildConfigurationList' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['buildConfigurationList']])
-            if result[0] == True:
-                self.buildConfigurationList = result[1](lookup_func, project.objects()[dictionary['buildConfigurationList']], project);
+            self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'buildPhases' in dictionary.keys():
-            phaseList = [];
-            for phase in dictionary['buildPhases']:
-                result = lookup_func(project.objects()[phase]);
-                if result[0] == True:
-                    phaseList.append(result[1](lookup_func, project.objects()[phase], project));
-            self.buildPhases = phaseList;
+            self.buildPhases = self.parseProperty('buildPhases', lookup_func, dictionary, project, True);
         if 'dependencies' in dictionary.keys():
-            dependencies = [];
-            for dep in dictionary['dependencies']:
-                # this may need to be changed to PBXTargetDependency
-                dependencies.append(dep);
-            self.dependencies = dependencies;
+            self.dependencies = self.parseProperty('dependencies', lookup_func, dictionary, project, True);
         if 'name' in dictionary.keys():
             self.name = dictionary['name'];
         if 'productName' in dictionary.keys():

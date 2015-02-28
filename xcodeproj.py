@@ -30,6 +30,8 @@ class xcodeproj(object):
                         result = PBXResolver(self.objects()[self.identifier])
                         if result[0] == True:
                             self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self);
+                        else:
+                            self.rootObject = {};
                     else:
                         print errorMessage;
                 else:

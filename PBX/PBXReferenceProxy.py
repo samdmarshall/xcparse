@@ -3,7 +3,9 @@ import Cocoa
 import Foundation
 import os
 
-class PBXReferenceProxy(object):
+from .PBX_Base import *
+
+class PBXReferenceProxy(PBX_Base):
     # fileType = '';
     # path = '';
     # sourceTree = '';
@@ -18,6 +20,4 @@ class PBXReferenceProxy(object):
         if 'sourceTree' in dictionary.keys():
             self.sourceTree = dictionary['sourceTree'];
         if 'remoteRef' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['remoteRef']])
-            if result[0] == True:
-                self.remoteRef = result[1](lookup_func, project.objects()[dictionary['remoteRef']], project);
+            self.remoteRef = self.parseProperty('remoteRef', lookup_func, dictionary, project, False);

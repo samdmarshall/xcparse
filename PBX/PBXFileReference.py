@@ -3,7 +3,9 @@ import Cocoa
 import Foundation
 import os
 
-class PBXFileReference(object):
+from .PBX_Base import *
+
+class PBXFileReference(PBX_Base):
     # name = '';
     # path = '';
     # ftype = '';

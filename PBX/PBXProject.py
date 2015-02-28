@@ -4,8 +4,9 @@ import Foundation
 import os
 
 from .PBXResolver import *
+from .PBX_Base import *
 
-class PBXProject(object):
+class PBXProject(PBX_Base):
     # attributes = {};
     # buildConfigurationList = {};
     # compatibilityVersion = '';
@@ -21,9 +22,7 @@ class PBXProject(object):
         if 'attributes' in dictionary.keys():
             self.attributes = dictionary['attributes'];
         if 'buildConfigurationList' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['buildConfigurationList']])
-            if result[0] == True:
-                self.buildConfigurationList = result[1](lookup_func, project.objects()[dictionary['buildConfigurationList']], project);
+            self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'compatibilityVersion' in dictionary.keys():
             self.compatibilityVersion = dictionary['compatibilityVersion'];
         if 'developmentRegion' in dictionary.keys():
@@ -33,17 +32,10 @@ class PBXProject(object):
         if 'knownRegions' in dictionary.keys():
             self.knownRegions = dictionary['knownRegions'];
         if 'mainGroup' in dictionary.keys():
-            result = lookup_func(project.objects()[dictionary['mainGroup']])
-            if result[0] == True:
-                self.mainGroup = result[1](lookup_func, project.objects()[dictionary['mainGroup']], project);
+            self.mainGroup = self.parseProperty('mainGroup', lookup_func, dictionary, project, False);
         if 'projectDirPath' in dictionary.keys():
             self.projectDirPath = dictionary['projectDirPath'];
         if 'projectRoot' in dictionary.keys():
             self.projectRoot = dictionary['projectRoot'];
         if 'targets' in dictionary.keys():
-            targetList = [];
-            for target in dictionary['targets']:
-                result = lookup_func(project.objects()[target]);
-                if result[0] == True:
-                    targetList.append(result[1](lookup_func, project.objects()[target], project));
-            self.targets = targetList;
+            self.targets = self.parseProperty('targets', lookup_func, dictionary, project, True);

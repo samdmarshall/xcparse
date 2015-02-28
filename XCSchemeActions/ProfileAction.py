@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 
-class ProfileAction(object):
+from .Base_Action import *
+
+class ProfileAction(Base_Action):
     # contents = {};
     # children = [];
     # shouldUseLaunchSchemeArgsEnv = '';
@@ -22,6 +24,3 @@ class ProfileAction(object):
             self.buildConfiguration = self.contents.get('buildConfiguration');
         if 'debugDocumentVersioning' in self.contents.keys():
             self.debugDocumentVersioning = self.contents.get('debugDocumentVersioning');
-    
-    def performAction(self, container, project_constructor, scheme_config_settings):
-        print 'implement me!';
