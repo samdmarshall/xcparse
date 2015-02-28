@@ -3,8 +3,7 @@ import xml.etree.ElementTree as xml
 import os
 import sys
 
-from ..Path import *
-from ..Logger import *
+from .Path import *
 
 from .xcodeproj import *
 from .xcrun import *
@@ -23,11 +22,7 @@ class xcworkspace(object):
             except:
                 self.data = {};
         else:
-            Logger.debuglog([
-                            Logger.colour('red',True),
-                            Logger.string('%s', 'Invalid xcworkspace file!'),
-                            Logger.colour('reset', True)
-                            ]);
+            print 'Invalid xcworkspace file!';
     
     def isValid(self):
         return self.data != {};

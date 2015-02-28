@@ -3,7 +3,7 @@ import os
 import sys
 import xml.etree.ElementTree as xml
 
-from ..Path import *
+from .Path import *
 
 from .xcrun import *
 

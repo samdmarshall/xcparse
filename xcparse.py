@@ -2,8 +2,6 @@ from __future__ import absolute_import
 import os
 import importlib
 
-from ..Logger import *
-
 from .xcodeproj import *
 from .xcworkspace import *
 from .xcscheme import *
@@ -32,17 +30,9 @@ class xcparse(object):
                     projects.append(project_file);
                 self.projects = projects;
             else:
-                Logger.debuglog([
-                                Logger.colour('red',True),
-                                Logger.string('%s', 'Invalid file!'),
-                                Logger.colour('reset', True)
-                                ]);
+                print 'Invalid file!';
         else:
-            Logger.debuglog([
-                            Logger.colour('red',True),
-                            Logger.string('%s', 'Could not find file!'),
-                            Logger.colour('reset', True)
-                            ]);
+            print 'Could not find file!';
     
     def schemes(self):
         project_schemes = [];

@@ -1,3 +1,5 @@
+from .Path import *
+
 from .xcrun import *
 from .xcparse import *
 from .xcodeproj import *

@@ -4,8 +4,7 @@ import Foundation
 import os
 import sys
 
-from ..Path import *
-from ..Logger import *
+from .Path import *
 
 from .xcscheme import *
 
@@ -32,23 +31,11 @@ class xcodeproj(object):
                         if result[0] == True:
                             self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self);
                     else:
-                        Logger.debuglog([
-                                        Logger.colour('red',True),
-                                        Logger.string('%s', errorMessage),
-                                        Logger.colour('reset', True)
-                                        ]);
+                        print errorMessage;
                 else:
-                    Logger.debuglog([
-                                    Logger.colour('red',True),
-                                    Logger.string('%s', errorMessage),
-                                    Logger.colour('reset', True)
-                                    ]);
+                    print errorMessage;
             else:
-                Logger.debuglog([
-                                Logger.colour('red',True),
-                                Logger.string('%s', 'Invalid xcodeproj file!'),
-                                Logger.colour('reset', True)
-                                ]);
+                print 'Invalid xcodeproj file!';
     
     def __attrs(self):
         return (self.identifier, self.path);
