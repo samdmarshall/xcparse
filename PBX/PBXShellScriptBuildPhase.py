@@ -37,3 +37,5 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
             for outputPath in dictionary['outputPaths']:
                 outputPaths.append(outputPath);
             self.outputPaths = outputPaths;
+        if 'showEnvVarsInLog' in dictionary.keys():
+            self.showEnvVarsInLog = dictionary['showEnvVarsInLog'];

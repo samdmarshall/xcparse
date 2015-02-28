@@ -17,3 +17,5 @@ class PBXGroup(PBX_Base):
             self.name = dictionary['name'];
         if 'children' in dictionary.keys():
             self.children = self.parseProperty('children', lookup_func, dictionary, project, True);
+        if 'sourceTree' in dictionary.keys():
+            self.sourceTree = dictionary['sourceTree'];

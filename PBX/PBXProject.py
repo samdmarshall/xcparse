@@ -34,8 +34,12 @@ class PBXProject(PBX_Base):
             self.knownRegions = dictionary['knownRegions'];
         if 'mainGroup' in dictionary.keys():
             self.mainGroup = self.parseProperty('mainGroup', lookup_func, dictionary, project, False);
+        if 'productRefGroup' in dictionary.keys():
+            self.productRefGroup = dictionary['productRefGroup'];
         if 'projectDirPath' in dictionary.keys():
             self.projectDirPath = dictionary['projectDirPath'];
+        if 'projectReferences' in dictionary.keys():
+            self.projectReferences = dictionary['projectReferences'];
         if 'projectRoot' in dictionary.keys():
             self.projectRoot = dictionary['projectRoot'];
         if 'targets' in dictionary.keys():

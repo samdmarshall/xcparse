@@ -22,3 +22,9 @@ class PBXFileReference(PBX_Base):
             self.ftype = dictionary['lastKnownFileType'];
         if 'sourceTree' in dictionary.keys():
             self.sourceTree = dictionary['sourceTree'];
+        if 'fileEncoding' in dictionary.keys():
+            self.fileEncoding = dictionary['fileEncoding'];
+        if 'explicitFileType' in dictionary.keys():
+            self.explicitFileType = dictionary['explicitFileType'];
+        if 'includeInIndex' in dictionary.keys():
+            self.includeInIndex = dictionary['includeInIndex'];

@@ -11,6 +11,8 @@ class XCBuildConfiguration(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
+        if 'baseConfigurationReference' in dictionary.keys():
+            self.baseConfigurationReference = dictionary['baseConfigurationReference'];
         if 'buildSettings' in dictionary.keys():
             self.buildSettings = dictionary['buildSettings'];
         if 'name' in dictionary.keys():
