@@ -34,29 +34,44 @@ class xcparse(object):
             print 'Could not find file!';
     
     def projects(self):
+        """
+        This method returns a list of 'xcodeproj' objects, one for each of the referenced
+        project files in whatever root project or workspace was loaded. If there are 
+        multiple references to the same project file, this method will only one instance of that
+        referenced project.
+        """
         project_list = [self.root];
         project_list.extend(self._projects);
         return project_list;
     
     def schemes(self):
+        """
+        This method returns a list of schemes contained by the root project or workspace,
+        as well as all referenced projects and workspaces. 
+        """
         project_schemes = [];
         for project_file in self.projects():
             for scheme in project_file.schemes():
                 project_schemes.append(scheme);
         return project_schemes;
     
-    def schemeNameSet(self):
-        return set(list(map(XCSchemeName, self.schemes())));
-    
-    def containerForSchemeWithName(self, scheme_name):
-        scheme = {};
-        container = {};
-        found = False;
-        for project in self.projects():
-            result = project.hasSchemeWithName(scheme_name);
-            found = result[0];
-            if found == True:
-                scheme = result[1];
-                container = project;
-                break;
-        return (found, scheme, container);
+    def findSchemeWithName(self, scheme_name):
+        """
+        This method returns a list of schemes with matching names to the passed name. List 
+        items are tuples with the following elements:
+        
+        First element:
+            A 'True' or 'False' value that indicates if a scheme was found
+        
+        Second element:
+            'xcscheme' object of the scheme with matching name
+        
+        Third element:
+            The container object for the scheme, either 'xcodeproj' or 'xcworkspace'
+        """
+        results = map(lambda project: project.hasSchemeWithName(scheme_name) + (project,), self.projects());
+        results = filter(lambda result: result[0] == True, results);
+        if len(results) > 0:
+            return results;
+        else:
+            return [(False, None, None)];

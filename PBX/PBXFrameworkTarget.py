@@ -6,7 +6,7 @@ import os
 from .PBXResolver import *
 from .PBX_Base_Target import *
 
-class PBXApplicationTarget(PBX_Base_Target):
+class PBXFrameworkTarget(PBX_Base_Target):
     # buildConfigurationList = {};
     # buildPhases = [];
     # dependencies = [];
@@ -36,3 +36,5 @@ class PBXApplicationTarget(PBX_Base_Target):
             self.productSettingsXML = dictionary['productSettingsXML'];
         if 'productReference' in dictionary.keys():
             self.productReference = self.parseProperty('productReference', lookup_func, dictionary, project, False);
+        if 'shouldUseHeadermap' in dictionary.keys():
+            self.shouldUseHeadermap = dictionary['shouldUseHeadermap'];

@@ -6,22 +6,18 @@ import os
 from .PBXResolver import *
 from .PBX_Base_Phase import *
 
-class PBXAppleScriptBuildPhase(PBX_Base_Phase):
-    # buildActionMask = 0;
+class PBXJavaArchiveBuildPhase(PBX_Base_Phase):
+    # buildActionMask = '';
     # files = [];
-    # isSharedContext = 0;
     # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
-        self.phase_type = 'AppleScript';
+        self.phase_type = 'Java Archive';
         if 'buildActionMask' in dictionary.keys():
             self.buildActionMask = dictionary['buildActionMask'];
-        if 'contextName' in dictionary.keys():
-            self.buildActionMask = dictionary['contextName'];
         if 'files' in dictionary.keys():
             self.files = self.parseProperty('files', lookup_func, dictionary, project, True);
         if 'runOnlyForDeploymentPostprocessing' in dictionary.keys():
             self.runOnlyForDeploymentPostprocessing = dictionary['runOnlyForDeploymentPostprocessing'];
-        if 'isSharedContext' in dictionary.keys():
-            self.isSharedContext = dictionary['isSharedContext'];
+    

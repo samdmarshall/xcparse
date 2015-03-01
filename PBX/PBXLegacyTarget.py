@@ -18,6 +18,8 @@ class PBXLegacyTarget(PBX_Base_Target):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
+        if 'buildSettings' in dictionary.keys():
+            self.buildSettings = dictionary['buildSettings'];
         if 'buildConfigurationList' in dictionary.keys():
             self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'buildPhases' in dictionary.keys():
@@ -34,3 +36,13 @@ class PBXLegacyTarget(PBX_Base_Target):
             self.buildArgumentsString = dictionary['buildArgumentsString'];
         if 'buildToolPath' in dictionary.keys():
             self.buildToolPath = dictionary['buildToolPath'];
+        if 'buildWorkingDirectory' in dictionary.keys():
+            self.buildWorkingDirectory = dictionary['buildWorkingDirectory'];
+        if 'settingsToExpand' in dictionary.keys():
+            self.settingsToExpand = dictionary['settingsToExpand'];
+        if 'settingsToPassInEnvironment' in dictionary.keys():
+            self.settingsToPassInEnvironment = dictionary['settingsToPassInEnvironment'];
+        if 'settingsToPassOnCommandLine' in dictionary.keys():
+            self.settingsToPassOnCommandLine = dictionary['settingsToPassOnCommandLine'];
+        if 'shouldUseHeadermap' in dictionary.keys():
+            self.shouldUseHeadermap = dictionary['shouldUseHeadermap'];

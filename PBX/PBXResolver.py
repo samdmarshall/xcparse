@@ -25,6 +25,18 @@ from .PBXShellScriptBuildPhase import *
 from .PBXReferenceProxy import *
 from .PBXAppleScriptBuildPhase import *
 from .PBXLegacyTarget import *
+from .PBXJavaArchiveBuildPhase import *
+from .PBXBundleTarget import *
+from .PBXStandAloneTarget import *
+from .PBXLibraryTarget import *
+from .PBXFrameworkTarget import *
+from .PBXBuildRule import *
+from .PBXFrameworkReference import *
+from .PBXApplicationReference import *
+from .PBXExecutableFileReference import *
+from .PBXLibraryReference import *
+from .PBXBundleReference import *
+from .PBXZipArchiveReference import *
 
 PBX_TYPE_RESOLVER = {
     'PBXBuildFile': PBXBuildFile,
@@ -49,6 +61,18 @@ PBX_TYPE_RESOLVER = {
     'PBXReferenceProxy': PBXReferenceProxy,
     'PBXAppleScriptBuildPhase': PBXAppleScriptBuildPhase,
     'PBXLegacyTarget': PBXLegacyTarget,
+    'PBXJavaArchiveBuildPhase': PBXJavaArchiveBuildPhase,
+    'PBXBundleTarget': PBXBundleTarget,
+    'PBXStandAloneTarget': PBXStandAloneTarget,
+    'PBXLibraryTarget': PBXLibraryTarget,
+    'PBXFrameworkTarget': PBXFrameworkTarget,
+    'PBXBuildRule': PBXBuildRule,
+    'PBXFrameworkReference': PBXFrameworkReference,
+    'PBXApplicationReference': PBXApplicationReference,
+    'PBXExecutableFileReference': PBXExecutableFileReference,
+    'PBXLibraryReference': PBXLibraryReference,
+    'PBXBundleReference': PBXBundleReference,
+    'PBXZipArchiveReference': PBXZipArchiveReference,
 };
 
 def PBXResolver(dictionary):
@@ -56,4 +80,5 @@ def PBXResolver(dictionary):
     if dictionary['isa'] in PBX_TYPE_RESOLVER.keys():
         return (True, PBX_TYPE_RESOLVER[dictionary['isa']]);
     else:
+        print 'SKIPPING "%s" TYPE!' % dictionary['isa'];
         return (False, {});

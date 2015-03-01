@@ -6,7 +6,7 @@ import os
 from .PBXResolver import *
 from .PBX_Base_Target import *
 
-class PBXApplicationTarget(PBX_Base_Target):
+class PBXBundleTarget(PBX_Base_Target):
     # buildConfigurationList = {};
     # buildPhases = [];
     # dependencies = [];

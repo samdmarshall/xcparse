@@ -6,20 +6,18 @@ import os
 from .PBXResolver import *
 from .PBX_Base_Target import *
 
-class PBXApplicationTarget(PBX_Base_Target):
+class PBXLibraryTarget(PBX_Base_Target):
     # buildConfigurationList = {};
     # buildPhases = [];
     # dependencies = [];
     # name = '';
     # productName = '';
-    # productInstallPath = '';
-    # productReference = {};
-    # productSettingsXML = '';
+    # buildToolPath = '';
+    # buildArgumentsString = '';
+    # passBuildSettingsInEnvironment = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
-        if 'buildSettings' in dictionary.keys():
-            self.buildSettings = dictionary['buildSettings'];
         if 'buildConfigurationList' in dictionary.keys():
             self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
         if 'buildPhases' in dictionary.keys():
@@ -30,9 +28,9 @@ class PBXApplicationTarget(PBX_Base_Target):
             self.name = dictionary['name'];
         if 'productName' in dictionary.keys():
             self.productName = dictionary['productName'];
-        if 'productInstallPath' in dictionary.keys():
-            self.productInstallPath = dictionary['productInstallPath'];
-        if 'productSettingsXML' in dictionary.keys():
-            self.productSettingsXML = dictionary['productSettingsXML'];
-        if 'productReference' in dictionary.keys():
-            self.productReference = self.parseProperty('productReference', lookup_func, dictionary, project, False);
+        if 'passBuildSettingsInEnvironment' in dictionary.keys():
+            self.passBuildSettingsInEnvironment = dictionary['passBuildSettingsInEnvironment'];
+        if 'buildArgumentsString' in dictionary.keys():
+            self.buildArgumentsString = dictionary['buildArgumentsString'];
+        if 'buildToolPath' in dictionary.keys():
+            self.buildToolPath = dictionary['buildToolPath'];

@@ -1,21 +1,19 @@
 from __future__ import absolute_import
 import Cocoa
 import Foundation
-import os
-import sys
-
-from .Path import *
-
-from .xcscheme import *
 
 from .PBX.PBXResolver import PBXResolver
 
-class xcodeproj(object):
+from .xc_base import *
+
+class xcodeproj(xc_base):
     # path = {};
     # contents = {};
     # rootObject = {};
     
     def __init__(self, xcproj_path):
+        self.contents = None;
+        self.identifier = '';
         if xcproj_path.endswith('.xcodeproj') or xcproj_path.endswith('.pbproj'):
             self.path = Path(xcproj_path, 'project.pbxproj');
             
@@ -31,7 +29,7 @@ class xcodeproj(object):
                         if result[0] == True:
                             self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
                         else:
-                            self.rootObject = {};
+                            self.rootObject = None;
                     else:
                         print errorMessage;
                 else:
@@ -49,60 +47,55 @@ class xcodeproj(object):
         return hash(self.__attrs());
     
     def isValid(self):
-        return self.contents != {};
+        return self.contents != None;
     
     def objects(self):
-        return self.contents['objects'];
+        """
+        This method returns a dictionary of raw objects from the parsed xcodeproject 
+        file. The objects in this list are bridged from Cocoa.
+        """
+        if self.isValid():
+            return self.contents['objects'];
+        else:
+            return {};
     
     def projects(self):
+        """
+        THis method returns a list of 'xcodeproj' objects that represents any referenced 
+        xcodeproj files in this project.
+        """
         subprojects = [];
-        for path in self.subproject_paths():
-            project = xcodeproj(path);
-            subprojects.append(project);
-            subprojects.extend(project.projects());
+        if self.isValid():
+            for path in self.subproject_paths():
+                project = xcodeproj(path);
+                subprojects.append(project);
+                subprojects.extend(project.projects());
         return set(subprojects);
+        
     
     def subproject_paths(self):
+        """
+        This method is for returning a list of paths to referenced project files in this
+        xcodeproj file.
+        """
         paths = [];
-        for project_dict in self.rootObject.projectReferences:
-            project_ref = project_dict['ProjectRef'];
-            result = PBXResolver(self.objects()[project_ref]);
-            if result[0] == True:
-                file_ref = result[1](PBXResolver, self.objects()[project_ref], self, project_ref);
-                subproject_path = os.path.join(self.path.base_path, file_ref.path);
-                if os.path.exists(subproject_path) == True:
-                    paths.append(subproject_path);
+        if self.isValid():
+            for project_dict in self.rootObject.projectReferences:
+                project_ref = project_dict['ProjectRef'];
+                result = PBXResolver(self.objects()[project_ref]);
+                if result[0] == True:
+                    file_ref = result[1](PBXResolver, self.objects()[project_ref], self, project_ref);
+                    subproject_path = os.path.join(self.path.base_path, file_ref.path);
+                    if os.path.exists(subproject_path) == True:
+                        paths.append(subproject_path);
         return paths;
     
     def targets(self):
-        if self.rootObject != {}:
+        """
+        This method will return a list of build targets that are associated with this xcodeproj.
+        """
+        if self.isValid():
             return self.rootObject.targets;
         else:
             return [];
-    
-    def schemes(self):
-        schemes = [];
-        # shared schemes
-        shared_path = XCSchemeGetSharedPath(self.path.obj_path);
-        shared_schemes = XCSchemeParseDirectory(shared_path);
-        for scheme in shared_schemes:
-            scheme.shared = True;
-        # user schemes
-        user_path = XCSchemeGetUserPath(self.path.obj_path);
-        user_schemes = XCSchemeParseDirectory(user_path);
-        # merge schemes
-        for scheme in shared_schemes + user_schemes:
-            scheme.container = self.path;
-            schemes.append(scheme);
-        return schemes;
-    
-    def hasSchemeWithName(self, scheme_name):
-        schemes = self.schemes();
-        result = scheme_name in list(map(XCSchemeName, schemes));
-        found_scheme = {};
-        for scheme in schemes:
-            if scheme.name == scheme_name:
-                found_scheme = scheme;
-                break;
-        return (result, found_scheme);
     

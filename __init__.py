@@ -2,10 +2,12 @@ from .Path import *
 
 from .xcrun import *
 from .xcparse import *
+
+from .xc_base import *
 from .xcodeproj import *
 from .xcworkspace import *
-from .xcscheme import *
 
+from .xcscheme import *
 
 from .PBX.PBX_Base import PBX_Base
 from .PBX.PBX_Base_Phase import PBX_Base_Phase

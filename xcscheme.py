@@ -47,7 +47,7 @@ class xcscheme(object):
         try:
             self.contents = xml.parse(self.path.obj_path);
         except:
-            self.contents = {};
+            self.contents = None;
     
     def actionLookup(self, action_name):
         action_name = action_name.lower();
@@ -65,34 +65,55 @@ class xcscheme(object):
             return None;
     
     def isValid(self):
-        return self.contents != {};
+        return self.contents != None;
     
     def getAction(self, action_type):
-        return filter(lambda action: action.tag == action_type, list(self.contents.getroot()))[0];
+        if self.isValid():
+            return filter(lambda action: action.tag == action_type, list(self.contents.getroot()))[0];
+        else:
+            return None;
     
     def buildAction(self, container):
-        action = BuildAction(self.getAction('BuildAction'));
-        return action;
+        if self.isValid():
+            action = BuildAction(self.getAction('BuildAction'));
+            return action;
+        else:
+            return None;
     
     def testAction(self, container):
-        action = TestAction(self.getAction('TestAction'));
-        action.root = BuildAction(self.getAction('BuildAction'))
-        return action;
+        if self.isValid():
+            action = TestAction(self.getAction('TestAction'));
+            action.root = BuildAction(self.getAction('BuildAction'))
+            return action;
+        else:
+            return None;
     
     def launchAction(self, container):
-        action = LaunchAction(self.getAction('LaunchAction'));
-        return action;
+        if self.isValid():
+            action = LaunchAction(self.getAction('LaunchAction'));
+            return action;
+        else:
+            return None;
     
     def profileAction(self, container):
-        action = ProfileAction(self.getAction('ProfileAction'));
-        return action;
+        if self.isValid():
+            action = ProfileAction(self.getAction('ProfileAction'));
+            return action;
+        else:
+            return None;
     
     def analyzeAction(self, container):
-        action = AnalyzeAction(self.getAction('AnalyzeAction'));
-        action.root = BuildAction(self.getAction('BuildAction'))
-        return action;
+        if self.isValid():
+            action = AnalyzeAction(self.getAction('AnalyzeAction'));
+            action.root = BuildAction(self.getAction('BuildAction'))
+            return action;
+        else:
+            return None;
     
     def archiveAction(self, container):
-        action = ArchiveAction(self.getAction('ArchiveAction'));
-        action.root = BuildAction(self.getAction('BuildAction'))
-        return action;
+        if self.isValid():
+            action = ArchiveAction(self.getAction('ArchiveAction'));
+            action.root = BuildAction(self.getAction('BuildAction'))
+            return action;
+        else:
+            return None;
