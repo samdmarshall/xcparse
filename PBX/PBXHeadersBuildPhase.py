@@ -13,6 +13,7 @@ class PBXHeadersBuildPhase(PBX_Base_Phase):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
+        self.phase_type = 'Copy Headers';
         if 'buildActionMask' in dictionary.keys():
             self.buildActionMask = dictionary['buildActionMask'];
         if 'files' in dictionary.keys():
