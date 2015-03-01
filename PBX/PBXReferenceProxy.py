@@ -13,7 +13,8 @@ class PBXReferenceProxy(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
-        self.containerPortal = project.rootObject();
+        if 'containerPortal' in dictionary.keys():
+            self.containerPortal = dictionary['containerPortal'];
         if 'fileType' in dictionary.keys():
             self.fileType = dictionary['fileType'];
         if 'path' in dictionary.keys():

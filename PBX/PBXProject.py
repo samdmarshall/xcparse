@@ -40,6 +40,8 @@ class PBXProject(PBX_Base):
             self.projectDirPath = dictionary['projectDirPath'];
         if 'projectReferences' in dictionary.keys():
             self.projectReferences = dictionary['projectReferences'];
+        else:
+            self.projectReferences = [];
         if 'projectRoot' in dictionary.keys():
             self.projectRoot = dictionary['projectRoot'];
         if 'targets' in dictionary.keys():

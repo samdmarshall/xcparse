@@ -64,16 +64,14 @@ class xcodeproj(object):
     
     def subproject_paths(self):
         paths = [];
-        root_obj = self.objects()[self.identifier];
-        if 'projectReferences' in root_obj.keys():
-            for project_dict in root_obj['projectReferences']:
-                project_ref = project_dict['ProjectRef'];
-                result = PBXResolver(self.objects()[project_ref]);
-                if result[0] == True:
-                    file_ref = result[1](PBXResolver, self.objects()[project_ref], self);
-                    subproject_path = os.path.join(self.path.base_path, file_ref.path);
-                    if os.path.exists(subproject_path) == True:
-                        paths.append(subproject_path);
+        for project_dict in self.rootObject.projectReferences:
+            project_ref = project_dict['ProjectRef'];
+            result = PBXResolver(self.objects()[project_ref]);
+            if result[0] == True:
+                file_ref = result[1](PBXResolver, self.objects()[project_ref], self, project_ref);
+                subproject_path = os.path.join(self.path.base_path, file_ref.path);
+                if os.path.exists(subproject_path) == True:
+                    paths.append(subproject_path);
         return paths;
     
     def targets(self):
