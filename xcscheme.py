@@ -68,10 +68,7 @@ class xcscheme(object):
         return self.contents != {};
     
     def getAction(self, action_type):
-        for item in list(self.contents.getroot()):
-            if item.tag == action_type:
-                return item;
-        return {};
+        return filter(lambda action: action.tag == action_type, list(self.contents.getroot()))[0];
     
     def buildAction(self, container):
         action = BuildAction(self.getAction('BuildAction'));
