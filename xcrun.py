@@ -5,6 +5,9 @@ from subprocess import CalledProcessError
 
 
 class xcrun(object):
+    """
+    This class exists to execute 'xcrun' tools.
+    """
     
     @classmethod
     def resolvePathFromLocation(cls, location_string, path, base_path):

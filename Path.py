@@ -1,6 +1,9 @@
 import os
 
-class Path(object):
+class Path(object):    
+    """
+    This is a path object to allow for root, base, and full path storage to create relative paths
+    """
     # base_path = '';
     # obj_path = '';
     # root_path = '';

@@ -13,6 +13,11 @@ class xcparse(object):
     # root_path = '';
     
     def __init__(self, path):
+        """
+        Pass a path the full path to a '.xcodeproj' or '.xcworkspace'.
+        """
+        self.path = '';
+        self.root = None;
         if os.path.exists(path) == True:
             self.root_path = os.path.abspath(path);
             self.name = os.path.basename(path);
@@ -33,6 +38,9 @@ class xcparse(object):
         else:
             print 'Could not find file!';
     
+    def isValid(self):
+        return self.name != '' and self.root != None;
+    
     def projects(self):
         """
         This method returns a list of 'xcodeproj' objects, one for each of the referenced
@@ -40,8 +48,10 @@ class xcparse(object):
         multiple references to the same project file, this method will only one instance of that
         referenced project.
         """
-        project_list = [self.root];
-        project_list.extend(self._projects);
+        project_list = [];
+        if self.isValid():
+            project_list.append(self.root);
+            project_list.extend(self._projects);
         return project_list;
     
     def schemes(self):
@@ -50,9 +60,10 @@ class xcparse(object):
         as well as all referenced projects and workspaces. 
         """
         project_schemes = [];
-        for project_file in self.projects():
-            for scheme in project_file.schemes():
-                project_schemes.append(scheme);
+        if self.isValid():
+            for project_file in self.projects():
+                for scheme in project_file.schemes():
+                    project_schemes.append(scheme);
         return project_schemes;
     
     def findSchemeWithName(self, scheme_name):
@@ -69,9 +80,9 @@ class xcparse(object):
         Third element:
             The container object for the scheme, either 'xcodeproj' or 'xcworkspace'
         """
-        results = map(lambda project: project.hasSchemeWithName(scheme_name) + (project,), self.projects());
-        results = filter(lambda result: result[0] == True, results);
-        if len(results) > 0:
-            return results;
-        else:
-            return [(False, None, None)];
+        if self.isValid():
+            results = map(lambda project: project.hasSchemeWithName(scheme_name) + (project,), self.projects());
+            results = filter(lambda result: result[0] == True, results);
+            if len(results) > 0:
+                return results;
+        return [(False, None, None)];

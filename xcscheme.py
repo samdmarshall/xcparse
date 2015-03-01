@@ -31,9 +31,6 @@ def XCSchemeParseDirectory(dir_path):
                     schemes.append(scheme_xml);
     return schemes;
 
-def XCSchemeName(x):
-    return x.name;
-
 class xcscheme(object):
     # path = {};
     # contents = {};
@@ -50,6 +47,9 @@ class xcscheme(object):
             self.contents = None;
     
     def actionLookup(self, action_name):
+        """
+        This method returns the method for the passed action type, None otherwise.
+        """
         action_name = action_name.lower();
         lookup = {
             'build': self.buildAction,
@@ -68,12 +68,18 @@ class xcscheme(object):
         return self.contents != None;
     
     def getAction(self, action_type):
+        """
+        This method returns all the object for the passed action type, otherwise None.
+        """
         if self.isValid():
             return filter(lambda action: action.tag == action_type, list(self.contents.getroot()))[0];
         else:
             return None;
     
     def buildAction(self, container):
+        """
+        Returns the 'build' action for this scheme.
+        """
         if self.isValid():
             action = BuildAction(self.getAction('BuildAction'));
             return action;
@@ -81,6 +87,9 @@ class xcscheme(object):
             return None;
     
     def testAction(self, container):
+        """
+        Returns the 'test' action for this scheme.
+        """
         if self.isValid():
             action = TestAction(self.getAction('TestAction'));
             action.root = BuildAction(self.getAction('BuildAction'))
@@ -89,6 +98,9 @@ class xcscheme(object):
             return None;
     
     def launchAction(self, container):
+        """
+        Returns the 'launch' action for this scheme.
+        """
         if self.isValid():
             action = LaunchAction(self.getAction('LaunchAction'));
             return action;
@@ -96,6 +108,9 @@ class xcscheme(object):
             return None;
     
     def profileAction(self, container):
+        """
+        Returns the 'profile' action for this scheme.
+        """
         if self.isValid():
             action = ProfileAction(self.getAction('ProfileAction'));
             return action;
@@ -103,6 +118,9 @@ class xcscheme(object):
             return None;
     
     def analyzeAction(self, container):
+        """
+        Returns the 'analyze' action for this scheme.
+        """
         if self.isValid():
             action = AnalyzeAction(self.getAction('AnalyzeAction'));
             action.root = BuildAction(self.getAction('BuildAction'))
@@ -111,6 +129,9 @@ class xcscheme(object):
             return None;
     
     def archiveAction(self, container):
+        """
+        Returns the 'archive' action for this scheme.
+        """
         if self.isValid():
             action = ArchiveAction(self.getAction('ArchiveAction'));
             action.root = BuildAction(self.getAction('BuildAction'))

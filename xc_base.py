@@ -15,6 +15,10 @@ class xc_base(object):
         self.path = path;
     
     def schemes(self):
+        """
+        This method is used for both 'xcworkspace' and 'xcodeproj' classes. It returns a
+        list of schemes that are labeled as 'user' or 'shared'.
+        """
         schemes = [];
         # shared schemes
         shared_path = XCSchemeGetSharedPath(self.path.obj_path);
@@ -31,9 +35,20 @@ class xc_base(object):
         return schemes;
     
     def hasSchemeWithName(self, scheme_name):
+        """
+        This method is used for both 'xcworkspace' and 'xcodeproj' classes. It returns a two
+        element tuple that contains the following:
+        
+        First element:
+            A 'True' or 'False' value indicating if a scheme with the passed name was found in 
+            this project or workspace file.
+        
+        Second element:
+            The scheme object if a scheme with matching name was found, None otherwise.
+        """
         schemes = self.schemes();
-        result = scheme_name in list(map(XCSchemeName, schemes));
-        found_scheme = {};
+        result = scheme_name in list(map(lambda scheme: scheme.name, schemes));
+        found_scheme = None;
         for scheme in schemes:
             if scheme.name == scheme_name:
                 found_scheme = scheme;

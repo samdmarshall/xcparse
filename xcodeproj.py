@@ -12,6 +12,9 @@ class xcodeproj(xc_base):
     # rootObject = {};
     
     def __init__(self, xcproj_path):
+        """
+        Pass the path to the '.xcodeproj' file to initialize the xcodeproj object.
+        """
         self.contents = None;
         self.identifier = '';
         if xcproj_path.endswith('.xcodeproj') or xcproj_path.endswith('.pbproj'):
@@ -61,19 +64,19 @@ class xcodeproj(xc_base):
     
     def projects(self):
         """
-        THis method returns a list of 'xcodeproj' objects that represents any referenced 
+        This method returns a list of 'xcodeproj' objects that represents any referenced 
         xcodeproj files in this project.
         """
         subprojects = [];
         if self.isValid():
-            for path in self.subproject_paths():
+            for path in self.__subproject_paths():
                 project = xcodeproj(path);
                 subprojects.append(project);
                 subprojects.extend(project.projects());
         return set(subprojects);
         
     
-    def subproject_paths(self):
+    def __subproject_paths(self):
         """
         This method is for returning a list of paths to referenced project files in this
         xcodeproj file.
