@@ -46,3 +46,9 @@ class PBXProject(PBX_Base):
             self.projectRoot = dictionary['projectRoot'];
         if 'targets' in dictionary.keys():
             self.targets = self.parseProperty('targets', lookup_func, dictionary, project, True);
+        else:
+            self.targets = [];
+    
+    def targetForProductRef(self, reference):
+        return list(filter(lambda target: target.productReference == reference, self.targets));
+    

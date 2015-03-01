@@ -14,6 +14,7 @@ class PBX_Base_Target(PBX_Base):
         self.identifier = identifier;
         self.buildPhases = [];
         self.dependencies = [];
+        self.productReference = '';
     
     def resolve(self, type, list):
         return filter(lambda item: isinstance(item, type), list);
@@ -43,5 +44,5 @@ class PBX_Base_Target(PBX_Base):
         implicit_dep_list = [];
         library_refs = set(map(lambda ref: ref.fileRef, self.linkedLibraries()));
         dependency_refs = set(map(lambda dep: dep.target.productReference, self.dependencies));
-        implicit_dep_list.extentd(library_refs.difference(dependency_refs));
+        implicit_dep_list.extend(library_refs.difference(dependency_refs));
         return implicit_dep_list;
