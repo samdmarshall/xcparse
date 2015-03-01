@@ -54,8 +54,8 @@ class xcscheme(object):
         lookup = {
             'build': self.buildAction,
             'test': self.testAction,
-            #'launch': self.launchAction,
-            #'profile': self.profileAction,
+            'launch': self.launchAction,
+            'profile': self.profileAction,
             'analyze': self.analyzeAction,
             'archive': self.archiveAction
         };

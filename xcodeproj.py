@@ -56,14 +56,14 @@ class xcodeproj(object):
     
     def projects(self):
         subprojects = [];
-        for path in self.subprojects():
+        for path in self.subproject_paths():
             project = xcodeproj(path);
             subprojects.append(project);
             subprojects.extend(project.projects());
         return set(subprojects);
     
-    def subprojects(self):
-        subproject_paths = [];
+    def subproject_paths(self):
+        paths = [];
         root_obj = self.objects()[self.identifier];
         if 'projectReferences' in root_obj.keys():
             for project_dict in root_obj['projectReferences']:
@@ -73,8 +73,8 @@ class xcodeproj(object):
                     file_ref = result[1](PBXResolver, self.objects()[project_ref], self);
                     subproject_path = os.path.join(self.path.base_path, file_ref.path);
                     if os.path.exists(subproject_path) == True:
-                        subproject_paths.append(subproject_path);
-        return subproject_paths;
+                        paths.append(subproject_path);
+        return paths;
     
     def targets(self):
         if self.rootObject != {}:
