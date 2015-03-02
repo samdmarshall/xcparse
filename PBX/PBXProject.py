@@ -5,8 +5,9 @@ import os
 
 from .PBXResolver import *
 from .PBX_Base import *
+from .PBX_Build_Setting import *
 
-class PBXProject(PBX_Base):
+class PBXProject(PBX_Base, PBX_Build_Setting):
     # attributes = {};
     # buildConfigurationList = {};
     # compatibilityVersion = '';
@@ -59,5 +60,8 @@ class PBXProject(PBX_Base):
             self.mainGroup.resolvePath(self, self.projectRoot);
     
     def targetForProductRef(self, reference):
+        """
+        This method will return a list of targets that match a built product reference
+        """
         return list(filter(lambda target: target.productReference == reference, self.targets));
     

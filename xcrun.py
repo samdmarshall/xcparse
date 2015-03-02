@@ -10,6 +10,39 @@ class xcrun(object):
     """
     
     @classmethod
+    def BuildLocation(cls, project):
+        build_dir_path = '';
+        
+        relative_dd_path = False;
+        derived_data = CoreFoundation.CFPreferencesCopyAppValue('IDECustomDerivedDataLocation', 'com.apple.dt.Xcode');
+        if derived_data == None:
+            derived_data = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/");
+        else:
+            if derived_data[0] == '/':
+                derived_data = 
+        
+        location_style = CoreFoundation.CFPreferencesCopyAppValue('IDEBuildLocationStyle', 'com.apple.dt.Xcode');
+        if location_style == 'Unique':
+            unique_path = '';
+            build_dir_path = os.path.join(derived_data, unique_path);
+        elif location_style == 'Shared':
+            shared_path = CoreFoundation.CFPreferencesCopyAppValue('IDESharedBuildFolderName', 'com.apple.dt.Xcode');
+            build_dir_path = os.path.join(derived_data, shared_path);
+        elif location_style == 'Custom':
+            location_type = CoreFoundation.CFPreferencesCopyAppValue('IDECustomBuildLocationType', 'com.apple.dt.Xcode');
+            custom_path = CoreFoundation.CFPreferencesCopyAppValue('IDECustomBuildProductsPath', 'com.apple.dt.Xcode');
+            if location_type == 'RelativeToDerivedData':
+                build_dir_path = os.path.join(derived_data, custom_path);
+            elif location_type == 'RelativeToWorkspace':
+                
+            elif location_type == 'Absolute':
+                build_dir_path = custom_path;
+        elif location_style == 'DeterminedByTargets':
+            
+        
+        return build_dir_path;
+    
+    @classmethod
     def resolvePathFromLocation(cls, location_string, path, base_path):
         path_type, item_path = location_string.split(':');
         if path_type == 'group':

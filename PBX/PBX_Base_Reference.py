@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import Cocoa
 import Foundation
+import CoreFoundation
 import os
 
 from ..xcrun import *
@@ -80,7 +81,7 @@ class PBX_Base_Reference(PBX_Base):
         action = self.lookupPathType(self.sourceTree);
         if action != None:
             self.fs_path = action(project, parent_path.obj_path);
-            self.fs_found = os.path.exists(self.fs_path);
+            self.fs_found = os.path.exists(self.fs_path.obj_path);
             
             if hasattr(self, 'children'):
                 self.children = list(map(lambda child: child.resolvePath(project, self.fs_path), self.children));

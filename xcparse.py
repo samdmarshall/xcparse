@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import os
 import importlib
+import CoreFoundation
 
 from .xcodeproj import *
 from .xcworkspace import *

@@ -7,7 +7,7 @@ from .PBXResolver import *
 from .PBXSourcesBuildPhase import *
 from .PBXFrameworksBuildPhase import *
 
-class PBX_Base_Target(PBX_Base):
+class PBX_Base_Target(PBX_Base, PBX_Build_Setting):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.name = 'PBX_BASE_TARGET';
