@@ -3,6 +3,7 @@ import Cocoa
 import Foundation
 import os
 
+from ..xcrun import *
 from ..Path import *
 from .PBXResolver import *
 from .PBX_Base import *
@@ -13,6 +14,7 @@ class PBX_Base_Reference(PBX_Base):
         self.name = 'PBX_BASE_REFERENCE';
         self.identifier = identifier;
         self.fs_path = None;
+        self.fs_found = False;
     
     # Absolute Path = <absolute>
     def resolveAbsolutePath(self, project, parent_path):
@@ -34,21 +36,31 @@ class PBX_Base_Reference(PBX_Base):
     
     # Relative to Developer Directory = DEVELOPER_DIR
     def resolveDeveloperDirPath(self, project, parent_path):
+        developer_dir = xcrun.resolve_developer_path();
         obj_path = '';
-        print 'FIND DEVELOPER_DIR';
-        return Path(os.path.join(parent_path, obj_path), '');
+        if self.path != None:
+            obj_path = self.path.obj_path;
+        return Path(os.path.join(developer_dir, obj_path), '');
     
     # Relative to Build Products = BUILT_PRODUCTS_DIR
     def resolveBuildProductsPath(self, project, parent_path):
-        obj_path = '';
         print 'FIND BUILT_PRODUCTS_DIR';
+        # 1. query com.apple.dt.Xcode.plist for build location type
+        # 2. location type, resolve path as needed
+        obj_path = '';
+        if self.path != None:
+            obj_path = self.path.obj_path;
         return Path(os.path.join(parent_path, obj_path), '');
     
     # Relative to SDK = SDKROOT
     def resolveSDKPath(self, project, parent_path):
+        print 'FIND SDKROOT SETTING';
+        # get the sdk name from the configuration
+        sdk_path = xcrun.resolve_sdk_path('');
         obj_path = '';
-        print 'FIND SDKROOT';
-        return Path(os.path.join(parent_path, obj_path), '');
+        if self.path != None:
+            obj_path = self.path.obj_path;
+        return Path(os.path.join(sdk_path, obj_path), '');
     
     def lookupPathType(self, action_name):
         lookup = {
@@ -68,6 +80,7 @@ class PBX_Base_Reference(PBX_Base):
         action = self.lookupPathType(self.sourceTree);
         if action != None:
             self.fs_path = action(project, parent_path.obj_path);
+            self.fs_found = os.path.exists(self.fs_path);
             
             if hasattr(self, 'children'):
                 self.children = list(map(lambda child: child.resolvePath(project, self.fs_path), self.children));

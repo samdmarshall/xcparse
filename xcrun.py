@@ -37,6 +37,15 @@ class xcrun(object):
         return (output, error);
     
     @classmethod
+    def resolve_sdk_path(cls, sdk_name):
+        xcrun_result = xcrun.make_subprocess_call(('xcrun', '--show-sdk-path', '--sdk', sdk_name));
+        if xcrun_result[1] != 0:
+            print 'Please run Xcode first!';
+            sys.exit();
+        sdk_path = xcrun_result[0].rstrip('\n');
+        return sdk_path;
+    
+    @classmethod
     def resolve_developer_path(cls):
         platform_path = '';
         xcrun_result = xcrun.make_subprocess_call(('xcode-select', '-p'));

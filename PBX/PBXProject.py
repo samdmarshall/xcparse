@@ -48,8 +48,13 @@ class PBXProject(PBX_Base):
             self.targets = self.parseProperty('targets', lookup_func, dictionary, project, True);
         else:
             self.targets = [];
-        
         # populate with paths
+        self.refreshItemPaths();
+    
+    def refreshItemPaths(self):
+        """
+        This method will walk the project file and resolve the paths of items included in this project.
+        """
         if isinstance(self.mainGroup, PBXGroup):
             self.mainGroup.resolvePath(self, self.projectRoot);
     
