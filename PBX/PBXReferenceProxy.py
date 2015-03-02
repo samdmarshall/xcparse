@@ -19,6 +19,7 @@ class PBXReferenceProxy(PBX_Base):
             self.fileType = dictionary['fileType'];
         if 'path' in dictionary.keys():
             self.path = dictionary['path'];
+            self.name = os.path.basename(self.path);
         if 'sourceTree' in dictionary.keys():
             self.sourceTree = dictionary['sourceTree'];
         if 'remoteRef' in dictionary.keys():

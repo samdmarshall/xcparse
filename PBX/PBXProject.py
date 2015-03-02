@@ -43,11 +43,15 @@ class PBXProject(PBX_Base):
         else:
             self.projectReferences = [];
         if 'projectRoot' in dictionary.keys():
-            self.projectRoot = dictionary['projectRoot'];
+            self.projectRoot = Path(project.path.base_path, dictionary['projectRoot']);
         if 'targets' in dictionary.keys():
             self.targets = self.parseProperty('targets', lookup_func, dictionary, project, True);
         else:
             self.targets = [];
+        
+        # populate with paths
+        if isinstance(self.mainGroup, PBXGroup):
+            self.mainGroup.resolvePath(self, self.projectRoot);
     
     def targetForProductRef(self, reference):
         return list(filter(lambda target: target.productReference == reference, self.targets));

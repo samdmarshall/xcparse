@@ -1,6 +1,7 @@
 from .Path import *
 
 from .xcrun import *
+from .xcconfig import *
 from .xcparse import *
 
 from .xc_base import *

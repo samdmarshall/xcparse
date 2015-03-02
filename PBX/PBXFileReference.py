@@ -3,9 +3,10 @@ import Cocoa
 import Foundation
 import os
 
-from .PBX_Base import *
+from .PBX_Base_Reference import *
+from ..Path import *
 
-class PBXFileReference(PBX_Base):
+class PBXFileReference(PBX_Base_Reference):
     # name = '';
     # path = '';
     # ftype = '';
@@ -13,9 +14,11 @@ class PBXFileReference(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;
+        self.path = None;
+        self.fs_path = None;
         if 'path' in dictionary.keys():
-            self.path = dictionary['path'];
-            self.name = os.path.basename(self.path);
+            self.path = Path(dictionary['path'], '');
+            self.name = os.path.basename(self.path.base_path);
         if 'name' in dictionary.keys():
             self.name = dictionary['name'];
         if 'lastKnownFileType' in dictionary.keys():

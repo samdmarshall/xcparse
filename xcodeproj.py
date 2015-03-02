@@ -88,7 +88,7 @@ class xcodeproj(xc_base):
                 result = PBXResolver(self.objects()[project_ref]);
                 if result[0] == True:
                     file_ref = result[1](PBXResolver, self.objects()[project_ref], self, project_ref);
-                    subproject_path = os.path.join(self.path.base_path, file_ref.path);
+                    subproject_path = os.path.join(self.path.base_path, file_ref.path.obj_path);
                     if os.path.exists(subproject_path) == True:
                         paths.append(subproject_path);
         return paths;

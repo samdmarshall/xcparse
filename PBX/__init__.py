@@ -6,6 +6,7 @@ from .PBXProject import *
 from .PBXBuildFile import *
 from .PBXBuildRule import *
 
+from .PBX_Base_Reference import *
 from .PBXFileReference import *
 from .PBXFrameworkReference import *
 from .PBXApplicationReference import *
@@ -13,7 +14,6 @@ from .PBXExecutableFileReference import *
 from .PBXLibraryReference import *
 from .PBXBundleReference import *
 from .PBXZipArchiveReference import *
-
 from .PBXGroup import *
 from .PBXVariantGroup import *
 

@@ -26,3 +26,4 @@ class PBXCopyFilesBuildPhase(PBX_Base_Phase):
             self.dstPath = dictionary['dstPath'];
         if 'dstSubfolderSpec' in dictionary.keys():
             self.dstSubfolderSpec = dictionary['dstSubfolderSpec'];
+        

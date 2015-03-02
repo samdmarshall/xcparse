@@ -18,9 +18,12 @@ class Path(object):
     
     def __attrs(self):
         return (self.obj_path, self.base_path, self.root_path);
-
+    
     def __eq__(self, other):
         return isinstance(other, Path) and self.__attrs() == other.__attrs();
-
+    
     def __hash__(self):
         return hash(self.__attrs());
+    
+    def __repr__(self):
+        return '%s : %s : %s' % (type(self), self.base_path, self.obj_path);
