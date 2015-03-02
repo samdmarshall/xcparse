@@ -3,6 +3,7 @@ import sys
 import subprocess
 from subprocess import CalledProcessError
 
+import CoreFoundation
 
 class xcrun(object):
     """
@@ -10,19 +11,20 @@ class xcrun(object):
     """
     
     @classmethod
-    def BuildLocation(cls, project):
+    def BuildLocation(cls, project, sym_root):
         build_dir_path = '';
-        
+        default_dd_path = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/");
         relative_dd_path = False;
         derived_data = CoreFoundation.CFPreferencesCopyAppValue('IDECustomDerivedDataLocation', 'com.apple.dt.Xcode');
         if derived_data == None:
-            derived_data = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/");
+            derived_data = default_dd_path;
         else:
-            if derived_data[0] == '/':
-                derived_data = 
+            if derived_data[0] != '/':
+                derived_data = os.path.join(project.path, derived_data);
         
         location_style = CoreFoundation.CFPreferencesCopyAppValue('IDEBuildLocationStyle', 'com.apple.dt.Xcode');
         if location_style == 'Unique':
+            # this needs to be generated
             unique_path = '';
             build_dir_path = os.path.join(derived_data, unique_path);
         elif location_style == 'Shared':
@@ -34,11 +36,11 @@ class xcrun(object):
             if location_type == 'RelativeToDerivedData':
                 build_dir_path = os.path.join(derived_data, custom_path);
             elif location_type == 'RelativeToWorkspace':
-                
+                build_dir_path = os.path.join(project.path.base_path, custom_path);
             elif location_type == 'Absolute':
                 build_dir_path = custom_path;
         elif location_style == 'DeterminedByTargets':
-            
+            build_dir_path = os.path.join(project.projectRoot.obj_path, sym_root);
         
         return build_dir_path;
     

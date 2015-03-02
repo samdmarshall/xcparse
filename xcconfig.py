@@ -7,3 +7,6 @@ class xcconfig(object):
     
     def __init__(self, path):
         self.path = path;
+        
+    def valueForKey(self, key):
+        return None;

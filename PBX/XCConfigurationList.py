@@ -19,3 +19,9 @@ class XCConfigurationList(PBX_Base):
             self.defaultConfigurationName = dictionary['defaultConfigurationName'];
         if 'defaultConfigurationIsVisible' in dictionary.keys():
             self.defaultConfigurationIsVisible = dictionary['defaultConfigurationIsVisible'];
+        
+    def defaultBuildConfiguration(self):
+        results = list(filter(lambda config: config.name == self.defaultConfigurationName, self.buildConfigurations))
+        if len(results) == 0:
+            results = self.buildConfigurations;
+        return results[0];

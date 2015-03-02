@@ -45,19 +45,23 @@ class PBX_Base_Reference(PBX_Base):
     
     # Relative to Build Products = BUILT_PRODUCTS_DIR
     def resolveBuildProductsPath(self, project, parent_path):
-        print 'FIND BUILT_PRODUCTS_DIR';
-        # 1. query com.apple.dt.Xcode.plist for build location type
-        # 2. location type, resolve path as needed
+        target = project.targetForProductRef(self.identifier)[0];
+        default_config = target.buildConfigurationList.defaultBuildConfiguration();
+        symroot_path = default_config.buildSettingForKey('CONFIGURATION_BUILD_DIR');
+        # default for now
+        symroot_path = 'build'; 
+        build_location = xcrun.BuildLocation(project, symroot_path);
         obj_path = '';
         if self.path != None:
             obj_path = self.path.obj_path;
-        return Path(os.path.join(parent_path, obj_path), '');
+            # this should change to be the correct CONFIGURATION_BUILD_DIR path
+        return Path(os.path.join(build_location, obj_path), '');
     
     # Relative to SDK = SDKROOT
     def resolveSDKPath(self, project, parent_path):
-        print 'FIND SDKROOT SETTING';
-        # get the sdk name from the configuration
-        sdk_path = xcrun.resolve_sdk_path('');
+        target = project.targetForProductRef(self.identifier)[0];
+        default_config = target.buildConfigurationList.defaultBuildConfiguration();
+        sdk_path = xcrun.resolve_sdk_path(default_config.buildSettingForKey('SDKROOT'));
         obj_path = '';
         if self.path != None:
             obj_path = self.path.obj_path;

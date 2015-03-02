@@ -6,6 +6,7 @@ import os
 from .PBXResolver import *
 from .PBXSourcesBuildPhase import *
 from .PBXFrameworksBuildPhase import *
+from .PBX_Build_Setting import *
 
 class PBX_Base_Target(PBX_Base, PBX_Build_Setting):
     

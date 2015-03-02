@@ -20,6 +20,7 @@ class PBXProject(PBX_Base, PBX_Build_Setting):
     # targets = [];
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        self.name = os.path.basename(project.path.obj_path);
         self.identifier = identifier;
         if 'attributes' in dictionary.keys():
             self.attributes = dictionary['attributes'];
@@ -63,5 +64,5 @@ class PBXProject(PBX_Base, PBX_Build_Setting):
         """
         This method will return a list of targets that match a built product reference
         """
-        return list(filter(lambda target: target.productReference == reference, self.targets));
+        return list(filter(lambda target: target.productReference.identifier == reference, self.targets));
     
