@@ -16,9 +16,6 @@ class PBX_Base_Target(PBX_Base):
         self.dependencies = [];
         self.productReference = '';
     
-    def resolve(self, type, list):
-        return filter(lambda item: isinstance(item, type), list);
-    
     def sourceFiles(self):
         file_list = [];
         source_phase_list = self.resolve(PBXSourcesBuildPhase, self.buildPhases);

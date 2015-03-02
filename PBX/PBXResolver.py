@@ -81,4 +81,4 @@ def PBXResolver(dictionary):
         return (True, PBX_TYPE_RESOLVER[dictionary['isa']]);
     else:
         print 'SKIPPING "%s" TYPE!' % dictionary['isa'];
-        return (False, None);
+    return (False, None);
