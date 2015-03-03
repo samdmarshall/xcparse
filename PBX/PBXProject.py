@@ -52,6 +52,7 @@ class PBXProject(PBX_Base, PBX_Build_Setting):
             self.targets = [];
         # populate with paths
         self.refreshItemPaths();
+        self.loadBuildSettings();
     
     def refreshItemPaths(self):
         """

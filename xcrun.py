@@ -4,7 +4,6 @@ import subprocess
 from subprocess import CalledProcessError
 import hashlib
 import CoreFoundation
-import array
 
 class xcrun(object):
     """

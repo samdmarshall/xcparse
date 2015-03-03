@@ -23,9 +23,10 @@ class XCBuildConfiguration(PBX_Base):
         
         # parse the xcconfig file
         if self.baseConfigurationReference != None:
-            self.xcconfig = xcconfig(self.baseConfigurationReference);
+            self.xcconfig = xcconfig(self.baseConfigurationReference.fs_path);
         else:
-            self.xcconfig = None;
+            # this needs to find the base config on the target
+            self.xcconfig = xcconfig(None);
     
     def buildSettingForKey(self, key):
         if self.xcconfig != None:
