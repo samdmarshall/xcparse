@@ -33,6 +33,8 @@ class xcconfig(object):
         value = 'DEFAULT_VALUE';
         configs = [];
         
+        
+        
         configs.append((config, key, value));
         
         return configs;

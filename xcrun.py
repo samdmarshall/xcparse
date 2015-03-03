@@ -52,9 +52,9 @@ class xcrun(object):
         
         location_style = CoreFoundation.CFPreferencesCopyAppValue('IDEBuildLocationStyle', 'com.apple.dt.Xcode');
         if location_style == 'Unique':
-            # this needs to be generated
             xcodeproj_path = os.path.join(project.projectRoot.obj_path, project.name);
             unique_path = xcrun.hashStringForPath(xcodeproj_path);
+            # this is missing the configuration path.
             project_dir_name = os.path.splitext(project.name)[0]+'-'+unique_path+'/Build/Products/';
             build_dir_path = os.path.join(derived_data, project_dir_name);
         elif location_style == 'Shared':
@@ -70,6 +70,7 @@ class xcrun(object):
             elif location_type == 'Absolute':
                 build_dir_path = custom_path;
         elif location_style == 'DeterminedByTargets':
+            # this is missing the configuration path
             build_dir_path = os.path.join(project.projectRoot.obj_path, sym_root);
         
         return build_dir_path;
