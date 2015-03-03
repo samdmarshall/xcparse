@@ -2,13 +2,42 @@ import os
 import sys
 import subprocess
 from subprocess import CalledProcessError
-
+import hashlib
 import CoreFoundation
+import array
 
 class xcrun(object):
     """
     This class exists to execute 'xcrun' tools.
     """
+    
+    @classmethod
+    def hashStringForPath(cls, path):
+        hash_context = hashlib.md5();
+        hash_context.update(path);
+        md5_digest_hex = hash_context.digest();
+        
+        hash_path = [None] * 28;
+        
+        first_value = int(''.join('{:02x}'.format(ord(c)) for c in md5_digest_hex[0:8]), 16);
+        
+        counter = 13;
+        while counter >= 0:
+            hash_path[counter] = chr((first_value % 26) + ord('a'));
+            first_value = first_value / 26;
+            counter -= 1;
+        
+        second_value = int(''.join('{:02x}'.format(ord(c)) for c in md5_digest_hex[8:16]), 16);
+        
+        counter = 27;
+        while counter > 13:
+            hash_path[counter] = chr((second_value % 26) + ord('a'));
+            second_value = second_value / 26;
+            counter -= 1;
+        
+        hash_path = ''.join(hash_path);
+        
+        return hash_path;
     
     @classmethod
     def BuildLocation(cls, project, sym_root):
@@ -25,8 +54,10 @@ class xcrun(object):
         location_style = CoreFoundation.CFPreferencesCopyAppValue('IDEBuildLocationStyle', 'com.apple.dt.Xcode');
         if location_style == 'Unique':
             # this needs to be generated
-            unique_path = '';
-            build_dir_path = os.path.join(derived_data, unique_path);
+            xcodeproj_path = os.path.join(project.projectRoot.obj_path, project.name);
+            unique_path = xcrun.hashStringForPath(xcodeproj_path);
+            project_dir_name = os.path.splitext(project.name)[0]+'-'+unique_path+'/Build/Products/';
+            build_dir_path = os.path.join(derived_data, project_dir_name);
         elif location_style == 'Shared':
             shared_path = CoreFoundation.CFPreferencesCopyAppValue('IDESharedBuildFolderName', 'com.apple.dt.Xcode');
             build_dir_path = os.path.join(derived_data, shared_path);
