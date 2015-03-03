@@ -2,12 +2,14 @@ import os
 import sys
 import Path
 
+from .xcconfig_item import *
 
 class xcconfig(object):
     
     def __init__(self, path):
         self.defaults = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'defaults.xcconfig');
         self.path = path;
+        self.__build_settings = {};
         
         default_lines = [];
         if os.path.exists(self.defaults):
@@ -27,8 +29,8 @@ class xcconfig(object):
         
     def parseLine(self, line):
         config = None;
-        key = '';
-        value = '';
+        key = 'DEFAULT_KEY';
+        value = 'DEFAULT_VALUE';
         configs = [];
         
         configs.append((config, key, value));
@@ -36,13 +38,14 @@ class xcconfig(object):
         return configs;
         
     def valueForKey(self, config, key):
-        if config == '' or config == None:
-            return self.__build_settings['defaults'][key];
+        if key in self.__build_settings.keys():
+            return self.__build_settings[key].getValue(config);
         else:
-            return self.__build_settings['Configuration'][config][key];
+            return None;
     
     def setValueForKey(self, config, key, value):
-        if config == '' or config == None:
-            self.__build_settings['defaults'][key] = value;
+        if key in self.__build_settings.keys():
+            self.__build_settings[key].setValue(config, value);
         else:
-            self.__build_settings['Configurations'][config][key] = value;
+            new_kv = xcconfig_item((config, key, value));
+            self.__build_settings[key] = new_kv;
