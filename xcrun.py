@@ -4,6 +4,7 @@ import subprocess
 from subprocess import CalledProcessError
 import hashlib
 import CoreFoundation
+import struct
 
 class xcrun(object):
     """
@@ -18,7 +19,7 @@ class xcrun(object):
         
         hash_path = [None] * 28;
         
-        first_value = int(''.join('{:02x}'.format(ord(c)) for c in md5_digest_hex[0:8]), 16);
+        first_value = struct.unpack('>Q', md5_digest_hex[:8])[0];
         
         counter = 13;
         while counter >= 0:
@@ -26,7 +27,7 @@ class xcrun(object):
             first_value = first_value / 26;
             counter -= 1;
         
-        second_value = int(''.join('{:02x}'.format(ord(c)) for c in md5_digest_hex[8:16]), 16);
+        second_value = struct.unpack('>Q', md5_digest_hex[8:])[0];
         
         counter = 27;
         while counter > 13:
