@@ -19,23 +19,38 @@ class xcconfig(object):
             sys.exit(0);
         
         for line in default_lines:
-            result = self.parseLine(line);
-            for item in result:
-                self.setValueForKey(item[0], item[1], item[2]);
+            results = filter(lambda item: item[0] == True, self.parseLine(line));
+            for item in results:
+                self.setValueForKey(item[1], item[2], item[3]);
         
         override_lines = [];
         if self.path != None and os.path.exists(self.path):
             override_lines = [line.strip() for line in open(self.path)];
         
     def parseLine(self, line):
+        result = False;
         config = None;
         key = 'DEFAULT_KEY';
         value = 'DEFAULT_VALUE';
         configs = [];
         
+        # this needs to change over to use xcspec
         
-        
-        configs.append((config, key, value));
+        if line.startswith('//') == True:
+            # comment
+            configs.append((result, config, key, value));
+        elif line.startswith('#include "') == True:
+            # this needs to change item type to handle includes
+            
+            # parse include
+            double_quote = line.find('"');
+            
+        else:
+            # parse variable
+            first_equals = line.find('=');
+            first_bracket = line.find('[');
+            #if first_bracket < first_equals:
+                # 
         
         return configs;
         
