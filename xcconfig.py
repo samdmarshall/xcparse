@@ -50,7 +50,7 @@ class xcconfig(object):
             first_equals = line.find('=');
             first_bracket = line.find('[');
             #if first_bracket < first_equals:
-                # 
+                #
         
         return configs;
         
