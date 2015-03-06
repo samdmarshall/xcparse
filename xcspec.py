@@ -32,4 +32,6 @@ class xcspec(object):
                 print 'Path does not exist!';
         else:
             print 'Not a xcspec file!';
-            
+    
+    def keys(self):
+        return self.contents.keys();
