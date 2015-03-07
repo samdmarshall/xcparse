@@ -35,3 +35,13 @@ class xcspec(object):
     
     def keys(self):
         return self.contents.keys();
+    
+    def valueForKey(self, key):
+        value = None;
+        if key in self.contents.keys():
+            value = self.contents[key];
+        else:
+            keys = list(map(lambda item: item.name, self.contents));
+            value = filter(lambda item: item.name == key, keys);
+        return value;
+                
