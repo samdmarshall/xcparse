@@ -33,10 +33,18 @@ class xcspec(object):
         else:
             print 'Not a xcspec file!';
     
+    def isValid(self):
+        return self.contents != None;
+    
     def hasKeys(self):
-        return hasattr(self.contents, 'keys');
+        if self.isValid():
+            return hasattr(self.contents, 'keys');
+        else:
+            return False;
     
     def keys(self):
+        if not self.isValid():
+            return [];
         if self.hasKeys():
             return self.contents.keys();
         else:
@@ -44,6 +52,8 @@ class xcspec(object):
     
     def valueForKey(self, key):
         value = None;
+        if not self.isValid():
+            return value;
         if self.hasKeys():
             value = self.contents[key];
         else:
