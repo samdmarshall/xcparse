@@ -33,15 +33,20 @@ class xcspec(object):
         else:
             print 'Not a xcspec file!';
     
+    def hasKeys(self):
+        return hasattr(self.contents, 'keys');
+    
     def keys(self):
-        return self.contents.keys();
+        if self.hasKeys():
+            return self.contents.keys();
+        else:
+            return list(map(lambda item: item.name, self.contents));
     
     def valueForKey(self, key):
         value = None;
-        if key in self.contents.keys():
+        if self.hasKeys():
             value = self.contents[key];
         else:
-            keys = list(map(lambda item: item.name, self.contents));
-            value = filter(lambda item: item.name == key, keys);
+            value = filter(lambda item: item.name == key, self.keys());
         return value;
                 
