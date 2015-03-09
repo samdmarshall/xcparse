@@ -9,6 +9,10 @@ from .Path import *
 
 from .xcrun import *
 
+def xcspecLoadFileAtRelativeDeveloperPath(path):
+    xcspec_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), path));
+    return xcspec(xcspec_path);
+
 class xcspec(object):
     
     def __init__(self, spec_path):
