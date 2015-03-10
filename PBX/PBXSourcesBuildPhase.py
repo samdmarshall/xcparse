@@ -12,6 +12,7 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
     # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        self.bundleid = 'com.apple.buildphase.sources';
         self.identifier = identifier;
         self.phase_type = 'Compile Sources';
         if 'buildActionMask' in dictionary.keys():

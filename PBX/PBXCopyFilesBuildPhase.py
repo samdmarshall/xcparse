@@ -14,6 +14,7 @@ class PBXCopyFilesBuildPhase(PBX_Base_Phase):
     # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        self.bundleid = 'com.apple.buildphase.copy-files';
         self.identifier = identifier;
         self.phase_type = 'Copy Files';
         if 'buildActionMask' in dictionary.keys():

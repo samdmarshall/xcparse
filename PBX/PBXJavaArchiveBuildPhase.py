@@ -12,6 +12,7 @@ class PBXJavaArchiveBuildPhase(PBX_Base_Phase):
     # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        self.bundleid = 'com.apple.buildphase.java-archive'
         self.identifier = identifier;
         self.phase_type = 'Java Archive';
         if 'buildActionMask' in dictionary.keys():

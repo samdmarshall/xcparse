@@ -20,7 +20,7 @@ class BuildAction(Base_Action):
             self.implicit = self.contents.get('buildImplicitDependencies');
         self.children = list(map(lambda entry: BuildActionEntry(entry), list(self.contents.find('./BuildActionEntries'))));
         
-    def performAction(self, container, project_constructor, scheme_config_settings):
+    def performAction(self, build_system, container, project_constructor, scheme_config_settings):
         for child in self.children:
             project_path = xcrun.resolvePathFromLocation(child.target.ReferencedContainer, container[2].path.base_path, container[2].path.base_path);
             project = project_constructor(project_path);

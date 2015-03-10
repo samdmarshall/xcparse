@@ -8,5 +8,5 @@ class Base_Action(object):
         self.root = {};
         self.contents = action_xml;
     
-    def performAction(self, container, project_constructor, scheme_config_settings):
+    def performAction(self, build_system, container, project_constructor, scheme_config_settings):
         print 'implement me!';

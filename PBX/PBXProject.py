@@ -22,6 +22,8 @@ class PBXProject(PBX_Base, PBX_Build_Setting):
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.name = os.path.basename(project.path.obj_path);
         self.identifier = identifier;
+        self.projectReferences = [];
+        self.targets = [];
         if 'attributes' in dictionary.keys():
             self.attributes = dictionary['attributes'];
         if 'buildConfigurationList' in dictionary.keys():
@@ -42,14 +44,10 @@ class PBXProject(PBX_Base, PBX_Build_Setting):
             self.projectDirPath = dictionary['projectDirPath'];
         if 'projectReferences' in dictionary.keys():
             self.projectReferences = dictionary['projectReferences'];
-        else:
-            self.projectReferences = [];
         if 'projectRoot' in dictionary.keys():
             self.projectRoot = Path(project.path.base_path, dictionary['projectRoot']);
         if 'targets' in dictionary.keys():
             self.targets = self.parseProperty('targets', lookup_func, dictionary, project, True);
-        else:
-            self.targets = [];
         # populate with paths
         self.refreshItemPaths();
         self.loadBuildSettings();

@@ -24,7 +24,7 @@ class TestAction(Base_Action):
         if 'buildConfiguration' in self.contents.keys():
             self.buildConfiguration = self.contents.get('buildConfiguration');
     
-    def performAction(self, container, project_constructor, scheme_config_settings):
+    def performAction(self, build_system, container, project_constructor, scheme_config_settings):
         if self.root != {}:
             for child in self.root.children:
                 project_path = xcrun.resolvePathFromLocation(child.target.ReferencedContainer, container[2].path.base_path, container[2].path.base_path);

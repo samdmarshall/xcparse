@@ -12,6 +12,7 @@ class PBXRezBuildPhase(PBX_Base_Phase):
     # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        self.bundleid = 'com.apple.buildphase.rez';
         self.identifier = identifier;
         if 'buildActionMask' in dictionary.keys():
             self.buildActionMask = dictionary['buildActionMask'];

@@ -4,9 +4,16 @@ import sys
 class xcconfig_item(object):
     
     def __init__(self, item):
-        self.key_name = item[2];
-        self.default_value = '';
+        self.key_name = item[1];
         self.lookup_value = {};
+        config = item[0];
+        if config == None:
+            self.default_value = item[2];
+        else:
+            self.default_value = '';
+            condition_flavour = config[0];
+            condition_value = config[1];
+            self.lookup_value[condition_flavour][condition_value] = item[2];
         
         
     def getValue(self, config):

@@ -13,6 +13,7 @@ class PBXAppleScriptBuildPhase(PBX_Base_Phase):
     # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        self.bundleid = 'com.apple.buildphase.applescript';
         self.identifier = identifier;
         self.phase_type = 'AppleScript';
         if 'buildActionMask' in dictionary.keys():
