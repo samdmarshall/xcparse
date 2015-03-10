@@ -81,8 +81,11 @@ class xcbuildsystem(object):
     
     
     def getSpecForIdentifier(self, identifier):
-        results = filter(lambda spec: spec.identifier == identifier, self.specs);
+        return self.getSpecForFilter(lambda spec: spec.identifier == identifier)[0];
+    
+    def getSpecForFilter(self, filter_func):
+        results = filter(filter_func, self.specs);
         if len(results) > 0:
-            return results[0];
+            return results;
         else:
             return None;

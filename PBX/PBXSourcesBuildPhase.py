@@ -27,6 +27,9 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         phase_spec = build_system.getSpecForIdentifier(self.bundleid);
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
+        
+        # compiler_specs = build_system.getSpecForFilter(lambda spec: spec.identifier.startswith('com.apple.compilers.'));
+        
         for file in self.files:
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
         print '';
