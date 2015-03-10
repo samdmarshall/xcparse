@@ -32,4 +32,4 @@ class BuildAction(Base_Action):
             #     target = target_constructor[1](PBXResolver, project.objects()[child.target.BlueprintIdentifier], project, child.target.BlueprintIdentifier);
             #     print target.name;
             #     for phase in target.buildPhases:
-            #         phase.performPhase();
+            #         phase.performPhase(build_system);
