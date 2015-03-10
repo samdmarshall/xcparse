@@ -31,5 +31,6 @@ class BuildAction(Base_Action):
             # if target_constructor[0] == True:
             #     target = target_constructor[1](PBXResolver, project.objects()[child.target.BlueprintIdentifier], project, child.target.BlueprintIdentifier);
             #     print target.name;
+            #     print '========================';
             #     for phase in target.buildPhases:
             #         phase.performPhase(build_system);

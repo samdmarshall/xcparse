@@ -18,7 +18,7 @@ class PBXFileReference(PBX_Base_Reference):
         self.fs_path = None;
         if 'path' in dictionary.keys():
             self.path = Path(dictionary['path'], '');
-            self.name = os.path.basename(self.path.base_path);
+            self.name = os.path.basename(self.path.obj_path);
         if 'name' in dictionary.keys():
             self.name = dictionary['name'];
         if 'lastKnownFileType' in dictionary.keys():
