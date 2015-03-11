@@ -55,12 +55,15 @@ class xcspec(object):
         self.identifier = '';
         self.type = '';
         self.name = '';
+        self.basedOn = None;
         if 'Identifier' in self.keys():
             self.identifier = self.contents['Identifier'];
         if 'Type' in self.keys():
             self.type = self.contents['Type'];
         if 'Name' in self.keys():
             self.name = self.contents['Name'];
+        if 'BasedOn' in self.keys():
+            self.basedOn = self.contents['BasedOn'];
     
     def __attrs(self):
         return (self.identifier);
@@ -99,4 +102,10 @@ class xcspec(object):
             value = self.contents[key];
         
         return value;
-                
+    
+    def inheritedTypes(self):
+        types = [str(self.identifier)];
+        if self.basedOn != None:
+            parent = self.basedOn.inheritedTypes();
+            types.extend(parent);
+        return types;

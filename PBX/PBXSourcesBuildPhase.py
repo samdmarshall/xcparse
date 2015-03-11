@@ -32,4 +32,5 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         
         for file in self.files:
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
+            compiler = build_system.getCompilerForFileReference(file.fileRef);
         print '';

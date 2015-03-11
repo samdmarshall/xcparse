@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import os
 import sys
 import importlib
+import plistlib
 
 from .xcrun import *
 from .xcspec import *
@@ -78,10 +79,18 @@ class xcbuildsystem(object):
         for path in defaults:
             spec_list = xcspecLoadFileAtRelativeDeveloperPath(path);
             self.specs.update(spec_list);
+        
+        # updating specs to point to each other and form inheritence.
+        for spec_item in self.specs:
+            if spec_item.basedOn != None:
+                spec_item.basedOn = self.getSpecForIdentifier(spec_item.basedOn);
     
     
     def getSpecForIdentifier(self, identifier):
-        return self.getSpecForFilter(lambda spec: spec.identifier == identifier)[0];
+        results = self.getSpecForFilter(lambda spec: spec.identifier == identifier);
+        if results != None:
+            return results[0];
+        return results;
     
     def getSpecForFilter(self, filter_func):
         results = filter(filter_func, self.specs);
@@ -89,3 +98,35 @@ class xcbuildsystem(object):
             return results;
         else:
             return None;
+    
+    def defaultBuildRules(self):
+        contents = [];
+        build_rules_plist_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
+        if os.path.exists(build_rules_plist_path) == True:
+            # loading spec file
+            specNSData, errorMessage = Foundation.NSData.dataWithContentsOfFile_options_error_(build_rules_plist_path, Foundation.NSUncachedRead, None);
+            if errorMessage == None:
+                specString = Foundation.NSString.alloc().initWithData_encoding_(specNSData, Foundation.NSUTF8StringEncoding);
+                if specString != None:
+                    contents = specString.propertyList();
+                else:
+                    print 'Could not load string from data';
+            else:
+                print errorMessage;
+        else:
+            print 'path does not exist!';
+        
+        return contents;
+    
+    def getCompilerForFileReference(self, file_ref):
+        file_ref_spec = self.getSpecForIdentifier(file_ref.ftype);
+        file_types = file_ref_spec.inheritedTypes();
+        
+        compiler_identifier = '';
+        for rule in self.defaultBuildRules():
+            if rule['FileType'] in file_types:
+                compiler_identifier = rule['CompilerSpec'];
+                break;
+        
+        compiler = self.getSpecForIdentifier(compiler_identifier);
+        
