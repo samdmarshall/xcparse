@@ -23,14 +23,16 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         if 'runOnlyForDeploymentPostprocessing' in dictionary.keys():
             self.runOnlyForDeploymentPostprocessing = dictionary['runOnlyForDeploymentPostprocessing'];
     
-    def performPhase(self, build_system):
+    def performPhase(self, build_system, target):
         phase_spec = build_system.getSpecForIdentifier(self.bundleid);
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
         
-        # compiler_specs = build_system.getSpecForFilter(lambda spec: spec.identifier.startswith('com.apple.compilers.') and spec.type == 'Compiler');
+        compiler_specs = build_system.getSpecForType('Compiler');
         
         for file in self.files:
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
             compiler = build_system.getCompilerForFileReference(file.fileRef);
+        
+        print '(implement me!)';
         print '';

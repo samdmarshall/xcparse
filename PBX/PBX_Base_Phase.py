@@ -15,7 +15,7 @@ class PBX_Base_Phase(PBX_Base):
         self.phase_type = 'BASE';
         self.files = [];
         
-    def performPhase(self, build_system):
+    def performPhase(self, build_system, target):
         phase_spec = build_system.getSpecForIdentifier(self.bundleid);
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);

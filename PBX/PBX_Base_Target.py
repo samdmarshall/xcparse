@@ -16,6 +16,7 @@ class PBX_Base_Target(PBX_Base, PBX_Build_Setting):
         self.buildPhases = [];
         self.dependencies = [];
         self.productReference = '';
+        self.buildRules = [];
     
     def sourceFiles(self):
         file_list = [];

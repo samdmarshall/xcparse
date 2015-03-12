@@ -66,13 +66,13 @@ class xcspec(object):
             self.basedOn = self.contents['BasedOn'];
     
     def __attrs(self):
-        return (self.identifier);
+        return (self.identifier, self.type);
     
     def __repr__(self):
         return '%s : %s : %s' % (type(self), self.name, self.identifier);
     
     def __eq__(self, other):
-        return isinstance(other, type(self)) and self.identifier == other.identifier;
+        return isinstance(other, type(self)) and self.identifier == other.identifier and self.type == other.type;
     
     def __hash__(self):
         return hash(self.__attrs());
