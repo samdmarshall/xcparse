@@ -7,20 +7,14 @@ import plistlib
 from ..xcrun import *
 from .xcspec_helper import *
 from .xcbuildrule import *
+from .LangSpec.langspec import *
 
 class xcbuildsystem(object):
     
     def __init__(self):
         self.specs = set();
         # loading default specs
-        found_specs = [];
-        search_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), '../Plugins'));
-        if os.path.exists(search_path) == True:
-            for root, dirs, files in os.walk(search_path, followlinks=False):
-                for name in files:
-                    original_path = os.path.join(root, name);
-                    if name.endswith('xcspec') == True:
-                        found_specs.append(original_path);
+        found_specs = self.__findFilesFromPath('../Plugins', 'xcspec');
         
         for path in found_specs:
             self.specs.update(xcspecLoadFromContentsAtPath(path));
@@ -29,6 +23,22 @@ class xcbuildsystem(object):
         for spec_item in self.specs:
             if spec_item.basedOn != None:
                 spec_item.basedOn = self.getSpecForIdentifier(spec_item.basedOn);
+        
+        self.languages = set();
+        # loading default languages
+        found_languages = self.__findFilesFromPath('../SharedFrameworks/DVTFoundation.framework/Versions/A/Resources', 'xclangspec');
+        
+    
+    def __findFilesFromPath(self, path, extension):
+        found_items = [];
+        search_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), path));
+        if os.path.exists(search_path) == True:
+            for root, dirs, files in os.walk(search_path, followlinks=False):
+                for name in files:
+                    original_path = os.path.join(root, name);
+                    if name.endswith(extension) == True:
+                        found_items.append(original_path);
+        return found_items;
     
     def getSpecForType(self, type):
         return self.getSpecForFilter(lambda spec: spec.type == type);

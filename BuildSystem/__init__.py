@@ -6,3 +6,5 @@ from .xcspec_helper import *
 
 from .XCSpec.spec_base import *
 from .XCSpec.xcspec import *
+
+from .LangSpec.langspec import *
