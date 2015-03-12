@@ -4,8 +4,8 @@ import sys
 import importlib
 import plistlib
 
-from .xcrun import *
-from .xcspec import *
+from ..xcrun import *
+from .xcspec_helper import *
 from .xcbuildrule import *
 
 class xcbuildsystem(object):

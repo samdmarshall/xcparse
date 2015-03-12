@@ -4,13 +4,11 @@ import sys
 import importlib
 import plistlib
 
-from .xcrun import *
-from .xcspec import *
+from ..xcrun import *
 
 class xcbuildrule(object):
     
     def __init__(self, spec):
-        self.spec = spec;
         self.identifier = spec.identifier;
         self.fileTypes = [];
         if 'FileTypes' in spec.contents:
@@ -30,6 +28,3 @@ class xcbuildrule(object):
     
     def __hash__(self):
         return hash(self.__attrs());
-    
-    def isValid(self):
-        return self.spec != None;
