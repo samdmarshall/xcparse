@@ -5,6 +5,7 @@ from ..Path import *
 from ..xcrun import *
 
 from .XCSpec.xcspec import *
+from .XCSpec.xcspec_resolver import *
 
 def xcspecLoadFileAtRelativeDeveloperPath(path):
     xcspec_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), path));
@@ -38,9 +39,13 @@ def xcspecLoadFromContentsAtPath(spec_path):
     
     if contents != None:
         if hasattr(contents, 'keys'):
-            items.append(xcspec(contents));
+            constructor = xcspec_resolver(contents);
+            if constructor[0] == True:
+                items.append(constructor[1](contents));
         else:
             for spec_item in contents:
-                items.append(xcspec(spec_item));
+                constructor = xcspec_resolver(spec_item);
+                if constructor[0] == True:
+                    items.append(constructor[1](spec_item));
     
     return items;

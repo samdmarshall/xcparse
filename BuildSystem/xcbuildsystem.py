@@ -64,7 +64,7 @@ class xcbuildsystem(object):
         #     print 'path does not exist!';
         
         compilers = self.getSpecForFilter(lambda spec: spec.type == 'Compiler' and spec.identifier.startswith('com.apple.compiler'));
-        for compiler in filter(lambda compiler: ('IsAbstract' in compiler.contents.keys() and compiler.contents['IsAbstract'] == 'NO') or ('SynthesizeBuildRule' in compiler.contents.keys()), compilers):
+        for compiler in filter(lambda compiler: compiler.abstract == 'NO' or 'SynthesizeBuildRule' in compiler.contents.keys(), compilers):
             contents.append(xcbuildrule(compiler));
         
         return contents;
