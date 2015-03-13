@@ -1,7 +1,6 @@
-import os
-import sys
+from .EnvVarCondition import *
 
-class xcenvironment_variable(object):
+class EnvVariable(object):
     
     def __init__(self, dictionary):
         if 'Name' in dictionary.keys():
@@ -26,7 +25,16 @@ class xcenvironment_variable(object):
                 self.default = default_values[self.type];
             else:
                 print 'type not found %s' % (self.type);
+        self.values = set();
         
         
+    def addConditionalValue(self, conditional):
+        self.values.union(conditional);
+    
     def value(self, environment):
-        return self.default;
+        value = self.default;
+        for conditional in self.values:
+            if conditional.evaluate(environment) == True:
+                value = conditional.value;
+                break;
+        return value;

@@ -9,6 +9,7 @@ from .xcspec_helper import *
 from .xcbuildrule import *
 from .LangSpec.langspec import *
 from .xcplatform import *
+from .Environment import Environment
 
 class xcbuildsystem(object):
     
@@ -31,6 +32,8 @@ class xcbuildsystem(object):
         
         
         self.platforms = LoadPlatforms();
+        
+        self.environment = Environment();
     
     def __findFilesFromPath(self, path, extension):
         found_items = [];
