@@ -1,4 +1,5 @@
-from xc_base import xc_base
+from __future__ import absolute_import
+from .xc_base import xc_base
 from ..Helpers import plist_helper
 from ..Helpers import path_helper
 from .PBX import PBXResolver

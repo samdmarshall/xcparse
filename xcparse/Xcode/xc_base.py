@@ -1,5 +1,3 @@
-import os
-import sys
 from PBX import PBXResolver
 from .xcscheme import *
 

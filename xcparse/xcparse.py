@@ -7,6 +7,7 @@ class xcparse(object):
         """
         Pass a path the full path to a '.xcodeproj' or '.xcworkspace'.
         """
+        self.project_constructor = xcodeproj;
         self.path = '';
         self.root = None;
         if os.path.exists(path) == True:

@@ -66,11 +66,11 @@ class xcbuildsystem(object):
         contents = [];
         build_rules_plist_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
         build_rules = plist_helper.LoadPlistFromDataAtPath(build_rules_plist_path);
+        # the `build_rules` array needs to be added to the end of the rest of the build rules
         
         compilers = self.getSpecForType('Compiler');
         for compiler in compilers: #filter(lambda compiler: compiler.abstract == 'NO' or 'SynthesizeBuildRule' in compiler.contents.keys(), compilers):
             rule = xcbuildrule(compiler);
-            print rule;
             contents.append(rule);
             
         
