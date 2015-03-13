@@ -4,7 +4,7 @@ from .PBXResolver import *
 from .PBX_Base import *
 from .PBX_Build_Setting import *
 from .PBXGroup import *
-from xcparse.Helpers import path_helper
+from ...Helpers import path_helper
 
 class PBXProject(PBX_Base, PBX_Build_Setting):
     # attributes = {};

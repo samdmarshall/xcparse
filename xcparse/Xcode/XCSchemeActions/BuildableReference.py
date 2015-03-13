@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 class BuildableReference(object):
     # contents = {};
     # BuildableIdentifier = '';

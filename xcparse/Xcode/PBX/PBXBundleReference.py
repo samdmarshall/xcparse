@@ -1,9 +1,5 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
 import os
-
-from xcparse.Helpers import path_helper
+from ...Helpers import path_helper
 from .PBX_Base_Reference import *
 
 class PBXBundleReference(PBX_Base_Reference):

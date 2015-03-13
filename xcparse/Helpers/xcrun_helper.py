@@ -105,7 +105,7 @@ class xcrun_helper(object):
     
     @classmethod
     def resolve_sdk_path(cls, sdk_name):
-        xcrun_result = xcrun.make_subprocess_call(('xcrun', '--show-sdk-path', '--sdk', sdk_name));
+        xcrun_result = xcrun_helper.make_subprocess_call(('xcrun', '--show-sdk-path', '--sdk', sdk_name));
         if xcrun_result[1] != 0:
             print 'Please run Xcode first!';
             sys.exit();
@@ -115,7 +115,7 @@ class xcrun_helper(object):
     @classmethod
     def resolve_developer_path(cls):
         platform_path = '';
-        xcrun_result = xcrun.make_subprocess_call(('xcode-select', '-p'));
+        xcrun_result = xcrun_helper.make_subprocess_call(('xcode-select', '-p'));
         if xcrun_result[1] != 0:
             print 'Please run Xcode first!';
             sys.exit();
@@ -128,5 +128,5 @@ class xcrun_helper(object):
         for item in scheme_config_settings:
             build_command+=str(item)+' ';
         build_command+=' '+type;
-        result = xcrun.make_subprocess_call(build_command, True);
+        result = xcrun_helper.make_subprocess_call(build_command, True);
         print result[0];

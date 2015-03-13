@@ -1,13 +1,13 @@
 import os
 
-from ..plist_helper import *
-from xcparse.Helpers import path_helper
-from xcparse.Helpers import xcrun_helper
+from ...Helpers import plist_helper
+from ...Helpers import path_helper
+from ...Helpers import xcrun_helper
 from .xcsdk import *
 
 def LoadPlatforms():
     platforms = [];
-    platform_dir_path = os.path.join(xcrun.resolve_developer_path(), 'Platforms');
+    platform_dir_path = os.path.join(xcrun_helper.resolve_developer_path(), 'Platforms');
     if os.path.exists(platform_dir_path) == True:
         for platform_bundle in os.listdir(platform_dir_path):
             platform_path = os.path.join(platform_dir_path, platform_bundle);

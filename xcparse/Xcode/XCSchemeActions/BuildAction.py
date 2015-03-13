@@ -1,8 +1,8 @@
-import Base_Action
 import xml.etree.ElementTree as xml
-from xcparse.Helpers import xcrun_helper
-from xcparse.Xcode.PBX import PBXResolver
-import BuildActionEntry
+from ...Helpers import xcrun_helper
+from ..PBX import PBXResolver
+from .Base_Action import *
+from .BuildActionEntry import *
 
 class BuildAction(Base_Action):
     # contents = {};
@@ -20,10 +20,10 @@ class BuildAction(Base_Action):
         
     def performAction(self, build_system, container, project_constructor, scheme_config_settings):
         for child in self.children:
-            project_path = xcrun.resolvePathFromLocation(child.target.ReferencedContainer, container[2].path.base_path, container[2].path.base_path);
+            project_path = xcrun_helper.resolvePathFromLocation(child.target.ReferencedContainer, container[2].path.base_path, container[2].path.base_path);
             project = project_constructor(project_path);
             
-            xcrun.perform_xcodebuild(project, container[1].name, 'build', scheme_config_settings);
+            xcrun_helper.perform_xcodebuild(project, container[1].name, 'build', scheme_config_settings);
             
             # target_constructor = PBXResolver(project.objects()[child.target.BlueprintIdentifier]);
             # if target_constructor[0] == True:

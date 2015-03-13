@@ -1,8 +1,7 @@
 import os
 import sys
-from xcparse.Helpers import path_helper
-from xcparse.Xcode.PBX import PBXResolver
-import xcscheme
+from PBX import PBXResolver
+from .xcscheme import *
 
 class xc_base(object):
     

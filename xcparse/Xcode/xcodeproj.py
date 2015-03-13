@@ -1,7 +1,7 @@
 from xc_base import xc_base
-from xcparse.Helpers import plist_helper
-from xcparse.Helpers import path_helper
-from xcparse.Xcode.PBX import PBXResolver
+from ..Helpers import plist_helper
+from ..Helpers import path_helper
+from .PBX import PBXResolver
 
 class xcodeproj(xc_base):
     # path = {};
@@ -20,9 +20,9 @@ class xcodeproj(xc_base):
             self.contents = plist_helper.LoadPlistFromDataAtPath(self.path.root_path);
             if self.contents != None:
                 self.identifier = self.contents['rootObject'];
-                result = PBXResolver.PBXResolver(self.objects()[self.identifier])
+                result = PBXResolver(self.objects()[self.identifier])
                 if result[0] == True:
-                    self.rootObject = result[1](PBXResolver.PBXResolver, self.objects()[self.identifier], self, self.identifier);
+                    self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
                 else:
                     self.rootObject = None;
             else:

@@ -1,6 +1,6 @@
 import os
 import sys
-from xcparse.Helpers import path_helper
+from ..Helpers import path_helper
 
 from .xcconfig_item import *
 

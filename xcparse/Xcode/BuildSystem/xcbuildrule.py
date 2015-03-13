@@ -1,10 +1,4 @@
-from __future__ import absolute_import
-import os
-import sys
-import importlib
-import plistlib
-
-from xcparse.Helpers import xcrun_helper
+from ...Helpers import xcrun_helper
 
 class xcbuildrule(object):
     

@@ -1,7 +1,6 @@
 import os
-from xcparse.Helpers import xcrun_helper
-from xcparse.Helpers import path_helper
-from .PBXResolver import *
+from ...Helpers import xcrun_helper
+from ...Helpers import path_helper
 from .PBX_Base import *
 
 class PBX_Base_Reference(PBX_Base):

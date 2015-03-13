@@ -3,8 +3,8 @@ import os
 import sys
 import importlib
 
-from ..plist_helper import *
-from xcparse.Helpers import xcrun_helper
+from ...Helpers import plist_helper
+from ...Helpers import xcrun_helper
 from .xcspec_helper import *
 from .xcbuildrule import *
 from .LangSpec.langspec import *
@@ -34,7 +34,7 @@ class xcbuildsystem(object):
     
     def __findFilesFromPath(self, path, extension):
         found_items = [];
-        search_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), path));
+        search_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), path));
         if os.path.exists(search_path) == True:
             for root, dirs, files in os.walk(search_path, followlinks=False):
                 for name in files:
@@ -61,7 +61,7 @@ class xcbuildsystem(object):
     
     def buildRules(self):
         contents = [];
-        build_rules_plist_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
+        build_rules_plist_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
         build_rules = plist_helper.LoadPlistFromDataAtPath(build_rules_plist_path);
         
         compilers = self.getSpecForType('Compiler');

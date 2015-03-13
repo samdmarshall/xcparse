@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as xml
 from xcodeproj import xcodeproj
-from xcparse.Helpers import xcrun_helper
+from ..Helpers import xcrun_helper
 from xc_base import xc_base
 
 class xcworkspace(xc_base):

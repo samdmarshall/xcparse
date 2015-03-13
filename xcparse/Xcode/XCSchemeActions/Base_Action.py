@@ -1,4 +1,4 @@
-from xcparse.Helpers import xcrun_helper
+from ...Helpers import xcrun_helper
 
 class Base_Action(object):
     

@@ -1,5 +1,5 @@
 import os
-from xcparse.Helpers import plist_helper
+from ...Helpers import plist_helper
 
 class xcsdk(object):
     

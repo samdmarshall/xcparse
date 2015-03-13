@@ -1,6 +1,4 @@
-from __future__ import absolute_import
-
-from xcparse.Helpers import xcrun_helper
+from ...Helpers import xcrun_helper
 from .Base_Action import *
 
 class TestAction(Base_Action):
@@ -27,7 +25,7 @@ class TestAction(Base_Action):
     def performAction(self, build_system, container, project_constructor, scheme_config_settings):
         if self.root != {}:
             for child in self.root.children:
-                project_path = xcrun.resolvePathFromLocation(child.target.ReferencedContainer, container[2].path.base_path, container[2].path.base_path);
+                project_path = xcrun_helper.resolvePathFromLocation(child.target.ReferencedContainer, container[2].path.base_path, container[2].path.base_path);
                 project = project_constructor(project_path);
                 
-                xcrun.perform_xcodebuild(project, container[1].name, 'test', scheme_config_settings);
+                xcrun_helper.perform_xcodebuild(project, container[1].name, 'test', scheme_config_settings);

@@ -1,9 +1,4 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
 import os
-
-from .PBXResolver import *
 from .PBX_Base_Phase import *
 
 class PBXFrameworksBuildPhase(PBX_Base_Phase):

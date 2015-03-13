@@ -2,16 +2,15 @@ import os
 import sys
 import xml.etree.ElementTree as xml
 
-from xcparse.Helpers import path_helper
-from xcparse.Helpers import xcrun_helper
+from ..Helpers import path_helper
+from ..Helpers import xcrun_helper
 
-# from xcparse.Xcode.XCSchemeActions import *
-import xcparse.Xcode.XCSchemeActions
-# from xcparse.Xcode.XCSchemeActions import TestAction
-# from xcparse.Xcode.XCSchemeActions import LaunchAction
-# from xcparse.Xcode.XCSchemeActions import ProfileAction
-# from xcparse.Xcode.XCSchemeActions import AnalyzeAction
-# from xcparse.Xcode.XCSchemeActions import ArchiveAction
+from .XCSchemeActions.BuildAction import BuildAction
+from .XCSchemeActions.TestAction import TestAction
+from .XCSchemeActions.LaunchAction import LaunchAction
+from .XCSchemeActions.ProfileAction import ProfileAction
+from .XCSchemeActions.AnalyzeAction import AnalyzeAction
+from .XCSchemeActions.ArchiveAction import ArchiveAction
 
 def XCSchemeGetSharedPath(path):
     return os.path.join(path, 'xcshareddata/xcschemes');
@@ -38,7 +37,7 @@ class xcscheme(object):
     def __init__(self, path):
         self.shared = False;
         self.container = '';
-        self.path = Path(path, '');
+        self.path = path_helper(path, '');
         self.name = os.path.basename(path).split('.xcscheme')[0];
         try:
             self.contents = xml.parse(self.path.obj_path);

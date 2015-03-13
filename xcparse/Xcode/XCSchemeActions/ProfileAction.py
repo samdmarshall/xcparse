@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .Base_Action import *
 
 class ProfileAction(Base_Action):

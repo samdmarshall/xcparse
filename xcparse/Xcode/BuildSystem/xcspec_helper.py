@@ -1,6 +1,6 @@
-from ..plist_helper import *
-from xcparse.Helpers import path_helper
-from xcparse.Helpers import xcrun_helper
+from ...Helpers import plist_helper
+from ...Helpers import path_helper
+from ...Helpers import xcrun_helper
 
 from .XCSpec.xcspec import *
 from .XCSpec.xcspec_resolver import *
@@ -15,9 +15,9 @@ def xcspecLoadFileAtRelativeDeveloperPath(path):
 def xcspecLoadFromContentsAtPath(spec_path):
     contents = None;
     if spec_path.endswith('spec'):
-        path = Path(spec_path, '');
+        path = path_helper(spec_path, '');
         
-        contents = LoadPlistFromStringAtPath(path.root_path);
+        contents = plist_helper.LoadPlistFromStringAtPath(path.root_path);
     else:
         print 'Not a xcspec file!';
     
