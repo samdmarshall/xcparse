@@ -1,15 +1,7 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
-import os
-
 from .PBXResolver import *
 from .PBX_Base_Phase import *
 
 class PBXJavaArchiveBuildPhase(PBX_Base_Phase):
-    # buildActionMask = '';
-    # files = [];
-    # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.bundleid = 'com.apple.buildphase.java-archive'

@@ -5,10 +5,6 @@ from .Base_Action import *
 from .BuildActionEntry import *
 
 class BuildAction(Base_Action):
-    # contents = {};
-    # children = [];
-    # parallel = False;
-    # implicit = False;
     
     def __init__(self, action_xml):
         self.contents = action_xml;

@@ -2,11 +2,6 @@ from ...Helpers import xcrun_helper
 from .Base_Action import *
 
 class ArchiveAction(Base_Action):
-    # contents = {};
-    # children = [];
-    # buildConfiguration = '';
-    # revealArchiveInOrganizer = '';
-    
     
     def __init__(self, action_xml):
         self.root = {};

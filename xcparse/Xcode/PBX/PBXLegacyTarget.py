@@ -1,20 +1,7 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
-import os
-
 from .PBXResolver import *
 from .PBX_Base_Target import *
 
 class PBXLegacyTarget(PBX_Base_Target):
-    # buildConfigurationList = {};
-    # buildPhases = [];
-    # dependencies = [];
-    # name = '';
-    # productName = '';
-    # buildToolPath = '';
-    # buildArgumentsString = '';
-    # passBuildSettingsInEnvironment = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.identifier = identifier;

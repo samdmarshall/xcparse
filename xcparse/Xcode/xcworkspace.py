@@ -1,11 +1,10 @@
 import xml.etree.ElementTree as xml
 from xcodeproj import xcodeproj
+from ..Helpers import path_helper
 from ..Helpers import xcrun_helper
 from xc_base import xc_base
 
 class xcworkspace(xc_base):
-    # path = {};
-    # data = {};
     
     def __init__(self, xcworkspace_path):
         """
@@ -13,7 +12,7 @@ class xcworkspace(xc_base):
         """
         self.data = None;
         if xcworkspace_path.endswith('.xcworkspace'):
-            self.path = Path(xcworkspace_path, 'contents.xcworkspacedata');
+            self.path = path_helper(xcworkspace_path, 'contents.xcworkspacedata');
             
             if os.path.exists(self.path.root_path) == True:
                 try:
@@ -31,7 +30,7 @@ class xcworkspace(xc_base):
     def __resolvePathFromXMLItem(self, node, path):
         if self.isValid():
             file_relative_path = node.attrib['location'];
-            return xcrun.resolvePathFromLocation(file_relative_path, path, self.path.base_path);
+            return xcrun_helper.resolvePathFromLocation(file_relative_path, path, self.path.base_path);
         else:
             return None;
     

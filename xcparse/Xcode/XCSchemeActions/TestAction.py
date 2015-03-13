@@ -2,13 +2,6 @@ from ...Helpers import xcrun_helper
 from .Base_Action import *
 
 class TestAction(Base_Action):
-    # contents = {};
-    # children = [];
-    # selectedDebuggerIdentifier = '';
-    # selectedLauncherIdentifier = '';
-    # shouldUseLaunchSchemeArgsEnv = '';
-    # buildConfiguration = '';
-    
     
     def __init__(self, action_xml):
         self.root = {};

@@ -3,11 +3,6 @@ import Xcode
 from Xcode import xcodeproj
 
 class xcparse(object):
-    # root = {};
-    # projects = [];
-    # name = '';
-    # root_path = '';
-    
     def __init__(self, path):
         """
         Pass a path the full path to a '.xcodeproj' or '.xcworkspace'.

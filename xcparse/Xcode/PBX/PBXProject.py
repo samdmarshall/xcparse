@@ -1,5 +1,4 @@
 import os
-
 from .PBXResolver import *
 from .PBX_Base import *
 from .PBX_Build_Setting import *
@@ -7,16 +6,6 @@ from .PBXGroup import *
 from ...Helpers import path_helper
 
 class PBXProject(PBX_Base, PBX_Build_Setting):
-    # attributes = {};
-    # buildConfigurationList = {};
-    # compatibilityVersion = '';
-    # developmentRegion = '';
-    # hasScannedForEncodings = 0;
-    # knownRegions = [];
-    # mainGroup = {};
-    # projectDirPath = '';
-    # projectRoot = '';
-    # targets = [];
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.name = os.path.basename(project.path.obj_path);

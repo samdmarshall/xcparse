@@ -6,7 +6,7 @@ from .XCSpec.xcspec import *
 from .XCSpec.xcspec_resolver import *
 
 def xcspecLoadFileAtRelativeDeveloperPath(path):
-    xcspec_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), path));
+    xcspec_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), path));
     if os.path.exists(xcspec_path) == True:
         return xcspecLoadFromContentsAtPath(xcspec_path);
     else:

@@ -1,15 +1,7 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
-import os
-
 from .PBXResolver import *
 from .PBX_Base_Phase import *
 
 class PBXSourcesBuildPhase(PBX_Base_Phase):
-    # buildActionMask = 0;
-    # files = [];
-    # runOnlyForDeploymentPostprocessing = 0;
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         self.bundleid = 'com.apple.buildphase.sources';

@@ -1,14 +1,6 @@
 from .Base_Action import *
 
 class ProfileAction(Base_Action):
-    # contents = {};
-    # children = [];
-    # shouldUseLaunchSchemeArgsEnv = '';
-    # savedToolIdentifier = '';
-    # useCustomWorkingDirectory = '';
-    # buildConfiguration = '';
-    # debugDocumentVersioning = '';
-    
     
     def __init__(self, action_xml):
         self.contents = action_xml;

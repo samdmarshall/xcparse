@@ -1,16 +1,6 @@
 from .Base_Action import *
 
 class LaunchAction(Base_Action):
-    # contents = {};
-    # children = [];
-    # selectedDebuggerIdentifier = '';
-    # selectedLauncherIdentifier = '';
-    # launchStyle = '';
-    # useCustomWorkingDirectory = '';
-    # buildConfiguration = '';
-    # ignoresPersistentStateOnLaunch = '';
-    # debugDocumentVersioning = '';
-    # allowLocationSimulation = '';
     
     def __init__(self, action_xml):
         self.contents = action_xml;

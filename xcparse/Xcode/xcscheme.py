@@ -30,9 +30,6 @@ def XCSchemeParseDirectory(dir_path):
     return schemes;
 
 class xcscheme(object):
-    # path = {};
-    # contents = {};
-    # name = '';
     
     def __init__(self, path):
         self.shared = False;

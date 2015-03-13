@@ -1,8 +1,3 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
-import os
-
 from ..xcconfig import *
 from .PBXResolver import *
 

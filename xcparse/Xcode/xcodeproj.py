@@ -4,9 +4,6 @@ from ..Helpers import path_helper
 from .PBX import PBXResolver
 
 class xcodeproj(xc_base):
-    # path = {};
-    # contents = {};
-    # rootObject = {};
     
     def __init__(self, xcproj_path):
         """
@@ -47,10 +44,10 @@ class xcodeproj(xc_base):
         This method returns a dictionary of raw objects from the parsed xcodeproject 
         file. The objects in this list are bridged from Cocoa.
         """
+        objects = {};
         if self.isValid():
-            return self.contents['objects'];
-        else:
-            return {};
+            objects = self.contents['objects'];
+        return objects;
     
     def projects(self):
         """
@@ -87,8 +84,8 @@ class xcodeproj(xc_base):
         """
         This method will return a list of build targets that are associated with this xcodeproj.
         """
+        targets = [];
         if self.isValid():
-            return self.rootObject.targets;
-        else:
-            return [];
+            targets.extend(self.rootObject.targets);
+        return targets;
     
