@@ -54,7 +54,7 @@ class xcrun_helper(object):
         location_style = CoreFoundation.CFPreferencesCopyAppValue('IDEBuildLocationStyle', 'com.apple.dt.Xcode');
         if location_style == 'Unique':
             xcodeproj_path = os.path.join(project.projectRoot.obj_path, project.name);
-            unique_path = xcrun.hashStringForPath(xcodeproj_path);
+            unique_path = xcrun_helper.hashStringForPath(xcodeproj_path);
             # this is missing the configuration path.
             project_dir_name = os.path.splitext(project.name)[0]+'-'+unique_path+'/Build/Products/';
             build_dir_path = os.path.join(derived_data, project_dir_name);
