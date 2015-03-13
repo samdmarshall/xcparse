@@ -2,12 +2,13 @@ from __future__ import absolute_import
 import os
 import sys
 import importlib
-import plistlib
 
+from ..plist_helper import *
 from ..xcrun import *
 from .xcspec_helper import *
 from .xcbuildrule import *
 from .LangSpec.langspec import *
+from .xcplatform import *
 
 class xcbuildsystem(object):
     
@@ -28,6 +29,8 @@ class xcbuildsystem(object):
         # loading default languages
         found_languages = self.__findFilesFromPath('../SharedFrameworks/DVTFoundation.framework/Versions/A/Resources', 'xclangspec');
         
+        
+        self.platforms = LoadPlatforms();
     
     def __findFilesFromPath(self, path, extension):
         found_items = [];
@@ -58,24 +61,15 @@ class xcbuildsystem(object):
     
     def buildRules(self):
         contents = [];
-        # build_rules_plist_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
-        # if os.path.exists(build_rules_plist_path) == True:
-        #     # loading spec file
-        #     specNSData, errorMessage = Foundation.NSData.dataWithContentsOfFile_options_error_(build_rules_plist_path, Foundation.NSUncachedRead, None);
-        #     if errorMessage == None:
-        #         specString = Foundation.NSString.alloc().initWithData_encoding_(specNSData, Foundation.NSUTF8StringEncoding);
-        #         if specString != None:
-        #             contents = specString.propertyList();
-        #         else:
-        #             print 'Could not load string from data';
-        #     else:
-        #         print errorMessage;
-        # else:
-        #     print 'path does not exist!';
+        build_rules_plist_path = os.path.normpath(os.path.join(xcrun.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
+        build_rules = LoadPlistFromDataAtPath(build_rules_plist_path);
         
-        compilers = self.getSpecForFilter(lambda spec: spec.type == 'Compiler' and spec.identifier.startswith('com.apple.compiler'));
-        for compiler in filter(lambda compiler: compiler.abstract == 'NO' or 'SynthesizeBuildRule' in compiler.contents.keys(), compilers):
-            contents.append(xcbuildrule(compiler));
+        compilers = self.getSpecForType('Compiler');
+        for compiler in compilers: #filter(lambda compiler: compiler.abstract == 'NO' or 'SynthesizeBuildRule' in compiler.contents.keys(), compilers):
+            rule = xcbuildrule(compiler);
+            print rule;
+            contents.append(rule);
+            
         
         return contents;
     

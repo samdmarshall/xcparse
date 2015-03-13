@@ -9,6 +9,7 @@ from ..xcrun import *
 class xcbuildrule(object):
     
     def __init__(self, spec):
+        self.name = spec.name;
         self.identifier = spec.identifier;
         self.fileTypes = [];
         if 'FileTypes' in spec.contents:
@@ -21,7 +22,7 @@ class xcbuildrule(object):
         return (self.identifier);
     
     def __repr__(self):
-        return '%s : %s : %s' % (type(self), self.spec.name, self.identifier);
+        return '%s : %s : %s' % (type(self), self.name, self.identifier);
     
     def __eq__(self, other):
         return isinstance(other, type(self)) and self.identifier == other.identifier;

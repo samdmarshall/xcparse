@@ -1,5 +1,5 @@
-from .Path import *
 
+from .Path import *
 from .BuildSystem.xcbuildsystem import xcbuildsystem
 from .BuildSystem.xcbuildrule import xcbuildrule
 from .BuildSystem.xcenvironment import xcenvironment

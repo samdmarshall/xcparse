@@ -1,9 +1,5 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
-
+from .plist_helper import *
 from .PBX.PBXResolver import PBXResolver
-
 from .xc_base import *
 
 class xcodeproj(xc_base):
@@ -20,25 +16,18 @@ class xcodeproj(xc_base):
         if xcproj_path.endswith('.xcodeproj') or xcproj_path.endswith('.pbproj'):
             self.path = Path(xcproj_path, 'project.pbxproj');
             
-            if os.path.exists(self.path.root_path) == True:
-                # loading project file
-                plistNSData, errorMessage = Foundation.NSData.dataWithContentsOfFile_options_error_(self.path.root_path, Foundation.NSUncachedRead, None);
-                if errorMessage == None:
-                    plistContents, plistFormat, errorMessage = Foundation.NSPropertyListSerialization.propertyListFromData_mutabilityOption_format_errorDescription_(plistNSData, Foundation.NSPropertyListMutableContainers, None, None);
-                    if errorMessage == None:
-                        self.contents = plistContents;
-                        self.identifier  = self.contents['rootObject'];
-                        result = PBXResolver(self.objects()[self.identifier])
-                        if result[0] == True:
-                            self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
-                        else:
-                            self.rootObject = None;
-                    else:
-                        print errorMessage;
+            self.contents = LoadPlistFromDataAtPath(self.path.root_path);
+            if self.contents != None:
+                self.identifier = self.contents['rootObject'];
+                result = PBXResolver(self.objects()[self.identifier])
+                if result[0] == True:
+                    self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
                 else:
-                    print errorMessage;
+                    self.rootObject = None;
             else:
-                print 'Invalid xcodeproj file!';
+                print 'Could not load contents of plist!';
+        else:
+            print 'Not a xcode project file!';
     
     def __attrs(self):
         return (self.identifier, self.path);

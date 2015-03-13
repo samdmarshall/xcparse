@@ -1,9 +1,3 @@
-from __future__ import absolute_import
-import Cocoa
-import Foundation
-import CoreFoundation
-import os
-
 from ..xcrun import *
 from ..Path import *
 from .PBXResolver import *

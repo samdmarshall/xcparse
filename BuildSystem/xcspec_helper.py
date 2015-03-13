@@ -1,6 +1,4 @@
-import Cocoa
-import Foundation
-
+from ..plist_helper import *
 from ..Path import *
 from ..xcrun import *
 
@@ -19,19 +17,7 @@ def xcspecLoadFromContentsAtPath(spec_path):
     if spec_path.endswith('spec'):
         path = Path(spec_path, '');
         
-        if os.path.exists(path.root_path) == True:
-            # loading spec file
-            specNSData, errorMessage = Foundation.NSData.dataWithContentsOfFile_options_error_(path.root_path, Foundation.NSUncachedRead, None);
-            if errorMessage == None:
-                specString = Foundation.NSString.alloc().initWithData_encoding_(specNSData, Foundation.NSUTF8StringEncoding);
-                if specString != None:
-                    contents = specString.propertyList();
-                else:
-                    print 'Could not load string from data';
-            else:
-                print errorMessage;
-        else:
-            print 'Path does not exist!';
+        contents = LoadPlistFromStringAtPath(path.root_path);
     else:
         print 'Not a xcspec file!';
     
