@@ -11,7 +11,7 @@ xcparse supports all modern objects found in xcodeproj files, and many legacy ob
 
 Loading a project or workspace
 
-	from .xcparse import xcparse
+	from xcparse import xcparse
 	
 	root = xcparse(path_to_xcodeproj_or_xcworkspace);
 
