@@ -64,15 +64,29 @@ class xcbuildsystem(object):
     
     def buildRules(self):
         contents = [];
-        build_rules_plist_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), '../OtherFrameworks/DevToolsCore.framework/Resources/Built-in build rules.plist'));
-        build_rules = plist_helper.LoadPlistFromDataAtPath(build_rules_plist_path);
-        # the `build_rules` array needs to be added to the end of the rest of the build rules
         
-        compilers = self.getSpecForType('Compiler');
-        for compiler in compilers: #filter(lambda compiler: compiler.abstract == 'NO' or 'SynthesizeBuildRule' in compiler.contents.keys(), compilers):
-            rule = xcbuildrule(compiler);
-            contents.append(rule);
-            
+        # add the custom build rules from target here
+        
+        compilers = self.getSpecForFilter(lambda spec: spec.type == 'Compiler' or spec.identifier.startswith('com.apple.compiler'));
+        for compiler in filter(lambda compiler: compiler.abstract == 'NO' or 'SynthesizeBuildRule' in compiler.contents.keys(), compilers):
+            if 'SynthesizeBuildRule' in compiler.contents.keys():
+                if compiler.contents['SynthesizeBuildRule'] == 'YES' or compiler.contents['SynthesizeBuildRule'] == 'Yes':
+                    rule_dict = {};
+                    rule_dict['CompilerSpec'] = compiler.identifier;
+                    if 'FileTypes' in compiler.contents.keys():
+                        rule_dict['FileType'] = compiler.contents['FileTypes'];
+                    if 'InputFileTypes' in compiler.contents.keys():
+                        rule_dict['FileType'] = compiler.contents['InputFileTypes'];
+                    rule_dict['Name'] = compiler.name;
+                    # do not add if there is no input to this rule
+                    if 'FileType' in rule_dict.keys():
+                        contents.append(xcbuildrule(rule_dict));
+        
+        build_rules_plist_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), '../Plugins/Xcode3Core.ideplugin/Contents/Frameworks/DevToolsCore.framework/Versions/A/Resources/BuiltInBuildRules.plist'));
+        build_rules = plist_helper.LoadPlistFromDataAtPath(build_rules_plist_path);
+        
+        for rule in build_rules:
+            contents.append(xcbuildrule(rule));
         
         return contents;
     
@@ -94,6 +108,7 @@ class xcbuildsystem(object):
                 compiler_identifier = rule.identifier;
         
         compiler = self.getSpecForIdentifier(compiler_identifier);
+        print compiler;
         
         return compiler;
         

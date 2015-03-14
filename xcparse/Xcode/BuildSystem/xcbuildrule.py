@@ -2,15 +2,10 @@ from ...Helpers import xcrun_helper
 
 class xcbuildrule(object):
     
-    def __init__(self, spec):
-        self.name = spec.name;
-        self.identifier = spec.identifier;
-        self.fileTypes = [];
-        if 'FileTypes' in spec.contents:
-            self.fileTypes = spec.contents['FileTypes'];
-        if 'SynthesizeBuildRule' in spec.contents:
-            if spec.contents['SynthesizeBuildRule'] == 'YES':
-                self.fileTypes = spec.contents['InputFileTypes'];
+    def __init__(self, rule_dictionary):
+        self.name = rule_dictionary['Name'];
+        self.identifier = rule_dictionary['CompilerSpec'];
+        self.fileTypes = rule_dictionary['FileType'];
     
     def __attrs(self):
         return (self.identifier);

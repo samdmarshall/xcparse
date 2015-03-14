@@ -11,7 +11,7 @@ class xcspec(object):
         self.name = '';
         self.basedOn = None;
         if 'Identifier' in self.keys():
-            self.identifier = self.contents['Identifier'];
+            self.identifier = str(self.contents['Identifier']);
         if 'Type' in self.keys():
             self.type = self.contents['Type'];
         if 'Name' in self.keys():

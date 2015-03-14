@@ -8,3 +8,6 @@ class XCSpecTool(xcspec):
     
     def __init__(self, spec_data):
         super(XCSpecTool, self).__init__(spec_data);
+        self.abstract = 'NO';
+        if 'IsAbstract' in self.keys():
+            self.abstract = self.contents['IsAbstract'];
