@@ -108,7 +108,8 @@ class xcbuildsystem(object):
                 compiler_identifier = rule.identifier;
         
         compiler = self.getSpecForIdentifier(compiler_identifier);
-        print compiler;
+        if compiler == None:
+            print 'Could not find valid build rule for input file!';
         
         return compiler;
         
