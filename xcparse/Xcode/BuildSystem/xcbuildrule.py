@@ -16,7 +16,7 @@ class xcbuildrule(object):
         return (self.identifier);
     
     def __repr__(self):
-        return '%s : %s : %s' % (type(self), self.name, self.identifier);
+        return '(%s : %s : %s)' % (type(self), self.name, self.identifier);
     
     def __eq__(self, other):
         return isinstance(other, type(self)) and self.identifier == other.identifier;

@@ -26,4 +26,4 @@ class path_helper(object):
         return hash(self.__attrs());
     
     def __repr__(self):
-        return '%s : %s : %s' % (type(self), self.base_path, self.obj_path);
+        return '(%s : %s : %s)' % (type(self), self.base_path, self.obj_path);

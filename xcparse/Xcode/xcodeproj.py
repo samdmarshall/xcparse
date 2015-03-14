@@ -12,6 +12,7 @@ class xcodeproj(xc_base):
         """
         self.contents = None;
         self.identifier = '';
+        self.path = '';
         if xcproj_path.endswith('.xcodeproj') or xcproj_path.endswith('.pbproj'):
             self.path = path_helper(xcproj_path, 'project.pbxproj');
             
@@ -27,6 +28,12 @@ class xcodeproj(xc_base):
                 print 'Could not load contents of plist!';
         else:
             print 'Not a xcode project file!';
+    
+    def __repr__(self):
+        if self.isValid():
+            return '(%s : %s : %s)' % (type(self), self.path, self.identifier);
+        else:
+            return '(%s : INVALID OBJECT)' % (type(self));
     
     def __attrs(self):
         return (self.identifier, self.path);

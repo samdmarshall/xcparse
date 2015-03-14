@@ -1,6 +1,6 @@
 from ...Helpers import xcrun_helper
 
-USE_XCODE_BUILD = 1;
+USE_XCODE_BUILD = 0;
 
 class Base_Action(object):
     

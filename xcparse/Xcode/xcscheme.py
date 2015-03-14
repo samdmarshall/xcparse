@@ -41,6 +41,21 @@ class xcscheme(object):
         except:
             self.contents = None;
     
+    def __repr__(self):
+        if self.isValid():
+            return '(%s : %s : %s)' % (type(self), self.name, self.path);
+        else:
+            return '(%s : INVALID OBJECT)' % (type(self));
+    
+    def __attrs(self):
+        return (self.name, self.path);
+
+    def __eq__(self, other):
+        return isinstance(other, xcscheme) and self.name == other.name and self.path.root_path == other.path.root_path;
+
+    def __hash__(self):
+        return hash(self.__attrs());
+    
     def actionLookup(self, action_name):
         """
         This method returns the method for the passed action type, None otherwise.
