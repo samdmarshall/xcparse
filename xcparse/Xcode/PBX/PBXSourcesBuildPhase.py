@@ -20,11 +20,10 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
         
-        compiler_specs = build_system.getSpecForType('Compiler');
-        
         for file in self.files:
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
             compiler = build_system.getCompilerForFileReference(file.fileRef);
+            print 'File: %s wants Compiler: %s' % (file, compiler);
         
         print '(implement me!)';
         print '';

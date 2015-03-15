@@ -5,9 +5,11 @@ from Xcode import xcodeproj
 class xcparse(object):
     def __init__(self, path):
         """
-        Pass a path the full path to a '.xcodeproj' or '.xcworkspace'.
+        Returns a xcparse object initialized from an xcodeproj or xcworkspace file.
+        
+        path should be the full path to a '.xcodeproj' or '.xcworkspace'.
         """
-        self.project_constructor = xcodeproj;
+        self.project_constructor = xcodeproj; # this exists only to prevent recursive imports later
         self.path = '';
         self.root = None;
         if os.path.exists(path) == True:

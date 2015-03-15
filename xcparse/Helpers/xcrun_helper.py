@@ -13,6 +13,11 @@ class xcrun_helper(object):
     
     @classmethod
     def hashStringForPath(cls, path):
+        """
+        Returns the hash for a project's DerivedData location.
+        
+        path is the filesystem path to the .xcodeproj file.
+        """
         hash_context = hashlib.md5();
         hash_context.update(path);
         md5_digest_hex = hash_context.digest();
@@ -41,6 +46,14 @@ class xcrun_helper(object):
     
     @classmethod
     def BuildLocation(cls, project, sym_root):
+        """
+        Returns the full path to the location of the build products.
+        
+        project is the project that the build product is in.
+        
+        sym_root is the value of $(SYMROOT) for the current configuration
+        """
+        # this needs to also take CONFIGURATION_DIR
         build_dir_path = '';
         default_dd_path = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/");
         relative_dd_path = False;

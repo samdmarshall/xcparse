@@ -1,6 +1,16 @@
 from .EnvVarCondition import *
 from .EnvVariable import *
 
+
+def ParseKey(key_string, environment):
+    string_length = len(key_string);
+    offset = 0;
+    
+    while offset < string_length:
+        find_sub = key_string.find('$');
+        offset = find_sub;
+    
+
 class Environment(object):
     
     def __init__(self):

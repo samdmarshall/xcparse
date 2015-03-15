@@ -47,6 +47,9 @@ class xcbuildsystem(object):
         return found_items;
     
     def getSpecForType(self, type):
+        """
+        Returns a list of specs with matching type string
+        """
         return self.getSpecForFilter(lambda spec: spec.type == type);
     
     def getSpecForIdentifier(self, identifier):

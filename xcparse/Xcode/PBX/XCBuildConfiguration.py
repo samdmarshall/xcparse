@@ -1,5 +1,5 @@
 from .PBX_Base import *
-from ..xcconfig import *
+from ..XCConfig import xcconfig
 
 class XCBuildConfiguration(PBX_Base):
     

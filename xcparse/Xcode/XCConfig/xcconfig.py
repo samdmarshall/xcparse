@@ -1,36 +1,27 @@
 import os
 import sys
-from ..Helpers import path_helper
-
-from .xcconfig_item import *
+from ...Helpers import path_helper
+from .xcconfig_line_resolver import *
 
 class xcconfig(object):
     
     def __init__(self, path):
-        #self.defaults = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'defaults.xcconfig');
         self.path = path;
-        self.__build_settings = {};
+        self.kv = [];
         
-        # default_lines = [];
-        # if os.path.exists(self.defaults):
-        #     default_lines = [line.strip() for line in open(self.defaults)];
-        # else:
-        #     print 'Error in parsing defaults.xcconfig!';
-        #     sys.exit(0);
-        #
-        # for line in default_lines:
-        #     results = filter(lambda item: item[0] == True, self.parseLine(line));
-        #     for item in results:
-        #         self.setValueForKey(item[1], item[2], item[3]);
+        if self.path == None:
+            self.path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'defaults.xcconfig');
         
-        override_lines = [];
-        if self.path != None and os.path.exists(self.path):
-            override_lines = [line.strip() for line in open(self.path)];
+        config_lines = [];
+        if os.path.exists(self.path):
+            config_lines = [line.strip() for line in open(self.path)];
         
-        for line in override_lines:
-            results = filter(lambda item: item[0] == True, self.parseLine(line));
-            for item in results:
-                self.setValueForKey(item[1], item[2], item[3]);
+        for line in config_lines:
+            line_type = xcconfig_line_type(line);
+            type_constructor = xcconfig_line_resolver(line, line_type);
+            if type_constructor[0] == True:
+                line_obj = type_constructor[1](line);
+                self.kv.append(line_obj);
         
         
     def parseLine(self, line):
