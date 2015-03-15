@@ -57,6 +57,9 @@ class xcconfig_kv(xcconfig_item_base):
         value = self.__value;
         if value[0] == ' ':
             value = value[1:];
+        comment_offset = value.find('//');
+        if comment_offset != -1:
+            value = value[:comment_offset];
         if value_type == None:
             return value;
         else:
