@@ -35,6 +35,9 @@ class xcconfig_kv(xcconfig_item_base):
         key = self.__key;
         find_bracket = key.find('[');
         if find_bracket == -1:
+            find_space = key.find(' ');
+            if find_space != -1:
+                return key[:find_space];
             return key;
         else:
             return key[:find_bracket];

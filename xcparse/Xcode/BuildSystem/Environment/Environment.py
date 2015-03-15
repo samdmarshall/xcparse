@@ -1,6 +1,6 @@
 from .EnvVarCondition import *
 from .EnvVariable import *
-
+from ...XCConfig.xcconfig import *
 
 def ParseKey(key_string, environment):
     string_length = len(key_string);
@@ -15,6 +15,10 @@ class Environment(object):
     
     def __init__(self):
         self.settings = {};
+        # load default environment types
+        
+        # setting up default environment
+        self.applyConfig(xcconfig(None));
     
     def addSetting(self, setting_dict):
         self.settings[setting_dict['Name']] = EnvVariable(setting_dict);
@@ -22,20 +26,27 @@ class Environment(object):
     def applyConfig(self, config_obj):
         for line in config_obj.lines:
             if line.type == 'KV':
-                print 'set value for environment';
+                self.setValueForKey(line.key(), line.value(None), line.conditions());
             if line.type == 'COMMENT':
-                print 'ignoring comment';
+                # ignore this type of line
+                continue;
             if line.type == 'INCLUDE':
-                print 'import new config file relative to path';
+                base_path = os.path.dirname(config_obj.path);
+                path = line.includePath(base_path);
+                self.applyConfig(xcconfig(path));
     
     def setValueForKey(self, key, value, condition_dict):
-        result = self.settings[key];
-        if result != None:
-            result.addConditionalValue(EnvVarCondition(condition_dict, value));
+        if key in self.settings.keys():
+            result = self.settings[key];
+            if result != None:
+                result.addConditionalValue(EnvVarCondition(condition_dict, value));
+        else:
+            print 'add value!';
     
     def valueForKey(self, key):
         value = None;
-        result = self.settings[key];
-        if result != None:
-            value = result.value(self);
+        if key in self.settings.keys():
+            result = self.settings[key];
+            if result != None:
+                value = result.value(self);
         return value;
