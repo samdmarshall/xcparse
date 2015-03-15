@@ -19,7 +19,7 @@ def main(argv):
     
     test_config = xcconfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.xcconfig'));
     
-    for line in test_config.kv:
+    for line in test_config.lines:
         if line.type == 'KV':
             print line.key();
             print line.conditions();
