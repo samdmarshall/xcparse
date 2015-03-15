@@ -20,7 +20,12 @@ def main(argv):
     test_config = xcconfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.xcconfig'));
     
     for line in test_config.kv:
-        print line;
+        if line.type == 'KV':
+            print line.key();
+            print line.conditions();
+            print line.value(None);
+        else:
+            print line;
     
     # for scheme in xcparser.schemes():
     #     result = xcparser.findSchemeWithName(scheme.name)[0];
