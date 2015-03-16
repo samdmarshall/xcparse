@@ -15,14 +15,14 @@ def xcspecLoadFileAtRelativeDeveloperPath(path):
 
 def xcspecLoadFromContentsAtPath(spec_path):
     contents = None;
+    items = [];
     if spec_path.endswith('spec'):
         path = path_helper(spec_path, '');
         
         contents = plist_helper.LoadPlistFromStringAtPath(path.root_path);
     else:
-        logging_helper.getLogger().error('[xcspec_helper]: Not a xcspec file!');
-    
-    items = [];
+        logging_helper.getLogger().error('[xcspec_helper]: Not a spec file!');
+        return items;
     
     if contents != None:
         if hasattr(contents, 'keys'):
@@ -31,6 +31,8 @@ def xcspecLoadFromContentsAtPath(spec_path):
             constructor = xcspec_resolver(contents);
             if constructor[0] == True:
                 items.append(constructor[1](contents));
+            else:
+                logging_helper.getLogger().warn('[xcspec_helper]: Tried to load spec file at "%s" but couldn\'t resolve type' % spec_path);
         else:
             for spec_item in contents:
                 if spec_path.endswith('pbfilespec') and 'Type' not in spec_item.keys():
@@ -38,5 +40,9 @@ def xcspecLoadFromContentsAtPath(spec_path):
                 constructor = xcspec_resolver(spec_item);
                 if constructor[0] == True:
                     items.append(constructor[1](spec_item));
+                else:
+                    logging_helper.getLogger().warn('[xcspec_helper]: Tried to load spec file at "%s" but couldn\'t resolve type' % spec_path);
+            if len(contents) == 0:
+                logging_helper.getLogger().warn('[xcspec_helper]: No specs loaded from file at "%s"' % spec_path); 
     
     return items;

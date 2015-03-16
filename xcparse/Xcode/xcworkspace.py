@@ -29,11 +29,11 @@ class xcworkspace(xc_base):
         return self.data != None;
     
     def __resolvePathFromXMLItem(self, node, path):
+        path = None;
         if self.isValid():
             file_relative_path = node.attrib['location'];
-            return xcrun_helper.resolvePathFromLocation(file_relative_path, path, self.path.base_path);
-        else:
-            return None;
+            path = xcrun_helper.resolvePathFromLocation(file_relative_path, path, self.path.base_path);
+        return path;
     
     def __parsePathsFromXMLItem(self, node, path):
         results = [];
