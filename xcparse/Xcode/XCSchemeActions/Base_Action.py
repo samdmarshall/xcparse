@@ -8,9 +8,8 @@ class Base_Action(object):
         self.root = {};
         self.contents = action_xml;
     
-    def performAction(self, build_system, container, xcparse_object, scheme_config_settings):
+    def performAction(self, container, xcparse_object, configuration_name, additional_settings):
         """
-        build_system = xcbuildsystem object - create with `xcbuildsystem()`
         container = xcscheme object - scheme that is having an action performed
         xcparse_object = xcparse object
         scheme_config_settings = dictionary containing any additional environment variables to set

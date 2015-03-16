@@ -1,6 +1,7 @@
 import Cocoa
 import Foundation
 import os
+import logging_helper
 
 class plist_helper(object):
     @classmethod
@@ -13,11 +14,11 @@ class plist_helper(object):
                 if errorMessage == None:
                     contents = plistContents;
                 else:
-                    print errorMessage;
+                    logging_helper.getLogger().error('[plist_helper]: %s' % errorMessage);
             else:
-                print errorMessage;
+                logging_helper.getLogger().error('[plist_helper]: %s' % errorMessage);
         else:
-            print 'path doesn\'t exist!';
+            logging_helper.getLogger().error('[plist_helper]: path doesn\'t exist!');
         return contents;
 
     @classmethod
@@ -31,9 +32,9 @@ class plist_helper(object):
                 if specString != None:
                     contents = specString.propertyList();
                 else:
-                    print 'Could not load string from data';
+                    logging_helper.getLogger().error('[plist_helper]: Could not load string from data');
             else:
-                print errorMessage;
+                logging_helper.getLogger().error('[plist_helper]: %s' % errorMessage);
         else:
-            print 'Path does not exist!';
+            logging_helper.getLogger().error('[plist_helper]: Path does not exist!');
         return contents;

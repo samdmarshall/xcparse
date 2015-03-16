@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import os
 import sys
 import importlib
-
+from ...Helpers import logging_helper
 from ...Helpers import plist_helper
 from ...Helpers import xcrun_helper
 from .xcspec_helper import *
@@ -32,7 +32,8 @@ class xcbuildsystem(object):
         
         self.platforms = LoadPlatforms();
         
-        self.environment = Environment();
+        # this should load until we know the environment needed
+        # self.environment = Environment();
     
     def __findFilesFromPath(self, path, extension):
         found_items = [];
@@ -111,7 +112,7 @@ class xcbuildsystem(object):
         
         compiler = self.getSpecForIdentifier(compiler_identifier);
         if compiler == None:
-            print 'Could not find valid build rule for input file!';
+            logging_helper.getLogger().info('[xcbuildsystem]: Could not find valid build rule for input file!');
         
         return compiler;
         

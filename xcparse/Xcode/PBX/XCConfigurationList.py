@@ -18,7 +18,10 @@ class XCConfigurationList(PBX_Base):
         self.name = self.defaultConfigurationName;
         
     def defaultBuildConfiguration(self):
-        results = list(filter(lambda config: config.name == self.defaultConfigurationName, self.buildConfigurations))
+        return self.buildConfigurationWithName(self.defaultConfigurationName)
+    
+    def buildConfigurationWithName(self, name):
+        results = list(filter(lambda config: config.name == name, self.buildConfigurations))
         if len(results) == 0:
             results = self.buildConfigurations;
         return results[0];

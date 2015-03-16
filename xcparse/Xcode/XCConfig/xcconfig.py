@@ -23,15 +23,15 @@ class xcconfig(object):
                 line_obj = type_constructor[1](line);
                 self.lines.append(line_obj);
     
-    def valueForKey(self, config, key):
-        if key in self.__build_settings.keys():
-            return self.__build_settings[key].getValue(config);
-        else:
-            return None;
-    
-    def setValueForKey(self, config, key, value):
-        if key in self.__build_settings.keys():
-            self.__build_settings[key].setValue(config, value);
-        else:
-            new_kv = xcconfig_item((config, key, value));
-            self.__build_settings[key] = new_kv;
+    # def valueForKey(self, config, key):
+    #     if key in self.__build_settings.keys():
+    #         return self.__build_settings[key].getValue(config);
+    #     else:
+    #         return None;
+    #
+    # def setValueForKey(self, config, key, value):
+    #     if key in self.__build_settings.keys():
+    #         self.__build_settings[key].setValue(config, value);
+    #     else:
+    #         new_kv = xcconfig_item((config, key, value));
+    #         self.__build_settings[key] = new_kv;

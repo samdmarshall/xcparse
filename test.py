@@ -13,12 +13,12 @@ def main(argv):
     
     xcparser = xcparse.xcparse(args.filename);
     
-    build_system = xcbuildsystem();
-    
+    # build_system = xcbuildsystem();
+
     environment = Environment();
-    
+
     test_config = xcconfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.xcconfig'));
-    
+
     environment.applyConfig(test_config);
     
     for scheme in xcparser.schemes():
@@ -27,9 +27,7 @@ def main(argv):
             action_func = result[1].actionLookup('build');
             if action_func != None:
                 action_item = action_func(result[2]);
-                action_item.performAction(build_system, result, xcparser, {});
-
-    
+                action_item.performAction(result, xcparser, 'Release', {});
 
 if __name__ == "__main__":
     main(sys.argv[1:]);

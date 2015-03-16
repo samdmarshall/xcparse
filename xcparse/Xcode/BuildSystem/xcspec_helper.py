@@ -1,3 +1,4 @@
+from ...Helpers import logging_helper
 from ...Helpers import plist_helper
 from ...Helpers import path_helper
 from ...Helpers import xcrun_helper
@@ -19,7 +20,7 @@ def xcspecLoadFromContentsAtPath(spec_path):
         
         contents = plist_helper.LoadPlistFromStringAtPath(path.root_path);
     else:
-        print 'Not a xcspec file!';
+        logging_helper.getLogger().error('[xcspec_helper]: Not a xcspec file!');
     
     items = [];
     

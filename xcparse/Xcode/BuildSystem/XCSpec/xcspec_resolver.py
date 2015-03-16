@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from .xcspec import *
+from ....Helpers import logging_helper
 
 from .XCSpecCompiler import *
 from .XCSpecProductType import *
@@ -29,5 +30,5 @@ def xcspec_resolver(dictionary):
     if dictionary['Type'] in XCSPEC_TYPE_RESOLVER.keys():
         return (True, XCSPEC_TYPE_RESOLVER[dictionary['Type']]);
     else:
-        print 'UNKNOWN "%s" TYPE!' % dictionary['Type'];
+        logging_helper.getLogger().warning('[xcspec_resolver]: UNKNOWN "%s" TYPE!' % dictionary['Type']);
     return (False, None);

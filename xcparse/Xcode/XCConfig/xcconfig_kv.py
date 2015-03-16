@@ -1,4 +1,5 @@
 import re
+from ...Helpers import logging_helper
 from .xcconfig_item_base import *
 
 class xcconfig_kv(xcconfig_item_base):
@@ -24,7 +25,7 @@ class xcconfig_kv(xcconfig_item_base):
                 new_offset += find_close_bracket;
                 return xcconfig_kv.FindKeyValueAssignmentOffset(line[find_close_bracket:], new_offset);
             else:
-                print 'error!';
+                logging_helper.getLogger().error('[xcconfig_kv]: error!');
                 return -1;
         else:
             if find_equals != -1:

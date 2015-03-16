@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-
+from ...Helpers import logging_helper
 from .PBX_Base import *
 from .PBX_Base_Reference import *
 from .PBX_Base_Target import *
@@ -82,5 +82,5 @@ def PBXResolver(dictionary):
     if dictionary['isa'] in PBX_TYPE_RESOLVER.keys():
         return (True, PBX_TYPE_RESOLVER[dictionary['isa']]);
     else:
-        print 'SKIPPING "%s" TYPE!' % dictionary['isa'];
+        logging_helper.getLogger().warning('[PBXResoler]: SKIPPING "%s" TYPE!' % dictionary['isa']);
     return (False, None);

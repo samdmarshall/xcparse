@@ -3,6 +3,7 @@ from .xc_base import xc_base
 from ..Helpers import plist_helper
 from ..Helpers import path_helper
 from .PBX import PBXResolver
+from ..Helpers import logging_helper
 
 class xcodeproj(xc_base):
     
@@ -24,11 +25,11 @@ class xcodeproj(xc_base):
                 if result[0] == True:
                     self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
                 else:
-                    print 'Error in parsing project file!';
+                    logging_helper.getLogger().error('[xcodeproj]: Error in parsing project file!');
             else:
-                print 'Could not load contents of plist!';
+                logging_helper.getLogger().error('[xcodeproj]: Could not load contents of plist!');
         else:
-            print 'Not a xcode project file!';
+            logging_helper.getLogger().error('[xcodeproj]: Not a xcode project file!');
     
     def __repr__(self):
         if self.isValid():

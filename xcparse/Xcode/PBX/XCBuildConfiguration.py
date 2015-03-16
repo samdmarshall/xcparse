@@ -22,4 +22,4 @@ class XCBuildConfiguration(PBX_Base):
             self.xcconfig = None;
     
     def buildSettingForKey(self, key):
-        return None;
+        return '';

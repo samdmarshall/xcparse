@@ -5,6 +5,7 @@ from subprocess import CalledProcessError
 import hashlib
 import CoreFoundation
 import struct
+import logging_helper
 
 class xcrun_helper(object):
     """
@@ -101,7 +102,7 @@ class xcrun_helper(object):
         elif path_type == 'container':
             return os.path.join(base_path, item_path);
         else:
-            print 'Invalid item path name!';
+            logging_helper.getLogger().error('[xcrun_helper]: Invalid item path name!');
             return item_path;
     
     @classmethod
@@ -120,7 +121,7 @@ class xcrun_helper(object):
     def resolve_sdk_path(cls, sdk_name):
         xcrun_result = xcrun_helper.make_subprocess_call(('xcrun', '--show-sdk-path', '--sdk', sdk_name));
         if xcrun_result[1] != 0:
-            print 'Please run Xcode first!';
+            logging_helper.getLogger().info('[xcrun_helper]: Please run Xcode first!');
             sys.exit();
         sdk_path = xcrun_result[0].rstrip('\n');
         return sdk_path;
@@ -130,7 +131,7 @@ class xcrun_helper(object):
         platform_path = '';
         xcrun_result = xcrun_helper.make_subprocess_call(('xcode-select', '-p'));
         if xcrun_result[1] != 0:
-            print 'Please run Xcode first!';
+            logging_helper.getLogger().info('[xcrun_helper]: Please run Xcode first!');
             sys.exit();
         developer_path = xcrun_result[0].rstrip('\n');
         return developer_path;

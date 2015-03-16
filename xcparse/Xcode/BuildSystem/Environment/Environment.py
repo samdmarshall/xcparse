@@ -1,6 +1,7 @@
 from .EnvVarCondition import *
 from .EnvVariable import *
 from ...XCConfig.xcconfig import *
+from ....Helpers import logging_helper
 
 def ParseKey(key_string, environment):
     string_length = len(key_string);
@@ -20,8 +21,9 @@ class Environment(object):
         # setting up default environment
         self.applyConfig(xcconfig(None));
     
-    def addSetting(self, setting_dict):
-        self.settings[setting_dict['Name']] = EnvVariable(setting_dict);
+    def addOptions(self, options_array):
+        for item in options_array:
+            self.settings[item['Name']] = EnvVariable(setting_dict);
     
     def applyConfig(self, config_obj):
         for line in config_obj.lines:
@@ -36,12 +38,16 @@ class Environment(object):
                 self.applyConfig(xcconfig(path));
     
     def setValueForKey(self, key, value, condition_dict):
+        if key not in self.settings.keys():
+            option_dict = {};
+            option_dict['Name'] = key;
+            option_dict['DefaultValue'] = '';
+            self.settings[key] = EnvVariable(option_dict);
         if key in self.settings.keys():
             result = self.settings[key];
             if result != None:
                 result.addConditionalValue(EnvVarCondition(condition_dict, value));
-        else:
-            print 'add value!';
+        
     
     def valueForKey(self, key):
         value = None;

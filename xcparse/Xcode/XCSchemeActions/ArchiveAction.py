@@ -11,9 +11,8 @@ class ArchiveAction(Base_Action):
         if 'revealArchiveInOrganizer' in self.contents.keys():
             self.revealArchiveInOrganizer = self.contents.get('revealArchiveInOrganizer');
     
-    def performAction(self, build_system, container, xcparse_object, scheme_config_settings):
+    def performAction(self, container, xcparse_object, configuration_name, additional_settings):
         """
-        build_system = xcbuildsystem object - create with `xcbuildsystem()`
         container = xcscheme object - scheme that is having an action performed
         xcparse_object = xcparse object
         scheme_config_settings = dictionary containing any additional environment variables to set
@@ -28,6 +27,6 @@ class ArchiveAction(Base_Action):
                     project = xcparse_object.project_constructor(project_path);
                 
                 if USE_XCODE_BUILD == 1:
-                    xcrun_helper.perform_xcodebuild(project, container[1].name, 'archive', scheme_config_settings);
+                    xcrun_helper.perform_xcodebuild(project, container[1].name, 'archive', additional_settings);
                 else:
                     print 'implement me!';

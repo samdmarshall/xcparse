@@ -1,3 +1,4 @@
 from path_helper import path_helper
 from plist_helper import plist_helper
 from xcrun_helper import xcrun_helper
+from logging_helper import logging_helper

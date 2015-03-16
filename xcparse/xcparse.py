@@ -1,6 +1,7 @@
 import os
 import Xcode
 from Xcode import xcodeproj
+from .Helpers import logging_helper
 
 class xcparse(object):
     def __init__(self, path):
@@ -28,9 +29,9 @@ class xcparse(object):
                 for project_file in workspace_file.projects():
                     self._projects.append(project_file);
             else:
-                print 'Invalid file!';
+                logging_helper.getLogger().error('[xcparse]: Invalid file!');
         else:
-            print 'Could not find file!';
+            logging_helper.getLogger().error('[xcparse]: Could not find file!');
     
     def isValid(self):
         return self.name != '' and self.root != None;

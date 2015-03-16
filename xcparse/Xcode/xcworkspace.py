@@ -3,6 +3,7 @@ from xcodeproj import xcodeproj
 from ..Helpers import path_helper
 from ..Helpers import xcrun_helper
 from xc_base import xc_base
+from ..Helpers import logging_helper
 
 class xcworkspace(xc_base):
     
@@ -20,9 +21,9 @@ class xcworkspace(xc_base):
                 except:
                     self.data = None;
             else:
-                print 'Could not find xcworkspacedata file!';
+                logging_helper.getLogger().error('[xcworkspace]: Could not find xcworkspacedata file!');
         else:
-            print 'Invalid xcworkspace file!';
+            logging_helper.getLogger().error('[xcworkspace]: Invalid xcworkspace file!');
     
     def isValid(self):
         return self.data != None;

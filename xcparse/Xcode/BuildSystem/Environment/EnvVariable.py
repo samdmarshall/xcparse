@@ -1,8 +1,10 @@
 from .EnvVarCondition import *
+from ....Helpers import logging_helper
 
 class EnvVariable(object):
     
     def __init__(self, dictionary):
+        self.type = 'String'; # default for now
         if 'Name' in dictionary.keys():
             self.name = dictionary['Name'];
         if 'Type' in dictionary.keys():
@@ -24,12 +26,12 @@ class EnvVariable(object):
             if self.type in default_values:
                 self.default = default_values[self.type];
             else:
-                print 'type not found %s' % (self.type);
+                logging_helper.getLogger().warning('[EnvVariable]: type not found %s' % (self.type));
         self.values = set();
         
         
     def addConditionalValue(self, conditional):
-        self.values.union(conditional);
+        self.values.union(set([conditional]));
     
     def value(self, environment):
         value = self.default;
