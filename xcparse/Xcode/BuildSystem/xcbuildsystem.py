@@ -16,7 +16,7 @@ class xcbuildsystem(object):
     def __init__(self):
         self.specs = set();
         # loading default specs
-        found_specs = self.__findFilesFromPath('../Plugins', 'xcspec');
+        found_specs = self.__findFilesFromPath('../Plugins', 'spec');
         
         for path in found_specs:
             self.specs.update(xcspecLoadFromContentsAtPath(path));
@@ -29,7 +29,6 @@ class xcbuildsystem(object):
         self.languages = set();
         # loading default languages
         found_languages = self.__findFilesFromPath('../SharedFrameworks/DVTFoundation.framework/Versions/A/Resources', 'xclangspec');
-        
         
         self.platforms = LoadPlatforms();
         

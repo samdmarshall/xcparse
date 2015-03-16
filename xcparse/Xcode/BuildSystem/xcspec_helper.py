@@ -25,11 +25,15 @@ def xcspecLoadFromContentsAtPath(spec_path):
     
     if contents != None:
         if hasattr(contents, 'keys'):
+            if spec_path.endswith('pbfilespec') and 'Type' not in contents.keys():
+                contents['Type'] = 'FileType';
             constructor = xcspec_resolver(contents);
             if constructor[0] == True:
                 items.append(constructor[1](contents));
         else:
             for spec_item in contents:
+                if spec_path.endswith('pbfilespec') and 'Type' not in spec_item.keys():
+                    spec_item['Type'] = 'FileType';
                 constructor = xcspec_resolver(spec_item);
                 if constructor[0] == True:
                     items.append(constructor[1](spec_item));

@@ -13,6 +13,7 @@ class xcodeproj(xc_base):
         self.contents = None;
         self.identifier = '';
         self.path = '';
+        self.rootObject = None;
         if xcproj_path.endswith('.xcodeproj') or xcproj_path.endswith('.pbproj'):
             self.path = path_helper(xcproj_path, 'project.pbxproj');
             
@@ -23,7 +24,7 @@ class xcodeproj(xc_base):
                 if result[0] == True:
                     self.rootObject = result[1](PBXResolver, self.objects()[self.identifier], self, self.identifier);
                 else:
-                    self.rootObject = None;
+                    print 'Error in parsing project file!';
             else:
                 print 'Could not load contents of plist!';
         else:

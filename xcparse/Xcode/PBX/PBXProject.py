@@ -51,5 +51,5 @@ class PBXProject(PBX_Base, PBX_Build_Setting):
         """
         This method will return a list of targets that match a built product reference
         """
-        return list(filter(lambda target: target.productReference.identifier == reference, self.targets));
+        return list(filter(lambda target: hasattr(target, 'productReference') and target.productReference.identifier == reference, self.targets));
     

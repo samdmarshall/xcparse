@@ -22,6 +22,4 @@ class XCBuildConfiguration(PBX_Base):
             self.xcconfig = None;
     
     def buildSettingForKey(self, key):
-        if self.xcconfig != None:
-            return self.xcconfig.valueForKey(self.name, key);
         return None;

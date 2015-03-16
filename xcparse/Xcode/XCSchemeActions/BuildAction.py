@@ -32,10 +32,22 @@ class BuildAction(Base_Action):
             if USE_XCODE_BUILD == 1:
                 xcrun_helper.perform_xcodebuild(project, container[1].name, 'build', scheme_config_settings);
             else:
-                target_constructor = PBXResolver(project.objects()[child.target.BlueprintIdentifier]);
-                if target_constructor[0] == True:
-                    target = target_constructor[1](PBXResolver, project.objects()[child.target.BlueprintIdentifier], project, child.target.BlueprintIdentifier);
-                    print target.name;
-                    print '========================';
-                    for phase in target.buildPhases:
-                        phase.performPhase(build_system, target);
+                self.buildTarget(build_system, project, child.target.BlueprintIdentifier);
+        
+    def buildTarget(self, build_system, project, target_identifier):
+        """
+        This method dispatches building a target in a project file.
+        
+        build_system = xcbuildsystem object
+        project = xcodeproj object - taken from BuildAction.performAction()
+        target_identifier = string identifier of the object in the xcodeproj file
+        """
+        target_constructor = PBXResolver(project.objects()[target_identifier]);
+        if target_constructor[0] == True:
+            target = target_constructor[1](PBXResolver, project.objects()[target_identifier], project, target_identifier);
+            print target.name;
+            print '========================';
+            for dependent in target.dependencies:
+                self.buildTarget(build_system, project, dependent.proxy.remoteGlobalIDString);
+            for phase in target.buildPhases:
+                phase.performPhase(build_system, target);
