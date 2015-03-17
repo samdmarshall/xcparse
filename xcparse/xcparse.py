@@ -16,20 +16,19 @@ class xcparse(object):
         if os.path.exists(path) == True:
             self.root_path = os.path.abspath(path);
             self.name = os.path.basename(path);
+            self.root = None;
             if self.name.endswith('.xcodeproj') or self.name.endswith('.pbproj'):
                 project_file = xcodeproj(self.root_path);
-                self._projects = [];
-                for project in project_file.projects():
-                    self._projects.append(project);
                 self.root = project_file;
             elif self.name.endswith('.xcworkspace'):
                 workspace_file = xcworkspace(self.root_path);
                 self.root = workspace_file;
-                self._projects = [];
-                for project_file in workspace_file.projects():
-                    self._projects.append(project_file);
             else:
                 logging_helper.getLogger().error('[xcparse]: Invalid file!');
+            if self.root != None:
+                self._projects = self.root.projects();
+            else:
+                logging_helper.getLogger().error('[xcparse]: Could not get root file!');
         else:
             logging_helper.getLogger().error('[xcparse]: Could not find file!');
     
@@ -56,9 +55,7 @@ class xcparse(object):
         """
         project_schemes = [];
         if self.isValid():
-            for project_file in self.projects():
-                for scheme in project_file.schemes():
-                    project_schemes.append(scheme);
+            project_schemes = reduce(lambda x,y: x+y, map(lambda proj: proj.schemes(), self.projects()));
         return project_schemes;
     
     def findSchemeWithName(self, scheme_name):
