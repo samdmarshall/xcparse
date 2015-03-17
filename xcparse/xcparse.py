@@ -55,6 +55,7 @@ class xcparse(object):
         """
         project_schemes = [];
         if self.isValid():
+            # compressed two for loops into a single reduce/map to get a flat list of all schemes
             project_schemes = reduce(lambda x,y: x+y, map(lambda proj: proj.schemes(), self.projects()));
         return project_schemes;
     

@@ -4,6 +4,7 @@ import xml.etree.ElementTree as xml
 
 from ..Helpers import path_helper
 from ..Helpers import xcrun_helper
+from ..Helpers import logging_helper
 
 from .XCSchemeActions.BuildAction import BuildAction
 from .XCSchemeActions.TestAction import TestAction
@@ -27,6 +28,12 @@ def XCSchemeParseDirectory(dir_path):
                 scheme_xml = xcscheme(scheme_file_path);
                 if scheme_xml.isValid() == True:
                     schemes.append(scheme_xml);
+                else:
+                    logging_helper.getLogger().warn('[xcscheme]: Invalid scheme file at path "%s"' % scheme_file_path);
+            else:
+                logging_helper.getLogger().warn('[xcscheme]: "%s" is not an xcscheme file!' % scheme_file_path);
+    else:
+        logging_helper.getLogger().warn('[xcscheme]: "%s" path does not exist!' % dir_path);
     return schemes;
 
 class xcscheme(object):
@@ -36,10 +43,11 @@ class xcscheme(object):
         self.container = '';
         self.path = path_helper(path, '');
         self.name = os.path.basename(path).split('.xcscheme')[0];
+        self.contents = None;
         try:
             self.contents = xml.parse(self.path.obj_path);
         except:
-            self.contents = None;
+            logging_helper.getLogger().error('[xcscheme]: Could not load contents of xcscheme file!');
     
     def __repr__(self):
         if self.isValid():

@@ -18,7 +18,7 @@ class EnvVarCondition(object):
         return '(%s : %s : %s)' % (type(self), self.eval, self.value);
     
     def __attrs(self):
-        return (tuple(self.keys));
+        return tuple(self.keys);
 
     def __eq__(self, other):
         return isinstance(other, EnvVarCondition) and self.keys == other.keys;

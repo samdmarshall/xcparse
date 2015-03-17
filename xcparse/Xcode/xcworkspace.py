@@ -19,7 +19,7 @@ class xcworkspace(xc_base):
                 try:
                     self.data = xml.parse(self.path.root_path);
                 except:
-                    self.data = None;
+                    logging_helper.getLogger().error('[xcworkspace]: Failed to load xcworkspacedata file!');
             else:
                 logging_helper.getLogger().error('[xcworkspace]: Could not find xcworkspacedata file!');
         else:
