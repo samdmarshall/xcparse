@@ -56,7 +56,7 @@ class xcparse(object):
         project_schemes = [];
         if self.isValid():
             # compressed two for loops into a single reduce/map to get a flat list of all schemes
-            project_schemes = reduce(lambda x,y: x+y, map(lambda proj: proj.schemes(), self.projects()));
+            project_schemes = [scheme for project in self.projects() for scheme in project.schemes()];
         return project_schemes;
     
     def findSchemeWithName(self, scheme_name):

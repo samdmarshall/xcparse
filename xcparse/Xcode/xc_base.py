@@ -39,10 +39,8 @@ class xc_base(object):
             The scheme object if a scheme with matching name was found, None otherwise.
         """
         schemes = self.schemes();
-        result = scheme_name in list(map(lambda scheme: scheme.name, schemes));
         found_scheme = None;
-        for scheme in schemes:
-            if scheme.name == scheme_name:
-                found_scheme = scheme;
-                break;
-        return (result, found_scheme);
+        scheme_filter = filter(lambda scheme: scheme.name == scheme_name, schemes);
+        if len(scheme_filter) > 0:
+            found_scheme = scheme_filter[0];
+        return (found_scheme != None, found_scheme);

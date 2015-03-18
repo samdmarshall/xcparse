@@ -31,7 +31,9 @@ def XCSchemeParseDirectory(dir_path):
                 else:
                     logging_helper.getLogger().warn('[xcscheme]: Invalid scheme file at path "%s"' % scheme_file_path);
             else:
-                logging_helper.getLogger().warn('[xcscheme]: "%s" is not an xcscheme file!' % scheme_file_path);
+                # skipping the known management file
+                if scheme_file != 'xcschememanagement.plist':
+                    logging_helper.getLogger().warn('[xcscheme]: "%s" is not an xcscheme file!' % scheme_file_path);
     else:
         logging_helper.getLogger().warn('[xcscheme]: "%s" path does not exist!' % dir_path);
     return schemes;

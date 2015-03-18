@@ -47,9 +47,7 @@ class xcworkspace(xc_base):
             if node.tag == 'Group':
                 path = os.path.join(path, item_path);
                 for child in node:
-                    group_results = self.__parsePathsFromXMLItem(child, path);
-                    for item in group_results:
-                        results.append(item);
+                    results.extend(self.__parsePathsFromXMLItem(child, path));
         return results;
     
     def projects(self):
@@ -61,8 +59,6 @@ class xcworkspace(xc_base):
             workspace_base_path = self.path.base_path;
             workspace_root = self.data.getroot();
             for child in workspace_root:
-                results = self.__parsePathsFromXMLItem(child, workspace_base_path);
-                for item in results:
-                    indexed_projs.append(item);
+                indexed_projs.extend(self.__parsePathsFromXMLItem(child, workspace_base_path));
         return indexed_projs;
     
