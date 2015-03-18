@@ -16,7 +16,6 @@ class xcparse(object):
         if os.path.exists(path) == True:
             self.root_path = os.path.abspath(path);
             self.name = os.path.basename(path);
-            self.root = None;
             if self.name.endswith('.xcodeproj') or self.name.endswith('.pbproj'):
                 project_file = xcodeproj(self.root_path);
                 self.root = project_file;
@@ -55,7 +54,6 @@ class xcparse(object):
         """
         project_schemes = [];
         if self.isValid():
-            # compressed two for loops into a single reduce/map to get a flat list of all schemes
             project_schemes = [scheme for project in self.projects() for scheme in project.schemes()];
         return project_schemes;
     
