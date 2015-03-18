@@ -17,6 +17,7 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
             self.runOnlyForDeploymentPostprocessing = dictionary['runOnlyForDeploymentPostprocessing'];
     
     def performPhase(self, build_system, target):
+        build_system.initEnvironment();
         phase_spec = build_system.getSpecForIdentifier(self.bundleid);
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
@@ -25,6 +26,10 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
             compiler = build_system.getCompilerForFileReference(file.fileRef);
             print 'File: %s wants Compiler: %s' % (file, compiler);
+            if 'Options' in compiler.contents.keys():
+                build_system.environment.addOptions(compiler.contents['Options']);
+            if 'ExecPath' in compiler.contents.keys():
+                print compiler.contents['ExecPath'];
         
         print '(implement me!)';
         print '';

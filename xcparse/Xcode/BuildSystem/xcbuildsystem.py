@@ -35,6 +35,12 @@ class xcbuildsystem(object):
         # this should load until we know the environment needed
         # self.environment = Environment();
     
+    def initEnvironment(self):
+        if hasattr(self, 'environment') == False:
+            self.environment = Environment();
+        else:
+            logging_helper.getLogger().warn('[xcbuildsystem]: Already initialized environment!');
+    
     def __findFilesFromPath(self, path, extension):
         found_items = [];
         search_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), path));

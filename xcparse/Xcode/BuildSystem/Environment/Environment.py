@@ -10,6 +10,7 @@ def ParseKey(key_string, environment):
     while offset < string_length:
         find_sub = key_string.find('$');
         offset = find_sub;
+        
     
 
 class Environment(object):
@@ -23,7 +24,7 @@ class Environment(object):
     
     def addOptions(self, options_array):
         for item in options_array:
-            self.settings[item['Name']] = EnvVariable(setting_dict);
+            self.settings[item['Name']] = EnvVariable(item);
     
     def applyConfig(self, config_obj):
         for line in config_obj.lines:
