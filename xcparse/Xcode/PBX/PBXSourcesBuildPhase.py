@@ -67,6 +67,14 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
             
             # this is missing all the build settings, also needs output set
             
+            # this is displaying the command being issued for this compiler in the build phase
+            args_str = '';
+            for word in args:
+                args_str += word;
+                args_str += ' ';
+            print args_str;
+            
+            # this is running the compiler command
             compiler_output = xcrun_helper.make_subprocess_call(args);
             if compiler_output[1] != 0:
                 logging_helper.getLogger().error('[PBXSourcesBuildPhase]: Compiler error %s' % compiler_output[0]);
