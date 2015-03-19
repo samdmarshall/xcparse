@@ -34,6 +34,9 @@ class xcbuildsystem(object):
         
         # this should load until we know the environment needed
         self.environment = None;
+        
+        # this will be used for the current compiler
+        self.compiler = None;
     
     def initEnvironment(self):
         if self.environment == None:
@@ -121,4 +124,53 @@ class xcbuildsystem(object):
             logging_helper.getLogger().info('[xcbuildsystem]: Could not find valid build rule for input file!');
         
         return compiler;
+    
+    def compileFiles(self, files):
         
+        if self.compiler != None:
+            args = ();
+            
+            # setting up default build environments
+            if 'Options' in self.compiler.contents.keys():
+                self.environment.addOptions(self.compiler.contents['Options']);
+        
+            compiler_exec = '';
+            if 'ExecPath' in self.compiler.contents.keys():
+                if self.environment.isEnvironmentVariable(self.compiler.contents['ExecPath']) == True:
+                    compiler_exec_results = self.environment.parseKey(self.compiler.contents['ExecPath']);
+                    if compiler_exec_results[0] == True:
+                        compiler_exec = xcrun_helper.make_xcrun_with_args(('-f', str(compiler_exec_results[1])));
+            else:
+                logging_helper.getLogger().error('[xcbuildsystem]: No compiler executable found!');
+                return;
+            
+            args += (compiler_exec,);
+        
+            for file in files:
+                file_path = str(file.fileRef.fs_path.root_path);
+                args += (file_path,)
+        
+            sdk_name = self.environment.valueForKey('SDKROOT');
+            sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
+            if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
+                args += ('-sdk', sdk_path);
+            elif self.compiler.identifier.startswith('com.apple.xcode.compiler.llvm.clang'):
+                args += ('-isysroot', sdk_path);
+            else:
+                logging_helper.getLogger().warn('[xcbuildsystem]: unknown compiler, not sure how to specify sdk path');
+            
+            # this is missing all the build settings, also needs output set
+        
+            # this is displaying the command being issued for this compiler in the build phase
+            args_str = '';
+            for word in args:
+                args_str += word;
+                args_str += ' ';
+            print args_str;
+        
+            # this is running the compiler command
+            compiler_output = xcrun_helper.make_subprocess_call(args);
+            if compiler_output[1] != 0:
+                logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
+        else:
+            logging_helper.getLogger().error('[xcbuildsystem]: No compiler set!');
