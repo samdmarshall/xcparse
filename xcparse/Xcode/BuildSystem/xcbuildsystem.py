@@ -33,10 +33,10 @@ class xcbuildsystem(object):
         self.platforms = LoadPlatforms();
         
         # this should load until we know the environment needed
-        # self.environment = Environment();
+        self.environment = None;
     
     def initEnvironment(self):
-        if hasattr(self, 'environment') == False:
+        if self.environment == None:
             self.environment = Environment();
         else:
             logging_helper.getLogger().warn('[xcbuildsystem]: Already initialized environment!');

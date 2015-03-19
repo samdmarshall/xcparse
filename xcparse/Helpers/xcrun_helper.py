@@ -5,7 +5,7 @@ from subprocess import CalledProcessError
 import hashlib
 import CoreFoundation
 import struct
-import logging_helper
+from .logging_helper import logging_helper
 
 class xcrun_helper(object):
     """
@@ -118,13 +118,17 @@ class xcrun_helper(object):
         return (output, error);
     
     @classmethod
-    def resolve_sdk_path(cls, sdk_name):
-        xcrun_result = xcrun_helper.make_subprocess_call(('xcrun', '--show-sdk-path', '--sdk', sdk_name));
+    def make_xcrun_with_args(cls, args_tuple):
+        xcrun_result = xcrun_helper.make_subprocess_call((('xcrun',) + args_tuple));
         if xcrun_result[1] != 0:
-            logging_helper.getLogger().info('[xcrun_helper]: Please run Xcode first!');
+            logging_helper.getLogger().info('[xcrun_helper]: Error in exec!');
             sys.exit();
-        sdk_path = xcrun_result[0].rstrip('\n');
-        return sdk_path;
+        xcrun_output = xcrun_result[0].rstrip('\n');
+        return xcrun_output;
+    
+    @classmethod
+    def resolve_sdk_path(cls, sdk_name):
+        return xcrun_helper.make_xcrun_with_args(('--show-sdk-path', '--sdk', sdk_name));
     
     @classmethod
     def resolve_developer_path(cls):

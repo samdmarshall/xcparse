@@ -51,7 +51,7 @@ class BuildAction(Base_Action):
         target_identifier = string identifier of the object in the xcodeproj file
         """
         # check to make sure that the target is a valid dependency
-        if target_identifier in project.objects().keys():
+        if target_identifier in project.contents['objects'].keys():
             # get the target from the project file
             target = filter(lambda target: target.identifier == target_identifier, project.targets());
             if len(target) > 0:

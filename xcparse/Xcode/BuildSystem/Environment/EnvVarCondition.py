@@ -6,13 +6,14 @@ class EnvVarCondition(object):
         self.value = value;
     
     def evaluate(self, environment):
-        for key in self.keys():
+        for key in self.keys:
+            print key;
             # lookup the conditional
             result = environment.valueForKey(key);
             # some check here
             print result;
             # break if failed
-        return False;
+        return True;
     
     def __repr__(self):
         return '(%s : %s : %s)' % (type(self), self.eval, self.value);

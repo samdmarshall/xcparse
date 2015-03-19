@@ -26,14 +26,25 @@ class PBX_Base(object):
         if is_array == True:
             property_list = [];
             for item in dict_item:
-                result = lookup_func(project.objects()[item]);
-                if result[0] == True:
-                    property_list.append(result[1](lookup_func, project.objects()[item], project, item));
+                find_object = project.objectForIdentifier(item);
+                if find_object != None:
+                    property_list.append(find_object);
+                else:
+                    result = lookup_func(project.contents['objects'][item]);
+                    if result[0] == True:
+                        created_object = result[1](lookup_func, project.contents['objects'][item], project, item);
+                        project.objects.add(created_object);
+                        property_list.append(created_object);
             return property_list;
         else:
             property_item = None;
-            result = lookup_func(project.objects()[dict_item])
-            if result[0] == True:
-                property_item = result[1](lookup_func, project.objects()[dict_item], project, dict_item);
+            find_object = project.objectForIdentifier(dict_item);
+            if find_object != None:
+                property_item = find_object;
+            else:
+                result = lookup_func(project.contents['objects'][dict_item])
+                if result[0] == True:
+                    property_item = result[1](lookup_func, project.contents['objects'][dict_item], project, dict_item);
+                    project.objects.add(property_item);
             return property_item;
     

@@ -17,7 +17,7 @@ def main(argv):
 
     environment = Environment();
 
-    test_config = xcconfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.xcconfig'));
+    test_config = xcconfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test/test.xcconfig'));
 
     environment.applyConfig(test_config);
     

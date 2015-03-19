@@ -8,6 +8,7 @@ class PBXFileReference(PBX_Base_Reference):
         self.identifier = identifier;
         self.path = None;
         self.fs_path = None;
+        self.name = '';
         if 'path' in dictionary.keys():
             self.path = path_helper(dictionary['path'], '');
             self.name = os.path.basename(self.path.obj_path);
