@@ -13,17 +13,20 @@ class xc_base(object):
         """
         schemes = [];
         # shared schemes
-        shared_path = XCSchemeGetSharedPath(self.path.obj_path);
-        shared_schemes = XCSchemeParseDirectory(shared_path);
-        for scheme in shared_schemes:
-            scheme.shared = True;
+        if XCSchemeHasSharedSchemes(self.path.obj_path) == True:
+            shared_path = XCSchemeGetSharedPath(self.path.obj_path);
+            shared_schemes = XCSchemeParseDirectory(shared_path);
+            for scheme in shared_schemes:
+                scheme.shared = True;
+                scheme.container = self.path;
+                schemes.append(scheme);
         # user schemes
-        user_path = XCSchemeGetUserPath(self.path.obj_path);
-        user_schemes = XCSchemeParseDirectory(user_path);
-        # merge schemes
-        for scheme in shared_schemes + user_schemes:
-            scheme.container = self.path;
-            schemes.append(scheme);
+        if XCSchemeHasUserSchemes(self.path.obj_path) == True:
+            user_path = XCSchemeGetUserPath(self.path.obj_path);
+            user_schemes = XCSchemeParseDirectory(user_path);
+            for scheme in user_schemes:
+                scheme.container = self.path;
+                schemes.append(scheme);
         return schemes;
     
     def hasSchemeWithName(self, scheme_name):

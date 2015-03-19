@@ -13,6 +13,13 @@ from .XCSchemeActions.ProfileAction import ProfileAction
 from .XCSchemeActions.AnalyzeAction import AnalyzeAction
 from .XCSchemeActions.ArchiveAction import ArchiveAction
 
+
+def XCSchemeHasSharedSchemes(path):
+    return os.path.exists(os.path.join(path, 'xcshareddata'));
+
+def XCSchemeHasUserSchemes(path):
+    return os.path.exists(os.path.join(path, 'xcuserdata'));
+
 def XCSchemeGetSharedPath(path):
     return os.path.join(path, 'xcshareddata/xcschemes');
 
