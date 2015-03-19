@@ -25,18 +25,20 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         print '* %s' % (phase_spec.contents['Description']);
         
         compiler_dict = {};
-        # this needs to be changed to group files by type then use the relevant compiler
+        
+        # this groups files based on compiler
         for file in self.files:
             args = ();
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
             compiler = build_system.getCompilerForFileReference(file.fileRef);
-            print 'File: %s wants Compiler: %s' % (file, compiler);
+            logging_helper.getLogger().info('[PBXSourcesBuildPhase]: File "%s" wants Compiler "%s"' % (file, compiler));
             
             if compiler.identifier not in compiler_dict.keys():
                 compiler_dict[compiler.identifier] = set();
             if compiler.identifier in compiler_dict.keys():
                 compiler_dict[compiler.identifier].add(file);
-            
+        
+        # this iterates over the grouped (compiler:files) key:value pairs to create the build objects for those files
         for compiler_key in compiler_dict.keys():
             compiler = build_system.getSpecForIdentifier(compiler_key);
             
@@ -63,7 +65,10 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
             sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
             args += ('-sdk', sdk_path);
             
-            print xcrun_helper.make_subprocess_call(args);
+            # this is missing all the build settings, also needs output set
+            
+            compiler_output = xcrun_helper.make_subprocess_call(args);
+            if compiler_output[1] != 0:
+                logging_helper.getLogger().error('[PBXSourcesBuildPhase]: Compiler error %s' % compiler_output[0]);
         
-        print '(implement me!)';
         print '';

@@ -7,11 +7,11 @@ class EnvVarCondition(object):
     
     def evaluate(self, environment):
         for key in self.keys:
-            print key;
+            #print key;
             # lookup the conditional
             result = environment.valueForKey(key);
             # some check here
-            print result;
+            #print result;
             # break if failed
         return True;
     
