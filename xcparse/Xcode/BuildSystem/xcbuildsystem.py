@@ -145,11 +145,11 @@ class xcbuildsystem(object):
                 return;
             
             args += (compiler_exec,);
-        
+            
             for file in files:
                 file_path = str(file.fileRef.fs_path.root_path);
                 args += (file_path,)
-        
+            
             sdk_name = self.environment.valueForKey('SDKROOT');
             sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
             if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
@@ -160,14 +160,14 @@ class xcbuildsystem(object):
                 logging_helper.getLogger().warn('[xcbuildsystem]: unknown compiler, not sure how to specify sdk path');
             
             # this is missing all the build settings, also needs output set
-        
+            
             # this is displaying the command being issued for this compiler in the build phase
             args_str = '';
             for word in args:
                 args_str += word;
                 args_str += ' ';
             print args_str;
-        
+            
             # this is running the compiler command
             compiler_output = xcrun_helper.make_subprocess_call(args);
             if compiler_output[1] != 0:
