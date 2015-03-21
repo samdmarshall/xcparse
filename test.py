@@ -13,9 +13,7 @@ def main(argv):
     
     xcparser = xcparse.xcparse(args.filename);
     
-    print xcparser.projects();
-    
-    # build_system = xcbuildsystem();
+    print xcparser.projects()
 
     environment = Environment();
 
