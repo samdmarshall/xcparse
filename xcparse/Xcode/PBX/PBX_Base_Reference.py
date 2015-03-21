@@ -2,6 +2,7 @@ import os
 from ...Helpers import xcrun_helper
 from ...Helpers import path_helper
 from .PBX_Base import *
+from .PBX_Constants import *
 
 class PBX_Base_Reference(PBX_Base):
     
@@ -9,6 +10,20 @@ class PBX_Base_Reference(PBX_Base):
         super(PBX_Base_Reference, self).__init__(lookup_func, dictionary, project, identifier);
         self.fs_path = None;
         self.fs_found = False;
+        
+        self.path = None;
+        if kPBX_REFERENCE_path in dictionary.keys():
+            self.path = path_helper(dictionary[kPBX_REFERENCE_path], '');
+            self.name = os.path.basename(self.path.obj_path);
+        
+        if kPBX_REFERENCE_name in dictionary.keys():
+            self.name = dictionary[kPBX_REFERENCE_name];
+        
+        if kPBX_REFERENCE_refType in dictionary.keys():
+            self.refType = dictionary[kPBX_REFERENCE_refType];
+        
+        if kPBX_REFERENCE_sourceTree in dictionary.keys():
+            self.sourceTree = dictionary[kPBX_REFERENCE_sourceTree];
     
     # Absolute Path = <absolute>
     def resolveAbsolutePath(self, project, parent_path):
@@ -80,6 +95,6 @@ class PBX_Base_Reference(PBX_Base):
             self.fs_path = action(project, parent_path.obj_path);
             self.fs_found = os.path.exists(self.fs_path.obj_path);
             
-            if hasattr(self, 'children'):
+            if hasattr(self, kPBX_REFERENCE_children):
                 self.children = list(map(lambda child: child.resolvePath(project, self.fs_path), self.children));
         

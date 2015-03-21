@@ -1,5 +1,6 @@
 from .PBXResolver import *
 from .PBX_Base_Phase import *
+from .PBX_Constants import *
 
 class PBXShellScriptBuildPhase(PBX_Base_Phase):
     
@@ -7,25 +8,19 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         super(PBXShellScriptBuildPhase, self).__init__(lookup_func, dictionary, project, identifier);
         self.bundleid = 'com.apple.buildphase.shell-script';
         self.phase_type = 'Run Shell Script';
-        if 'buildActionMask' in dictionary.keys():
-            self.buildActionMask = dictionary['buildActionMask'];
-        if 'files' in dictionary.keys():
-            self.files = self.parseProperty('files', lookup_func, dictionary, project, True);
-        if 'runOnlyForDeploymentPostprocessing' in dictionary.keys():
-            self.runOnlyForDeploymentPostprocessing = dictionary['runOnlyForDeploymentPostprocessing'];
-        if 'shellScript' in dictionary.keys():
-            self.shellScript = dictionary['shellScript'];
-        if 'shellPath' in dictionary.keys():
-            self.shellPath = dictionary['shellPath'];
-        if 'inputPaths' in dictionary.keys():
+        if kPBX_PHASE_shellScript in dictionary.keys():
+            self.shellScript = dictionary[kPBX_PHASE_shellScript];
+        if kPBX_PHASE_shellPath in dictionary.keys():
+            self.shellPath = dictionary[kPBX_PHASE_shellPath];
+        if kPBX_PHASE_inputPaths in dictionary.keys():
             inputPaths = [];
-            for inputPath in dictionary['inputPaths']:
+            for inputPath in dictionary[kPBX_PHASE_inputPaths]:
                 inputPaths.append(inputPath);
             self.inputPaths = inputPaths;
-        if 'outputPaths' in dictionary.keys():
+        if kPBX_PHASE_outputPaths in dictionary.keys():
             outputPaths = [];
-            for outputPath in dictionary['outputPaths']:
+            for outputPath in dictionary[kPBX_PHASE_outputPaths]:
                 outputPaths.append(outputPath);
             self.outputPaths = outputPaths;
-        if 'showEnvVarsInLog' in dictionary.keys():
-            self.showEnvVarsInLog = dictionary['showEnvVarsInLog'];
+        if kPBX_PHASE_showEnvVarsInLog in dictionary.keys():
+            self.showEnvVarsInLog = dictionary[kPBX_PHASE_showEnvVarsInLog];

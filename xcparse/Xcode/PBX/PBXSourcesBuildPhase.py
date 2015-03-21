@@ -10,13 +10,6 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         super(PBXSourcesBuildPhase, self).__init__(lookup_func, dictionary, project, identifier);
         self.bundleid = 'com.apple.buildphase.sources';
         self.phase_type = 'Compile Sources';
-        self.files = [];
-        if 'buildActionMask' in dictionary.keys():
-            self.buildActionMask = dictionary['buildActionMask'];
-        if 'files' in dictionary.keys():
-            self.files = self.parseProperty('files', lookup_func, dictionary, project, True);
-        if 'runOnlyForDeploymentPostprocessing' in dictionary.keys():
-            self.runOnlyForDeploymentPostprocessing = dictionary['runOnlyForDeploymentPostprocessing'];
     
     def performPhase(self, build_system, target):
         build_system.initEnvironment();

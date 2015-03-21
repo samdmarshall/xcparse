@@ -1,5 +1,6 @@
 from .PBXResolver import *
 from .PBX_Base_Phase import *
+from .PBX_Constants import *
 
 class PBXAppleScriptBuildPhase(PBX_Base_Phase):
     
@@ -7,13 +8,8 @@ class PBXAppleScriptBuildPhase(PBX_Base_Phase):
         super(PBXAppleScriptBuildPhase, self).__init__(lookup_func, dictionary, project, identifier);
         self.bundleid = 'com.apple.buildphase.applescript';
         self.phase_type = 'AppleScript';
-        if 'buildActionMask' in dictionary.keys():
-            self.buildActionMask = dictionary['buildActionMask'];
-        if 'contextName' in dictionary.keys():
-            self.buildActionMask = dictionary['contextName'];
-        if 'files' in dictionary.keys():
-            self.files = self.parseProperty('files', lookup_func, dictionary, project, True);
-        if 'runOnlyForDeploymentPostprocessing' in dictionary.keys():
-            self.runOnlyForDeploymentPostprocessing = dictionary['runOnlyForDeploymentPostprocessing'];
-        if 'isSharedContext' in dictionary.keys():
-            self.isSharedContext = dictionary['isSharedContext'];
+        if kPBX_PHASE_contextName in dictionary.keys():
+            self.contextName = dictionary[kPBX_PHASE_contextName];
+        
+        if kPBX_PHASE_isSharedContext in dictionary.keys():
+            self.isSharedContext = dictionary[kPBX_PHASE_isSharedContext];
