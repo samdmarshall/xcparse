@@ -1,6 +1,7 @@
 import os
 import Xcode
 from Xcode import xcodeproj
+from Xcode import xcworkspace
 from .Helpers import logging_helper
 
 class xcparse(object):

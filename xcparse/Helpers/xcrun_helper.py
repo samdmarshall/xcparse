@@ -94,6 +94,7 @@ class xcrun_helper(object):
     def resolvePathFromLocation(cls, location_string, path, base_path):
         path_type, item_path = location_string.split(':');
         if path_type == 'group':
+            path = os.path.join(base_path, path);
             return os.path.join(path, item_path);
         elif path_type == 'absolute':
             return item_path;

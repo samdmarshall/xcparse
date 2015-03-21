@@ -53,7 +53,11 @@ class PBX_Base_Reference(PBX_Base):
     
     # Relative to Build Products = BUILT_PRODUCTS_DIR
     def resolveBuildProductsPath(self, project, parent_path):
-        target = project.targetForProductRef(self.identifier)[0];
+        target = project.targetForProductRef(self.identifier);
+        if len(target) > 0:
+            target = target[0];
+        else:
+            target = project;
         default_config = target.buildConfigurationList.defaultBuildConfiguration();
         symroot_path = default_config.buildSettingForKey('CONFIGURATION_BUILD_DIR');
         # default for now
@@ -67,7 +71,11 @@ class PBX_Base_Reference(PBX_Base):
     
     # Relative to SDK = SDKROOT
     def resolveSDKPath(self, project, parent_path):
-        target = project.targetForProductRef(self.identifier)[0];
+        target = project.targetForProductRef(self.identifier);
+        if len(target) > 0:
+            target = target[0];
+        else:
+            target = project;
         default_config = target.buildConfigurationList.defaultBuildConfiguration();
         sdk_path = xcrun_helper.resolve_sdk_path(default_config.buildSettingForKey('SDKROOT'));
         obj_path = '';
