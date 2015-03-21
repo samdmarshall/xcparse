@@ -6,8 +6,7 @@ from .PBX_Base import *
 class PBX_Base_Reference(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.name = 'PBX_BASE_REFERENCE';
-        self.identifier = identifier;
+        super(PBX_Base_Reference, self).__init__(lookup_func, dictionary, project, identifier);
         self.fs_path = None;
         self.fs_found = False;
     

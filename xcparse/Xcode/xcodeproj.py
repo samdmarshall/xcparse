@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 from .xc_base import xc_base
+from .PBX import PBXResolver
+from .PBX.PBX_Constants import *
 from ..Helpers import plist_helper
 from ..Helpers import path_helper
-from .PBX import PBXResolver
 from ..Helpers import logging_helper
 
 class xcodeproj(xc_base):
@@ -21,12 +22,12 @@ class xcodeproj(xc_base):
             
             self.contents = plist_helper.LoadPlistFromDataAtPath(self.path.root_path);
             if self.contents != None:
-                for item in self.contents['objects']:
+                for item in self.contents[kPBX_objects]:
                     find_object = self.objectForIdentifier(item);
                     if find_object == None:
-                        result = PBXResolver(self.contents['objects'][item])
+                        result = PBXResolver(self.contents[kPBX_objects][item])
                         if result[0] == True:
-                            resolved_object = result[1](PBXResolver, self.contents['objects'][item], self, item);
+                            resolved_object = result[1](PBXResolver, self.contents[kPBX_objects][item], self, item);
                             self.objects.add(resolved_object);
                     else:
                         self.objects.add(find_object);
@@ -96,9 +97,9 @@ class xcodeproj(xc_base):
                 if found_object != None:
                     file_ref = found_object;
                 else:
-                    result = PBXResolver(self.contents['objects'][project_ref]);
+                    result = PBXResolver(self.contents[kPBX_objects][project_ref]);
                     if result[0] == True:
-                        file_ref = result[1](PBXResolver, self.contents['objects'][project_ref], self, project_ref);
+                        file_ref = result[1](PBXResolver, self.contents[kPBX_objects][project_ref], self, project_ref);
                 subproject_path = os.path.join(self.path.base_path, file_ref.path.obj_path);
                 if os.path.exists(subproject_path) == True:
                     paths.append(subproject_path);

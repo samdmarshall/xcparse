@@ -1,11 +1,11 @@
 from .PBXResolver import *
+from .PBX_Base import *
 from ..XCConfig import xcconfig
 
-class PBX_Build_Setting(object):
+class PBX_Build_Setting(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.name = 'PBX_BUILD_SETTING';
-        self.identifier = identifier;
+        super(PBX_Build_Setting, self).__init__(lookup_func, dictionary, project, identifier);
     
     def loadBuildSettings(self):
         self.xcconfig = xcconfig(None);

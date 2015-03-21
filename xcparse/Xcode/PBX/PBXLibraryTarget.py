@@ -1,23 +1,14 @@
 from .PBXResolver import *
 from .PBX_Base_Target import *
+from .PBX_Constants import *
 
 class PBXLibraryTarget(PBX_Base_Target):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
-        if 'buildConfigurationList' in dictionary.keys():
-            self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
-        if 'buildPhases' in dictionary.keys():
-            self.buildPhases = self.parseProperty('buildPhases', lookup_func, dictionary, project, True);
-        if 'dependencies' in dictionary.keys():
-            self.dependencies = self.parseProperty('dependencies', lookup_func, dictionary, project, True);
-        if 'name' in dictionary.keys():
-            self.name = dictionary['name'];
-        if 'productName' in dictionary.keys():
-            self.productName = dictionary['productName'];
-        if 'passBuildSettingsInEnvironment' in dictionary.keys():
-            self.passBuildSettingsInEnvironment = dictionary['passBuildSettingsInEnvironment'];
-        if 'buildArgumentsString' in dictionary.keys():
-            self.buildArgumentsString = dictionary['buildArgumentsString'];
-        if 'buildToolPath' in dictionary.keys():
-            self.buildToolPath = dictionary['buildToolPath'];
+        super(PBXLibraryTarget, self).__init__(lookup_func, dictionary, project, identifier);
+        if kPBX_TARGET_passBuildSettingsInEnvironment in dictionary.keys():
+            self.passBuildSettingsInEnvironment = dictionary[kPBX_TARGET_passBuildSettingsInEnvironment];
+        if kPBX_TARGET_buildArgumentsString in dictionary.keys():
+            self.buildArgumentsString = dictionary[kPBX_TARGET_buildArgumentsString];
+        if kPBX_TARGET_buildToolPath in dictionary.keys():
+            self.buildToolPath = dictionary[kPBX_TARGET_buildToolPath];

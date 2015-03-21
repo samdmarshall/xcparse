@@ -4,7 +4,7 @@ from .PBX_Base import *
 class XCConfigurationList(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
+        super(XCConfigurationList, self).__init__(lookup_func, dictionary, project, identifier);
         self.defaultConfigurationName = None;
         if 'buildConfigurations' in dictionary.keys():
             self.buildConfigurations = self.parseProperty('buildConfigurations', lookup_func, dictionary, project, True);

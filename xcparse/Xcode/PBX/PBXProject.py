@@ -5,11 +5,11 @@ from .PBX_Build_Setting import *
 from .PBXGroup import *
 from ...Helpers import path_helper
 
-class PBXProject(PBX_Base, PBX_Build_Setting):
+class PBXProject(PBX_Build_Setting):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        super(PBXProject, self).__init__(lookup_func, dictionary, project, identifier);
         self.name = os.path.basename(project.path.obj_path);
-        self.identifier = identifier;
         self.projectReferences = [];
         self.targets = [];
         if 'attributes' in dictionary.keys():

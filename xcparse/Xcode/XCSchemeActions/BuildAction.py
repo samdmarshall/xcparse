@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as xml
 from ...Helpers import xcrun_helper
 from ..PBX import PBXResolver
+from ..PBX.PBX_Constants import *
 from ..BuildSystem import xcbuildsystem
 from .Base_Action import *
 from .BuildActionEntry import *
@@ -51,7 +52,7 @@ class BuildAction(Base_Action):
         target_identifier = string identifier of the object in the xcodeproj file
         """
         # check to make sure that the target is a valid dependency
-        if target_identifier in project.contents['objects'].keys():
+        if target_identifier in project.contents[kPBX_objects].keys():
             # get the target from the project file
             target = filter(lambda target: target.identifier == target_identifier, project.targets());
             if len(target) > 0:

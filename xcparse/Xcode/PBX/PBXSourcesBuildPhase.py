@@ -7,8 +7,8 @@ from ..BuildSystem.Environment import Environment
 class PBXSourcesBuildPhase(PBX_Base_Phase):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        super(PBXSourcesBuildPhase, self).__init__(lookup_func, dictionary, project, identifier);
         self.bundleid = 'com.apple.buildphase.sources';
-        self.identifier = identifier;
         self.phase_type = 'Compile Sources';
         self.files = [];
         if 'buildActionMask' in dictionary.keys():

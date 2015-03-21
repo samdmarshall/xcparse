@@ -4,7 +4,7 @@ from ..XCConfig import xcconfig
 class XCBuildConfiguration(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
+        super(XCBuildConfiguration, self).__init__(lookup_func, dictionary, project, identifier);
         if 'baseConfigurationReference' in dictionary.keys():
             self.baseConfigurationReference = self.parseProperty('baseConfigurationReference', lookup_func, dictionary, project, False);
         else:

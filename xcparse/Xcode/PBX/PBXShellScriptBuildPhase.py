@@ -4,8 +4,8 @@ from .PBX_Base_Phase import *
 class PBXShellScriptBuildPhase(PBX_Base_Phase):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
+        super(PBXShellScriptBuildPhase, self).__init__(lookup_func, dictionary, project, identifier);
         self.bundleid = 'com.apple.buildphase.shell-script';
-        self.identifier = identifier;
         self.phase_type = 'Run Shell Script';
         if 'buildActionMask' in dictionary.keys():
             self.buildActionMask = dictionary['buildActionMask'];

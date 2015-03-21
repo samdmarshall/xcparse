@@ -2,16 +2,33 @@ from .PBXResolver import *
 from .PBXSourcesBuildPhase import *
 from .PBXFrameworksBuildPhase import *
 from .PBX_Build_Setting import *
+from .PBX_Constants import *
 
-class PBX_Base_Target(PBX_Base, PBX_Build_Setting):
+class PBX_Base_Target(PBX_Build_Setting):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.name = 'PBX_BASE_TARGET';
-        self.identifier = identifier;
+        super(PBX_Base_Target, self).__init__(lookup_func, dictionary, project, identifier);
+        
+        if kPBX_TARGET_name in dictionary.keys():
+            self.name = dictionary[kPBX_TARGET_name];
+        
+        self.productName = '';
+        if kPBX_TARGET_productName in dictionary.keys():
+            self.productName = dictionary[kPBX_TARGET_productName];
+        
+        if kPBX_TARGET_buildConfigurationList in dictionary.keys():
+            self.buildConfigurationList = self.parseProperty(kPBX_TARGET_buildConfigurationList, lookup_func, dictionary, project, False);
+        
         self.buildPhases = [];
+        if kPBX_TARGET_buildPhases in dictionary.keys():
+            self.buildPhases = self.parseProperty(kPBX_TARGET_buildPhases, lookup_func, dictionary, project, True);
+        
         self.dependencies = [];
-        self.productReference = '';
-        self.buildRules = [];
+        if kPBX_TARGET_dependencies in dictionary.keys():
+            self.dependencies = self.parseProperty(kPBX_TARGET_dependencies, lookup_func, dictionary, project, True);
+        
+        if kPBX_TARGET_productReference in dictionary.keys():
+            self.productReference = self.parseProperty(kPBX_TARGET_productReference, lookup_func, dictionary, project, False);
     
     def sourceFiles(self):
         file_list = [];

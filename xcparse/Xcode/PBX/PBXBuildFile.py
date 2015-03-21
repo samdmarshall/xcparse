@@ -4,8 +4,7 @@ from .PBX_Base import *
 class PBXBuildFile(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
-        self.name = '';
+        super(PBXBuildFile, self).__init__(lookup_func, dictionary, project, identifier);
         if 'fileRef' in dictionary.keys():
             self.fileRef = self.parseProperty('fileRef', lookup_func, dictionary, project, False);
             self.name = self.fileRef.name;

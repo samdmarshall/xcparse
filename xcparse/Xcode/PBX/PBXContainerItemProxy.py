@@ -3,7 +3,7 @@ from .PBX_Base import *
 class PBXContainerItemProxy(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
+        super(PBXContainerItemProxy, self).__init__(lookup_func, dictionary, project, identifier);
         if 'containerPortal' in dictionary.keys():
             self.containerPortal = dictionary['containerPortal'];
         if 'proxyType' in dictionary.keys():

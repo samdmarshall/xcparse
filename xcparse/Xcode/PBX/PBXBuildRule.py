@@ -4,7 +4,7 @@ from .PBX_Base import *
 class PBXBuildRule(PBX_Base):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
+        super(PBXBuildRule, self).__init__(lookup_func, dictionary, project, identifier);
         if 'compilerSpec' in dictionary.keys():
             self.compilerSpec = dictionary['compilerSpec'];
         if 'filePatterns' in dictionary.keys():

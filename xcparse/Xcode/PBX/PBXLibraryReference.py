@@ -5,7 +5,7 @@ from ...Helpers import path_helper
 class PBXLibraryReference(PBX_Base_Reference):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
+        super(PBXLibraryReference, self).__init__(lookup_func, dictionary, project, identifier);
         self.path = None;
         self.fs_path = None;
         if 'path' in dictionary.keys():

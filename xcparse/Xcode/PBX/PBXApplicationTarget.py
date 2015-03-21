@@ -1,25 +1,15 @@
 from .PBXResolver import *
 from .PBX_Base_Target import *
+from .PBX_Constants import *
 
 class PBXApplicationTarget(PBX_Base_Target):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
-        self.identifier = identifier;
-        if 'buildSettings' in dictionary.keys():
-            self.buildSettings = dictionary['buildSettings'];
-        if 'buildConfigurationList' in dictionary.keys():
-            self.buildConfigurationList = self.parseProperty('buildConfigurationList', lookup_func, dictionary, project, False);
-        if 'buildPhases' in dictionary.keys():
-            self.buildPhases = self.parseProperty('buildPhases', lookup_func, dictionary, project, True);
-        if 'dependencies' in dictionary.keys():
-            self.dependencies = self.parseProperty('dependencies', lookup_func, dictionary, project, True);
-        if 'name' in dictionary.keys():
-            self.name = dictionary['name'];
-        if 'productName' in dictionary.keys():
-            self.productName = dictionary['productName'];
-        if 'productInstallPath' in dictionary.keys():
-            self.productInstallPath = dictionary['productInstallPath'];
-        if 'productSettingsXML' in dictionary.keys():
-            self.productSettingsXML = dictionary['productSettingsXML'];
-        if 'productReference' in dictionary.keys():
-            self.productReference = self.parseProperty('productReference', lookup_func, dictionary, project, False);
+        super(PBXApplicationTarget, self).__init__(lookup_func, dictionary, project, identifier);
+        if kPBX_TARGET_buildSettings in dictionary.keys():
+            self.buildSettings = dictionary[kPBX_TARGET_buildSettings];
+        if kPBX_TARGET_productInstallPath in dictionary.keys():
+            self.productInstallPath = dictionary[kPBX_TARGET_productInstallPath];
+        if kPBX_TARGET_productSettingsXML in dictionary.keys():
+            self.productSettingsXML = dictionary[kPBX_TARGET_productSettingsXML];
+            
