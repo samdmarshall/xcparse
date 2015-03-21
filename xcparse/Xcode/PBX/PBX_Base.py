@@ -26,32 +26,25 @@ class PBX_Base(object):
     def resolve(self, type, item_list):
         return filter(lambda item: isinstance(item, type), item_list);
     
+    def fetchObjectFromProject(self, lookup_func, identifier, project):
+        find_object = project.objectForIdentifier(identifier);
+        if find_object == None:
+            result = lookup_func(project.contents[kPBX_objects][identifier]);
+            if result[0] == True:
+                find_object = result[1](lookup_func, project.contents[kPBX_objects][identifier], project, identifier);
+                project.objects.add(find_object);
+        return find_object;
+    
     def parseProperty(self, prop_name, lookup_func, dictionary, project, is_array):
         dict_item = dictionary[prop_name];
         if is_array == True:
             property_list = [];
             for item in dict_item:
                 self.referencedIdentifiers.add(item);
-                find_object = project.objectForIdentifier(item);
-                if find_object != None:
-                    property_list.append(find_object);
-                else:
-                    result = lookup_func(project.contents[kPBX_objects][item]);
-                    if result[0] == True:
-                        created_object = result[1](lookup_func, project.contents[kPBX_objects][item], project, item);
-                        project.objects.add(created_object);
-                        property_list.append(created_object);
+                find_object = self.fetchObjectFromProject(lookup_func, item, project);
+                property_list.append(find_object);
             return property_list;
         else:
-            property_item = None;
             self.referencedIdentifiers.add(dict_item);
-            find_object = project.objectForIdentifier(dict_item);
-            if find_object != None:
-                property_item = find_object;
-            else:
-                result = lookup_func(project.contents[kPBX_objects][dict_item])
-                if result[0] == True:
-                    property_item = result[1](lookup_func, project.contents[kPBX_objects][dict_item], project, dict_item);
-                    project.objects.add(property_item);
-            return property_item;
+            return self.fetchObjectFromProject(lookup_func, dict_item, project);
     
