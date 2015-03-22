@@ -73,6 +73,9 @@ class xcscheme(object):
     def __hash__(self):
         return hash(self.__attrs());
     
+    def isValid(self):
+        return self.contents != None;
+    
     def actionLookup(self, action_name):
         """
         This method returns the method for the passed action type, None otherwise.
@@ -90,9 +93,6 @@ class xcscheme(object):
         if action_name in lookup.keys():
             action = lookup[action_name];
         return action;
-    
-    def isValid(self):
-        return self.contents != None;
     
     def getAction(self, action_type):
         """

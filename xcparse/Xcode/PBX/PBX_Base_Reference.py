@@ -59,10 +59,10 @@ class PBX_Base_Reference(PBX_Base):
         else:
             target = project;
         default_config = target.buildConfigurationList.defaultBuildConfiguration();
-        symroot_path = default_config.buildSettingForKey('CONFIGURATION_BUILD_DIR');
+        symroot_path = default_config.buildSettingForKey('SYMROOT');
         # default for now
         symroot_path = 'build'; 
-        build_location = xcrun_helper.BuildLocation(project, symroot_path);
+        build_location = xcrun_helper.ProductsBuildLocation(project, symroot_path);
         obj_path = '';
         if self.path != None:
             obj_path = self.path.obj_path;

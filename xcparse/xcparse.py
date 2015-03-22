@@ -33,6 +33,9 @@ class xcparse(object):
             logging_helper.getLogger().error('[xcparse]: Could not find file!');
     
     def isValid(self):
+        """
+        Returns a boolean value if the xcparse object was able to load a project or workspace file
+        """
         return self.name != '' and self.root != None;
     
     def projects(self):

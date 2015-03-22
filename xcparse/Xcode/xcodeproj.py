@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import os
 from .xc_base import xc_base
 from .PBX import PBXResolver
 from .PBX.PBX_Constants import *
@@ -33,17 +34,15 @@ class xcodeproj(xc_base):
                         self.objects.add(find_object);
                 self.identifier = self.contents['rootObject'];
                 self.rootObject = self.objectForIdentifier(self.identifier);
-                # result = PBXResolver(self.contents['objects'][self.identifier])
-                # if result[0] == True:
-                #     self.rootObject = result[1](PBXResolver, self.contents['objects'][self.identifier], self, self.identifier);
-                # else:
-                #     logging_helper.getLogger().error('[xcodeproj]: Error in parsing project file!');
             else:
                 logging_helper.getLogger().error('[xcodeproj]: Could not load contents of plist!');
         else:
             logging_helper.getLogger().error('[xcodeproj]: Not a xcode project file!');
     
     def objectForIdentifier(self, identifier):
+        """
+        Returns the parsed object from the project file for matching identifier, if no matching object is found it will return None.
+        """
         result = None;
         if self.isValid():
             filter_results = filter(lambda obj: obj.identifier == identifier, self.objects);
@@ -73,15 +72,8 @@ class xcodeproj(xc_base):
         paths = [];
         if self.isValid():
             for project_dict in self.rootObject.projectReferences:
-                file_ref = None;
                 project_ref = project_dict['ProjectRef'];
-                found_object = self.objectForIdentifier(project_ref);
-                if found_object != None:
-                    file_ref = found_object;
-                else:
-                    result = PBXResolver(self.contents[kPBX_objects][project_ref]);
-                    if result[0] == True:
-                        file_ref = result[1](PBXResolver, self.contents[kPBX_objects][project_ref], self, project_ref);
+                file_ref = self.rootObject.fetchObjectFromProject(PBXResolver, project_ref, self);
                 subproject_path = os.path.join(self.path.base_path, file_ref.path.obj_path);
                 if os.path.exists(subproject_path) == True:
                     paths.append(subproject_path);

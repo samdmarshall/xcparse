@@ -12,7 +12,6 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         self.phase_type = 'Compile Sources';
     
     def performPhase(self, build_system, target):
-        build_system.initEnvironment();
         phase_spec = build_system.getSpecForIdentifier(self.bundleid);
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);

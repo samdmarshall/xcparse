@@ -13,14 +13,14 @@ def main(argv):
     
     xcparser = xcparse.xcparse(args.filename);
     
-    print xcparser.projects()
+    print xcparser.projects();
 
     environment = Environment();
 
     test_config = xcconfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test/test.xcconfig'));
 
     environment.applyConfig(test_config);
-    
+
     for scheme in xcparser.schemes():
         result = xcparser.findSchemeWithName(scheme.name)[0];
         if result[0] == True:

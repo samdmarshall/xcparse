@@ -72,7 +72,10 @@ class BuildAction(Base_Action):
             
                 # create a new build system environment for this target to build in
                 build_system = xcbuildsystem();
-            
+                # setting up environment first, cannot rely on build phase ordering to initialize this first
+                build_system.initEnvironment();
+                build_system.environment.setValueForKey('CONFIGURATION', configuration_name, {});
+                
                 # running build phases for this target
                 for phase in target.buildPhases:
                     phase.performPhase(build_system, target);

@@ -16,7 +16,7 @@ class xcworkspace(xc_base):
         self.contents = None;
         if xcworkspace_path.endswith('.xcworkspace'):
             self.path = path_helper(xcworkspace_path, 'contents.xcworkspacedata');
-            
+            self.identifier = os.path.basename(self.path.obj_path);
             if os.path.exists(self.path.root_path) == True:
                 try:
                     self.contents = xml.parse(self.path.root_path);
@@ -28,6 +28,9 @@ class xcworkspace(xc_base):
             logging_helper.getLogger().error('[xcworkspace]: Invalid xcworkspace file!');
     
     def __resolvePathFromXMLItem(self, node, path):
+        """
+        This is a private method used to resolve the path location into a real filesystem path.
+        """
         path = '';
         if self.isValid():
             file_relative_path = node.attrib['location'];
@@ -35,6 +38,9 @@ class xcworkspace(xc_base):
         return path;
     
     def __parsePathsFromXMLItem(self, node, path):
+        """
+        This is a private method used to parse each node in the xcworkspace xml file to get projects from the included file paths.
+        """
         results = [];
         if self.isValid():
             item_path = self.__resolvePathFromXMLItem(node, path);
@@ -51,7 +57,7 @@ class xcworkspace(xc_base):
     
     def projects(self):
         """
-        This will return a list of projects referenced in this workspace.
+        Returns a list of projects referenced in this workspace.
         """
         indexed_projs = [];
         if self.isValid():

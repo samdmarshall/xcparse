@@ -46,15 +46,7 @@ class xcrun_helper(object):
         return hash_path;
     
     @classmethod
-    def BuildLocation(cls, project, sym_root):
-        """
-        Returns the full path to the location of the build products.
-        
-        project is the project that the build product is in.
-        
-        sym_root is the value of $(SYMROOT) for the current configuration
-        """
-        # this needs to also take CONFIGURATION_DIR
+    def ResolveBuildLocation(cls, project, sym_root):
         build_dir_path = '';
         default_dd_path = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/");
         relative_dd_path = False;
@@ -87,6 +79,30 @@ class xcrun_helper(object):
         elif location_style == 'DeterminedByTargets':
             # this is missing the configuration path
             build_dir_path = os.path.join(project.projectRoot.obj_path, sym_root);
+        
+        return build_dir_path;
+    
+    @classmethod
+    def IntermediatesBuildLocation(cls, project, target_name, config_name, sym_root):
+        build_dir_path = cls.ResolveBuildLocation(project, sym_root);
+        project_name = project.name.split('.')[0];
+        project_dir_path = os.path.join(build_dir_path, project_name+'.build');
+        config_dir_path = os.path.join(project_dir_path, config_name);
+        target_dir_path = os.path.join(config_dir_path, target_name+'.build');
+        
+        return target_dir_path;
+    
+    @classmethod
+    def ProductsBuildLocation(cls, project, sym_root):
+        """
+        Returns the full path to the location of the build products.
+        
+        project is the project that the build product is in.
+        
+        sym_root is the value of $(SYMROOT) for the current configuration
+        """
+        # this needs to also take CONFIGURATION_DIR
+        build_dir_path = cls.ResolveBuildLocation(project, sym_root);
         
         return build_dir_path;
     

@@ -27,3 +27,8 @@ class path_helper(object):
     
     def __repr__(self):
         return '(%s : %s : %s)' % (type(self), self.base_path, self.obj_path);
+    
+    @classmethod
+    def create_directories(cls, path):
+        if os.path.exists(path) == False:
+            os.mkdir(path);

@@ -8,6 +8,7 @@ class PBX_Base_Target(PBX_Build_Setting):
     
     def __init__(self, lookup_func, dictionary, project, identifier):
         super(PBX_Base_Target, self).__init__(lookup_func, dictionary, project, identifier);
+        self.project_container = project;
         
         if kPBX_TARGET_name in dictionary.keys():
             self.name = dictionary[kPBX_TARGET_name];
