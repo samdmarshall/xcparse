@@ -12,22 +12,20 @@ class xcworkspace(xc_base):
         """
         Pass the path to a 'xcworkspace' file to initialize the xcworkspace object.
         """
-        self.data = None;
+        self.identifier = '';
+        self.contents = None;
         if xcworkspace_path.endswith('.xcworkspace'):
             self.path = path_helper(xcworkspace_path, 'contents.xcworkspacedata');
             
             if os.path.exists(self.path.root_path) == True:
                 try:
-                    self.data = xml.parse(self.path.root_path);
+                    self.contents = xml.parse(self.path.root_path);
                 except:
                     logging_helper.getLogger().error('[xcworkspace]: Failed to load xcworkspacedata file!');
             else:
                 logging_helper.getLogger().error('[xcworkspace]: Could not find xcworkspacedata file!');
         else:
             logging_helper.getLogger().error('[xcworkspace]: Invalid xcworkspace file!');
-    
-    def isValid(self):
-        return self.data != None;
     
     def __resolvePathFromXMLItem(self, node, path):
         path = '';
@@ -58,7 +56,7 @@ class xcworkspace(xc_base):
         indexed_projs = [];
         if self.isValid():
             workspace_base_path = self.path.base_path;
-            workspace_root = self.data.getroot();
+            workspace_root = self.contents.getroot();
             for child in workspace_root:
                 indexed_projs.extend(self.__parsePathsFromXMLItem(child, workspace_base_path));
         return indexed_projs;

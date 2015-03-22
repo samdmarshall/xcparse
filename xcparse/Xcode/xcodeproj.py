@@ -43,24 +43,6 @@ class xcodeproj(xc_base):
         else:
             logging_helper.getLogger().error('[xcodeproj]: Not a xcode project file!');
     
-    def __repr__(self):
-        if self.isValid():
-            return '(%s : %s : %s)' % (type(self), self.path, self.identifier);
-        else:
-            return '(%s : INVALID OBJECT)' % (type(self));
-    
-    def __attrs(self):
-        return (self.identifier, self.path);
-
-    def __eq__(self, other):
-        return isinstance(other, xcodeproj) and self.identifier == other.identifier and self.path.root_path == other.path.root_path;
-
-    def __hash__(self):
-        return hash(self.__attrs());
-    
-    def isValid(self):
-        return self.contents != None;
-    
     def objectForIdentifier(self, identifier):
         result = None;
         if self.isValid():

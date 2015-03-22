@@ -1,10 +1,32 @@
 from PBX import PBXResolver
 from .xcscheme import *
+from ..Helpers import path_helper
+from ..Helpers import logging_helper
 
 class xc_base(object):
     
     def __init__(self, path):
         self.path = path;
+        self.identifier = path_helper(path, '');
+        self.contents = None;
+    
+    def __repr__(self):
+        if self.isValid():
+            return '(%s : %s : %s)' % (type(self), self.path, self.identifier);
+        else:
+            return '(%s : INVALID OBJECT)' % (type(self));
+    
+    def __attrs(self):
+        return (self.identifier, self.path);
+
+    def __eq__(self, other):
+        return isinstance(other, xcodeproj) and self.identifier == other.identifier and self.path.root_path == other.path.root_path;
+
+    def __hash__(self):
+        return hash(self.__attrs());
+    
+    def isValid(self):
+        return self.contents != None;
     
     def schemes(self):
         """
@@ -47,3 +69,7 @@ class xc_base(object):
         if len(scheme_filter) > 0:
             found_scheme = scheme_filter[0];
         return (found_scheme != None, found_scheme);
+    
+    def projects(self):
+        logging_helper.getLogger().error('[xc_base]: DO NOT CALL THIS METHOD DIRECTLY, SUBCLASS THIS OBJECT TO IMPLEMENT!');
+        return [];
