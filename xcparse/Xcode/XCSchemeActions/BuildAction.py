@@ -60,6 +60,7 @@ class BuildAction(Base_Action):
             else:
                 logging_helper.getLogger().error('[BuildAction]: Could not find a target with identifier "%s" in project "%s"' % (target_identifier, project.path.root_path));
             
+            
             # make sure that the project was found
             if target != None:
                 print target.name;
@@ -75,7 +76,8 @@ class BuildAction(Base_Action):
                 # setting up environment first, cannot rely on build phase ordering to initialize this first
                 build_system.initEnvironment();
                 build_system.environment.setValueForKey('CONFIGURATION', configuration_name, {});
+                build_system.environment.setValueForKey('ACTION', 'build', {});
                 
                 # running build phases for this target
-                for phase in target.buildPhases:
-                    phase.performPhase(build_system, target);
+                target.executeBuildPhases(build_system);
+                

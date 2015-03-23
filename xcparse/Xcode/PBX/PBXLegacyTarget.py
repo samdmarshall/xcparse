@@ -1,6 +1,8 @@
 from .PBXResolver import *
 from .PBX_Base_Target import *
 from .PBX_Constants import *
+from ...Helpers import xcrun_helper
+from ...Helpers import logging_helper
 
 class PBXLegacyTarget(PBX_Base_Target):
     
@@ -14,6 +16,7 @@ class PBXLegacyTarget(PBX_Base_Target):
             self.buildArgumentsString = dictionary[kPBX_TARGET_buildArgumentsString];
         if kPBX_TARGET_buildToolPath in dictionary.keys():
             self.buildToolPath = dictionary[kPBX_TARGET_buildToolPath];
+        self.buildWorkingDirectory = '$(SRCROOT)';
         if kPBX_TARGET_buildWorkingDirectory in dictionary.keys():
             self.buildWorkingDirectory = dictionary[kPBX_TARGET_buildWorkingDirectory];
         if kPBX_TARGET_settingsToExpand in dictionary.keys():
@@ -24,3 +27,13 @@ class PBXLegacyTarget(PBX_Base_Target):
             self.settingsToPassOnCommandLine = dictionary[kPBX_TARGET_settingsToPassOnCommandLine];
         if kPBX_TARGET_shouldUseHeadermap in dictionary.keys():
             self.shouldUseHeadermap = dictionary[kPBX_TARGET_shouldUseHeadermap];
+    
+    def executeBuildPhases(self, build_system):
+        resolved_working_dir = build_system.environment.parseKey(self.buildWorkingDirectory);
+        resolved_passed_args = build_system.environment.parseKey(self.buildArgumentsString);
+        if resolved_passed_args[0] == True and resolved_working_dir[0] == True:
+            args = (self.buildToolPath, resolved_passed_args[1], resolved_working_dir[1]);
+            print xcrun_helper.make_subprocess_call(args);
+        else:
+            logging_helper.getLogger().error('[PBXLegacyTarget]: Unable to parse working dir or passed arguments to build tool');
+        

@@ -51,6 +51,7 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         
         if self.showEnvVarsInLog == 1:
             for key in sorted(build_system.environment.settings.keys()):
+                # this need to change to parse out the resulting values completely
                 print '\texport '+key+'='+build_system.environment.valueForKey(key);
         
         # this needs to export the environment variables

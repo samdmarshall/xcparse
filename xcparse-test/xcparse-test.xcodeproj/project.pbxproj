@@ -12,6 +12,23 @@
 		22E39EFD1ABB582300D892D6 /* bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E39EFC1ABB582300D892D6 /* bar.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		22C4DDF21ABF1E4200431A17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22C4DDEE1ABF1E4200431A17 /* sub-test.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 22C4DDE71ABF1E3300431A17;
+			remoteInfo = "sub-test";
+		};
+		22C4DDF41ABF1E5000431A17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22C4DDEE1ABF1E4200431A17 /* sub-test.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 22C4DDE61ABF1E3300431A17;
+			remoteInfo = "sub-test";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		22E39EEE1ABB57F900D892D6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -25,6 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		22C4DDEE1ABF1E4200431A17 /* sub-test.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "sub-test.xcodeproj"; path = "sub-test/sub-test.xcodeproj"; sourceTree = "<group>"; };
 		22E39EF01ABB57F900D892D6 /* xcparse-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "xcparse-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22E39EF31ABB57F900D892D6 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		22E39EFA1ABB580F00D892D6 /* foo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foo.swift; sourceTree = "<group>"; };
@@ -42,9 +60,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22C4DDEF1ABF1E4200431A17 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				22C4DDF31ABF1E4200431A17 /* libsub-test.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		22E39EE71ABB57F900D892D6 = {
 			isa = PBXGroup;
 			children = (
+				22C4DDEE1ABF1E4200431A17 /* sub-test.xcodeproj */,
 				22E39EF21ABB57F900D892D6 /* xcparse-test */,
 				22E39EF11ABB57F900D892D6 /* Products */,
 			);
@@ -82,6 +109,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				22C4DDF51ABF1E5000431A17 /* PBXTargetDependency */,
 			);
 			name = "xcparse-test";
 			productName = "xcparse-test";
@@ -112,12 +140,28 @@
 			mainGroup = 22E39EE71ABB57F900D892D6;
 			productRefGroup = 22E39EF11ABB57F900D892D6 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 22C4DDEF1ABF1E4200431A17 /* Products */;
+					ProjectRef = 22C4DDEE1ABF1E4200431A17 /* sub-test.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				22E39EEF1ABB57F900D892D6 /* xcparse-test */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		22C4DDF31ABF1E4200431A17 /* libsub-test.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = "libsub-test.dylib";
+			remoteRef = 22C4DDF21ABF1E4200431A17 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		22E39EEC1ABB57F900D892D6 /* Sources */ = {
@@ -131,6 +175,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		22C4DDF51ABF1E5000431A17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "sub-test";
+			targetProxy = 22C4DDF41ABF1E5000431A17 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		22E39EF51ABB57F900D892D6 /* Debug */ = {
@@ -241,6 +293,7 @@
 				22E39EF91ABB57F900D892D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

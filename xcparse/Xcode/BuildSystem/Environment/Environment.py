@@ -73,7 +73,8 @@ class Environment(object):
                     offset += 1;
                 value = self.valueForKey(key);
                 key_length = end - start;
-        return (key_length != 0, value, key_length);
+        # the key has to contain a subtitutable value, and the value cannot be None
+        return (key_length != 0 and value != None, value, key_length);
     
     def setValueForKey(self, key, value, condition_dict):
         if key not in self.settings.keys():

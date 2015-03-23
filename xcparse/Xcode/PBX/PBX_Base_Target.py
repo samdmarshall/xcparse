@@ -58,3 +58,7 @@ class PBX_Base_Target(PBX_Build_Setting):
         dependency_refs = set(map(lambda dep: dep.target.productReference, self.dependencies));
         implicit_dep_list.extend(library_refs.difference(dependency_refs));
         return implicit_dep_list;
+    
+    def executeBuildPhases(self, build_system):
+        for phase in self.buildPhases:
+            phase.performPhase(build_system, self);
