@@ -46,9 +46,10 @@ class xcworkspace(xc_base):
             item_path = self.__resolvePathFromXMLItem(node, path);
             if node.tag == 'FileRef':
                 if os.path.exists(item_path) == True:
-                    project_parse = xcodeproj(item_path);
-                    if project_parse.isValid() == True:
-                        results.append(project_parse);
+                    if item_path.endswith('.xcodeproj') or item_path.endswith('.pbproj'):
+                        project_parse = xcodeproj(item_path);
+                        if project_parse.isValid() == True:
+                            results.append(project_parse);
             if node.tag == 'Group':
                 path = os.path.join(path, item_path);
                 for child in node:

@@ -38,11 +38,17 @@ class xcbuildsystem(object):
         # this will be used for the current compiler
         self.compiler = None;
     
-    def initEnvironment(self):
+    def initEnvironment(self, project, configuration_name):
         if self.environment == None:
             self.environment = Environment();
         else:
             logging_helper.getLogger().warn('[xcbuildsystem]: Already initialized environment!');
+        self.environment.setValueForKey('CONFIGURATION', configuration_name, {});
+        self.environment.setValueForKey('ACTION', 'build', {});
+        self.environment.setValueForKey('SRCROOT', project.path.base_path, {});
+        self.environment.setValueForKey('PROJECT_DIR', project.path.base_path, {});
+        self.environment.setValueForKey('PROJECT_NAME', project.rootObject.name.split('.')[0], {});
+        self.environment.setValueForKey('CONFIGURATION_BUILD_DIR', '$(SYMROOT)/$(CONFIGURATION)', {});
     
     def __findFilesFromPath(self, path, extension):
         found_items = [];

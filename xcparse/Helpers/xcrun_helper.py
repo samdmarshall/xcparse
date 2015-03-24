@@ -4,6 +4,7 @@ import subprocess
 from subprocess import CalledProcessError
 import hashlib
 import CoreFoundation
+import tempfile
 import struct
 from .logging_helper import logging_helper
 
@@ -121,6 +122,20 @@ class xcrun_helper(object):
         else:
             logging_helper.getLogger().error('[xcrun_helper]: Invalid item path name!');
             return item_path;
+    
+    @classmethod
+    def make_subprocess_session(cls, action_list):
+        output = [];
+        script = '#!/bin/sh \n';
+        for action in action_list:
+            script += action + ';\n';
+        script_file = tempfile.NamedTemporaryFile('wt')
+        script_file.write(script)
+        script_file.flush()
+        proc = subprocess.Popen(['/bin/bash', script_file.name], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        stdout = proc.communicate(action);
+        output.append(stdout);
+        return output;
     
     @classmethod
     def make_subprocess_call(cls, call_args, shell_state=False):

@@ -50,9 +50,8 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         fd.close();
         
         if self.showEnvVarsInLog == 1:
-            for key in sorted(build_system.environment.settings.keys()):
-                # this need to change to parse out the resulting values completely
-                print '\texport '+key+'='+build_system.environment.valueForKey(key);
+            for export_item in build_system.environment.exportValues():
+                print '\t'+export_item;
         
         # this needs to export the environment variables
         print '/bin/sh -c '+script_path;

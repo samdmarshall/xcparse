@@ -63,7 +63,10 @@ class Environment(object):
                         sub_value = self.parseKey(subkey);
                         if sub_value[0] == False:
                             logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
-                        key += sub_value[1];
+                        append_value = '';
+                        if sub_value[1] != None:
+                            append_value = sub_value[1];
+                        key += append_value;
                         offset += sub_value[2];
                     elif key_string[offset] == ')' or key_string[offset] == '}':
                         end = offset;
@@ -98,3 +101,15 @@ class Environment(object):
             if result != None:
                 value = result.value(self);
         return value;
+    
+    
+    def exportValues(self):
+        export_list = [];
+        for key in sorted(self.settings.keys()):
+            # this need to change to parse out the resulting values completely
+            value = self.valueForKey(key);
+            result = self.parseKey(value);
+            if result[0] == True:
+                value = result[1];
+            export_list.append('export '+key+'='+value);
+        return export_list;
