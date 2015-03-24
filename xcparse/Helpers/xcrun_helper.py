@@ -125,7 +125,6 @@ class xcrun_helper(object):
     
     @classmethod
     def make_subprocess_session(cls, action_list):
-        output = [];
         script = '#!/bin/sh \n';
         for action in action_list:
             script += action + ';\n';
@@ -133,9 +132,8 @@ class xcrun_helper(object):
         script_file.write(script)
         script_file.flush()
         proc = subprocess.Popen(['/bin/bash', script_file.name], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        stdout = proc.communicate(action);
-        output.append(stdout);
-        return output;
+        stdout = proc.communicate(action)[0];
+        return stdout;
     
     @classmethod
     def make_subprocess_call(cls, call_args, shell_state=False):

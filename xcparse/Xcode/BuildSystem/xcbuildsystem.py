@@ -48,7 +48,6 @@ class xcbuildsystem(object):
         self.environment.setValueForKey('SRCROOT', project.path.base_path, {});
         self.environment.setValueForKey('PROJECT_DIR', project.path.base_path, {});
         self.environment.setValueForKey('PROJECT_NAME', project.rootObject.name.split('.')[0], {});
-        self.environment.setValueForKey('CONFIGURATION_BUILD_DIR', '$(SYMROOT)/$(CONFIGURATION)', {});
     
     def __findFilesFromPath(self, path, extension):
         found_items = [];

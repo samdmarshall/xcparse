@@ -36,6 +36,7 @@ class PBXLegacyTarget(PBX_Base_Target):
             args.extend(build_system.environment.exportValues());
             args.append(str(self.buildToolPath)+' '+resolved_passed_args[1]);
             output = xcrun_helper.make_subprocess_session(args);
-            print output;
+            for line in output.split('\n'):
+                print '\t'+line;
         else:
             logging_helper.getLogger().error('[PBXLegacyTarget]: Unable to parse working dir or passed arguments to build tool');

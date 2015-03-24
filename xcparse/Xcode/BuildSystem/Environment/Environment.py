@@ -111,5 +111,10 @@ class Environment(object):
             result = self.parseKey(value);
             if result[0] == True:
                 value = result[1];
-            export_list.append('export '+key+'='+value);
+            export_item = 'export '+key+'=';
+            if self.settings[key].type == 'String':
+                export_item += '"'+value+'"';
+            else:
+                export_item += value;
+            export_list.append(export_item);
         return export_list;
