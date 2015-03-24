@@ -44,7 +44,6 @@ class xcbuildsystem(object):
         else:
             logging_helper.getLogger().warn('[xcbuildsystem]: Already initialized environment!');
         self.environment.setValueForKey('CONFIGURATION', configuration_name, {});
-        self.environment.setValueForKey('ACTION', 'build', {});
         self.environment.setValueForKey('SRCROOT', project.path.base_path, {});
         self.environment.setValueForKey('PROJECT_DIR', project.path.base_path, {});
         self.environment.setValueForKey('PROJECT_NAME', project.rootObject.name.split('.')[0], {});
