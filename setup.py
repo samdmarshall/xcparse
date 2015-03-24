@@ -8,7 +8,7 @@ setup(
     author='Sam Marshall',
     author_email='me@samdmarshall.com',
     license='BSD 3-Clause',
-    package_data = {'xcparse/Xcode/XCConfig': ['defaults.xcconfig']},
+    package_data = {'xcparse/Xcode/XCConfig': ['defaults.xcconfig', 'runtime.xcconfig']},
     packages=[
         'xcparse', 
         'xcparse/Helpers',

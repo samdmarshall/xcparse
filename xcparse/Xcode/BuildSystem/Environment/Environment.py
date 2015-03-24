@@ -58,8 +58,8 @@ class Environment(object):
                 offset += 1;
                 while offset < string_length:
                     if key_string[offset] == '$':
-                        print 'found subkey';
                         subkey = key_string[offset:];
+                        print 'found subkey "%s"' % subkey;
                         sub_value = self.parseKey(subkey);
                         if sub_value[0] == False:
                             logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);

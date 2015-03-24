@@ -4,12 +4,12 @@ ARCHS = $(ARCHS_STANDARD)
 ONLY_ACTIVE_ARCH = NO
 ONLY_ACTIVE_ARCH[config=Debug] = YES
 SDKROOT = macosx
-SUPPORTED_PLATFORMS[sdk=iphonesimulator*] = iphonesimulator
-SUPPORTED_PLATFORMS[sdk=iphoneos*] = iphonesimulator iphoneos
-SUPPORTED_PLATFORMS[sdk=macosx*] = macosx
-VALID_ARCHS[sdk=iphonesimulator*] = i386 x86_64
-VALID_ARCHS[sdk=iphoneos*] = arm64 armv7 armv7s
-VALID_ARCHS[sdk=macosx*] = i386 x86_64
+SUPPORTED_PLATFORMS[sdk=iphonesimulator*] = "iphonesimulator"
+SUPPORTED_PLATFORMS[sdk=iphoneos*] = "iphonesimulator iphoneos"
+SUPPORTED_PLATFORMS[sdk=macosx*] = "macosx"
+VALID_ARCHS[sdk=iphonesimulator*] = "i386 x86_64"
+VALID_ARCHS[sdk=iphoneos*] = "arm64 armv7 armv7s"
+VALID_ARCHS[sdk=macosx*] = "i386 x86_64"
 
 // Build Locations
 BUILD_DIR = $(SYMROOT)
@@ -40,6 +40,7 @@ CODE_SIGN_IDENTITY = "-"
 CODE_SIGN_RESOURCE_RULES_PATH = ""
 OTHER_CODE_SIGN_FLAGS = ""
 PROVISIONING_PROFILE = ""
+EMBEDDED_PROFILE_NAME=embedded.provisionprofile
 
 // Deployment
 ALTERNATE_GROUP = $(INSTALL_GROUP)
@@ -122,7 +123,7 @@ MODULEMAP_FILE = ""
 MODULEMAP_PRIVATE_FILE = ""
 PLIST_FILE_OUTPUT_FORMAT = "same-as-input"
 PRIVATE_HEADERS_FOLDER_PATH = ""
-PRODUCT_MODULE_NAME = $(PRODUCT_NAME:c99extidentifier)
+PRODUCT_MODULE_NAME = $(PRODUCT_NAME)
 PRODUCT_NAME = ""
 PUBLIC_HEADERS_FOLDER_PATH = ""
 STRINGS_FILE_OUTPUT_ENCODING = "UTF-16"
@@ -132,7 +133,7 @@ WRAPPER_EXTENSION = ""
 ALWAYS_SEARCH_USER_PATHS = YES
 EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = *.nib *.lproj *.framework *.gch *.xcode* (*) .DS_Store CVS .svn .git .hg
 FRAMEWORK_SEARCH_PATHS = ""
-HEADER_SEARCH_PATHS = $(inherited) /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+HEADER_SEARCH_PATHS = $(inherited) $(DT_TOOLCHAIN_DIR)/usr/include
 INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = ""
 LIBRARY_SEARCH_PATHS = ""
 REZ_SEARCH_PATHS = ""
@@ -164,7 +165,7 @@ GCC_GENERATE_TEST_COVERAGE_FILES = NO
 GCC_INLINES_ARE_PRIVATE_EXTERN = NO
 GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO
 GCC_NO_COMMON_BLOCKS = NO
-GCC_OPTIMIZATION_LEVEL[config=Debug] = 0
+GCC_OPTIMIZATION_LEVEL[config=Debug] = "0"
 GCC_REUSE_STRINGS = YES
 GCC_STRICT_ALIASING = YES
 GCC_SYMBOLS_PRIVATE_EXTERN = NO
