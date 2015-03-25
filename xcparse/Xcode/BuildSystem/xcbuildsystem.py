@@ -43,6 +43,7 @@ class xcbuildsystem(object):
             self.environment = Environment();
         else:
             logging_helper.getLogger().warn('[xcbuildsystem]: Already initialized environment!');
+        self.environment.setValueForKey('BUILD_VARIANTS', 'normal', {});
         self.environment.setValueForKey('CONFIGURATION', configuration_name, {});
         self.environment.setValueForKey('SRCROOT', project.path.base_path, {});
         self.environment.setValueForKey('SOURCE_ROOT', '$(SRCROOT)', {});
@@ -50,9 +51,9 @@ class xcbuildsystem(object):
         self.environment.setValueForKey('PROJECT_FILE_PATH', project.path.obj_path, {});
         self.environment.setValueForKey('PROJECT_NAME', project.rootObject.name.split('.')[0], {});
         self.environment.setValueForKey('PROJECT', project.rootObject.name.split('.')[0], {});
-        self.environment.setValueForKey('USER', '"'+os.getlogin()+'"', {});
-        self.environment.setValueForKey('UID', '"'+str(os.getuid())+'"', {});
-        self.environment.setValueForKey('GID', '"'+str(os.getgid())+'"', {});
+        self.environment.setValueForKey('USER', os.getlogin(), {});
+        self.environment.setValueForKey('UID', str(os.getuid()), {});
+        self.environment.setValueForKey('GID', str(os.getgid()), {});
         self.environment.setValueForKey('USER_APPS_DIR', os.path.join(os.getenv('HOME'), 'Applications'), {});
         self.environment.setValueForKey('USER_LIBRARY_DIR', os.path.join(os.getenv('HOME'), 'Library'), {});
         self.environment.setValueForKey('DT_TOOLCHAIN_DIR', os.path.join(xcrun_helper.resolve_developer_path(), 'Toolchains/XcodeDefault.xctoolchain'), {});

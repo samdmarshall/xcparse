@@ -59,6 +59,8 @@ class xcconfig_kv(xcconfig_item_base):
     
     def value(self, value_type):
         value = self.__value;
+        if len(value) == 0:
+            return '';
         if value[0] == ' ':
             value = value[1:];
         comment_offset = value.find('//');

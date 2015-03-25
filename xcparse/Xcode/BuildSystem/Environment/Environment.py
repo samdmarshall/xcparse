@@ -10,7 +10,8 @@ class Environment(object):
         # load default environment types
         
         # setting up default environment
-        self.applyConfig(xcconfig(None));
+        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
+        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')))
     
     def addOptions(self, options_array):
         for item in options_array:
@@ -101,6 +102,40 @@ class Environment(object):
             if result != None:
                 value = result.value(self);
         return value;
+    
+    def getBuildComponents(self):
+        components_lookup_dict = {
+            'build': 'headers build',
+            'analyze': 'headers build',
+            'copysrc': 'source',
+            'copyhdrs': 'headers',
+            'copyrsrcs': 'resources',
+            'install': 'headers build',
+            'installdebugonly': 'build',
+            'installprofileonly': 'build',
+            'installdebugprofileonly': 'build',
+            'installhdrs': 'headers',
+            'installsrc': 'source',
+            'installrsrcs': 'resources',
+        };
+        additional_settings_lookup_dict = {
+            'installdebugonly': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES'), ('BUILD_VARIANTS', 'debug')],
+            'installprofileonly': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES'), ('BUILD_VARIANTS', 'profile')],
+            'installdebugprofileonly': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES'), ('BUILD_VARIANTS', 'profile debug')],
+            'installhdrs': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES')],
+            'installsrc': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES')],
+            'installrsrcs': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES')],
+        };
+        action_value = self.valueForKey('ACTION');
+        if action_value in additional_settings_lookup_dict.keys():
+            values = additional_settings_lookup_dict[action_value];
+            for value in values:
+                self.setValueForKey(value[0], value[1], {});
+        if action_value in components_lookup_dict.keys():
+            return components_lookup_dict[action_value];
+        else:
+            logging_helper.getLogger().warn('[Environment]: Unable to find ACTION');
+            return '';
     
     
     def exportValues(self):

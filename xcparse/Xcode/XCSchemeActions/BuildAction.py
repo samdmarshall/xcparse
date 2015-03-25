@@ -76,6 +76,7 @@ class BuildAction(Base_Action):
                 # setting up environment first, cannot rely on build phase ordering to initialize this first
                 build_system.initEnvironment(project, configuration_name);
                 build_system.environment.setValueForKey('ACTION', 'build', {});
+                build_system.environment.setValueForKey('BUILD_COMPONENTS', build_system.environment.getBuildComponents(), {});
                 build_system.environment.setValueForKey('PRODUCT_NAME', target.productName, {});
                 
                 # running build phases for this target
