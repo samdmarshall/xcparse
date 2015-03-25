@@ -9,9 +9,10 @@ class Environment(object):
         self.settings = {};
         # load default environment types
         
+    def loadDefaults(self):
         # setting up default environment
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
-        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')))
+        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')));
     
     def addOptions(self, options_array):
         for item in options_array:

@@ -65,7 +65,6 @@ class BuildAction(Base_Action):
             if target != None:
                 print target.name;
                 print '========================';
-                print target.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
             
                 # building any explicit dependencies first
                 for dependent in target.dependencies:
@@ -78,6 +77,10 @@ class BuildAction(Base_Action):
                 build_system.environment.setValueForKey('ACTION', 'build', {});
                 build_system.environment.setValueForKey('BUILD_COMPONENTS', build_system.environment.getBuildComponents(), {});
                 build_system.environment.setValueForKey('PRODUCT_NAME', target.productName, {});
+                target_build_settings = target.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
+                for setting in target_build_settings.keys():
+                    build_system.environment.setValueForKey(setting, target_build_settings[setting], {});
+                build_system.environment.loadDefaults();
                 
                 # running build phases for this target
                 target.executeBuildPhases(build_system);
