@@ -2,6 +2,7 @@ from .EnvVarCondition import *
 from .EnvVariable import *
 from ...XCConfig.xcconfig import *
 from ....Helpers import logging_helper
+from ....Helpers import xcrun_helper
 
 class Environment(object):
     
@@ -13,6 +14,12 @@ class Environment(object):
         # setting up default environment
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')));
+        self.setValueForKey('PLATFORM_DIR', xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT'))), {});
+        self.setValueForKey('PLATFORM_DEVELOPER_SDK_DIR', os.path.dirname(xcrun_helper.resolve_sdk_path(self.valueForKey('SDKROOT'))), {});
+        # load these from the platform info.plist
+        self.setValueForKey('PLATFORM_NAME', '', {});
+        self.setValueForKey('PLATFORM_PREFERRED_ARCH', '', {});
+        self.setValueForKey('PLATFORM_PRODUCT_BUILD_VERSION', '', {});
     
     def addOptions(self, options_array):
         for item in options_array:
