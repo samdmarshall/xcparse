@@ -16,6 +16,7 @@ class Environment(object):
         # setting up default environment
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')));
+        # self.setValueForKey('DEVELOPER_DIR', xcrun_helper.resolve_developer_path(), {});
         platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT')));
         self.setValueForKey('PLATFORM_DIR', platform_path, {});
         sdk_path = xcrun_helper.resolve_sdk_path(self.valueForKey('SDKROOT'));
@@ -109,7 +110,6 @@ class Environment(object):
                     offset += 1;
                 value = self.valueForKey(key);
                 key_length = end - start;
-        # the key has to contain a subtitutable value, and the value cannot be None
         return (key_length != 0 and value != None, str(value), key_length);
     
     def setValueForKey(self, key, value, condition_dict):
