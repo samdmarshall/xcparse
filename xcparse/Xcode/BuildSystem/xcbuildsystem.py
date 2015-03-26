@@ -116,22 +116,33 @@ class xcbuildsystem(object):
         
         return contents;
     
-    def getCompilerForFileReference(self, file_ref):
+    def getCompilerForFileReference(self, file_ref, default_compiler_identifier):
         file_ref_spec = self.getSpecForIdentifier(file_ref.ftype);
         file_types = file_ref_spec.inheritedTypes();
         
-        # this calculates the best guess compiler from the input file types
         compiler_identifier = '';
-        compiler_weight = 100;
-        for rule in self.buildRules():
-            rule_weight = 0;
-            for ftype in file_types:
-                if ftype in rule.fileTypes:
-                    break;
-                rule_weight += 1;
-            if compiler_weight > rule_weight:
-                compiler_weight = rule_weight;
-                compiler_identifier = rule.identifier;
+        if default_compiler_identifier != None:
+            default_compiler = self.getSpecForIdentifier(default_compiler_identifier);
+            if default_compiler != None:
+                if 'FileTypes' in default_compiler.contents.keys():
+                    compiler_types_set = set(map(lambda ftype: str(ftype), default_compiler.contents['FileTypes']));
+                    file_types_set = set(file_types);
+                    result_set = file_types_set.intersection(compiler_types_set);
+                    if len(result_set) > 0:
+                        compiler_identifier = default_compiler_identifier;
+                
+        # this calculates the best guess compiler from the input file types
+        if compiler_identifier == '':
+            compiler_weight = 100;
+            for rule in self.buildRules():
+                rule_weight = 0;
+                for ftype in file_types:
+                    if ftype in rule.fileTypes:
+                        break;
+                    rule_weight += 1;
+                if compiler_weight > rule_weight:
+                    compiler_weight = rule_weight;
+                    compiler_identifier = rule.identifier;
         
         compiler = self.getSpecForIdentifier(compiler_identifier);
         if compiler == None:
@@ -150,10 +161,13 @@ class xcbuildsystem(object):
         
             compiler_exec = '';
             if 'ExecPath' in self.compiler.contents.keys():
-                if self.environment.isEnvironmentVariable(self.compiler.contents['ExecPath']) == True:
+                compiler_path = self.compiler.contents['ExecPath'];
+                if self.environment.isEnvironmentVariable(compiler_path) == True:
                     compiler_exec_results = self.environment.parseKey(self.compiler.contents['ExecPath']);
                     if compiler_exec_results[0] == True:
-                        compiler_exec = xcrun_helper.make_xcrun_with_args(('-f', str(compiler_exec_results[1])));
+                        compiler_path = str(compiler_exec_results[1]);
+                compiler_exec = xcrun_helper.make_xcrun_with_args(('-f', compiler_path));
+                
             else:
                 logging_helper.getLogger().error('[xcbuildsystem]: No compiler executable found!');
                 return;
@@ -168,7 +182,7 @@ class xcbuildsystem(object):
             sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
             if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
                 args += ('-sdk', sdk_path);
-            elif self.compiler.identifier.startswith('com.apple.xcode.compiler.llvm.clang'):
+            elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
                 args += ('-isysroot', sdk_path);
             else:
                 logging_helper.getLogger().warn('[xcbuildsystem]: unknown compiler, not sure how to specify sdk path');
@@ -183,8 +197,8 @@ class xcbuildsystem(object):
             print args_str;
             
             # this is running the compiler command
-            compiler_output = xcrun_helper.make_subprocess_call(args);
-            if compiler_output[1] != 0:
-                logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
+            # compiler_output = xcrun_helper.make_subprocess_call(args);
+            # if compiler_output[1] != 0:
+            #     logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
         else:
             logging_helper.getLogger().error('[xcbuildsystem]: No compiler set!');

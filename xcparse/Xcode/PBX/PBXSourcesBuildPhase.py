@@ -21,7 +21,8 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         # this groups files based on compiler
         for file in self.files:
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
-            compiler = build_system.getCompilerForFileReference(file.fileRef);
+            default_compiler_identifier = build_system.environment.valueForKey('DEFAULT_COMPILER');
+            compiler = build_system.getCompilerForFileReference(file.fileRef, default_compiler_identifier);
             logging_helper.getLogger().info('[PBXSourcesBuildPhase]: File "%s" wants Compiler "%s"' % (file, compiler));
             
             if compiler.identifier not in compiler_dict.keys():

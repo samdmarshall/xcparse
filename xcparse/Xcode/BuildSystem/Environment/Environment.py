@@ -1,8 +1,10 @@
+import os
 from .EnvVarCondition import *
 from .EnvVariable import *
 from ...XCConfig.xcconfig import *
 from ....Helpers import logging_helper
 from ....Helpers import xcrun_helper
+from ....Helpers import plist_helper
 
 class Environment(object):
     
@@ -14,12 +16,35 @@ class Environment(object):
         # setting up default environment
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')));
-        self.setValueForKey('PLATFORM_DIR', xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT'))), {});
-        self.setValueForKey('PLATFORM_DEVELOPER_SDK_DIR', os.path.dirname(xcrun_helper.resolve_sdk_path(self.valueForKey('SDKROOT'))), {});
+        platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT')));
+        self.setValueForKey('PLATFORM_DIR', platform_path, {});
+        sdk_path = xcrun_helper.resolve_sdk_path(self.valueForKey('SDKROOT'));
+        self.setValueForKey('PLATFORM_DEVELOPER_SDK_DIR', os.path.dirname(sdk_path), {});
+        
         # load these from the platform info.plist
-        self.setValueForKey('PLATFORM_NAME', '', {});
+        platform_info_path = os.path.join(platform_path, 'Info.plist');
+        platform_info_plist = plist_helper.LoadPlistFromDataAtPath(platform_info_path);
+        self.setValueForKey('PLATFORM_NAME', platform_info_plist['Name'], {});
         self.setValueForKey('PLATFORM_PREFERRED_ARCH', '', {});
         self.setValueForKey('PLATFORM_PRODUCT_BUILD_VERSION', '', {});
+        # load defaults from platform
+        for platform_default_setting_key in platform_info_plist['DefaultProperties'].keys():
+            value = platform_info_plist['DefaultProperties'][platform_default_setting_key]
+            self.setValueForKey(platform_default_setting_key, value, {});
+        # load overrides
+        if 'OverrideProperties' in platform_info_plist.keys():
+            for platform_override_setting_key in platform_info_plist['OverrideProperties'].keys():
+                value = platform_info_plist['OverrideProperties'][platform_override_setting_key];
+                self.setValueForKey(platform_override_setting_key, value, {});
+        
+        # load these from sdk info.plist
+        sdk_info_path = os.path.join(sdk_path, 'SDKSettings.plist');
+        sdk_info_plist = plist_helper.LoadPlistFromDataAtPath(sdk_info_path);
+        self.setValueForKey('SDKROOT', sdk_info_plist['CanonicalName'], {});
+        for sdk_default_setting_key in sdk_info_plist['DefaultProperties'].keys():
+            value = sdk_info_plist['DefaultProperties'][sdk_default_setting_key];
+            self.setValueForKey(sdk_default_setting_key, value, {});
+        
     
     def addOptions(self, options_array):
         for item in options_array:
