@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import os
 import sys
 import importlib
+import grp
 from ...Helpers import logging_helper
 from ...Helpers import plist_helper
 from ...Helpers import xcrun_helper
@@ -52,8 +53,9 @@ class xcbuildsystem(object):
         self.environment.setValueForKey('PROJECT_NAME', project.rootObject.name.split('.')[0], {});
         self.environment.setValueForKey('PROJECT', project.rootObject.name.split('.')[0], {});
         self.environment.setValueForKey('USER', os.getlogin(), {});
-        self.environment.setValueForKey('UID', str(os.getuid()), {});
-        self.environment.setValueForKey('GID', str(os.getgid()), {});
+        self.environment.setValueForKey('UID', str(os.geteuid()), {});
+        self.environment.setValueForKey('GID', str(os.getegid()), {});
+        self.environment.setValueForKey('GROUP', str(grp.getgrgid(os.getegid()).gr_name), {});
         self.environment.setValueForKey('USER_APPS_DIR', os.path.join(os.getenv('HOME'), 'Applications'), {});
         self.environment.setValueForKey('USER_LIBRARY_DIR', os.path.join(os.getenv('HOME'), 'Library'), {});
         self.environment.setValueForKey('DT_TOOLCHAIN_DIR', os.path.join(xcrun_helper.resolve_developer_path(), 'Toolchains/XcodeDefault.xctoolchain'), {});
