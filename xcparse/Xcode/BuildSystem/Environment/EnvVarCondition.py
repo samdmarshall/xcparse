@@ -45,4 +45,5 @@ class EnvVarCondition(object):
         return isinstance(other, EnvVarCondition) and self.keys == other.keys;
 
     def __hash__(self):
-        return hash(self.__attrs())
+        return hash(self.__attrs());
+        

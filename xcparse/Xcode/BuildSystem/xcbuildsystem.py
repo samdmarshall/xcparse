@@ -113,7 +113,6 @@ class xcbuildsystem(object):
         
         for rule in build_rules:
             contents.append(xcbuildrule(rule));
-        
         return contents;
     
     def getCompilerForFileReference(self, file_ref, default_compiler_identifier):
@@ -130,7 +129,6 @@ class xcbuildsystem(object):
                     result_set = file_types_set.intersection(compiler_types_set);
                     if len(result_set) > 0:
                         compiler_identifier = default_compiler_identifier;
-                
         # this calculates the best guess compiler from the input file types
         if compiler_identifier == '':
             compiler_weight = 100;
@@ -143,22 +141,20 @@ class xcbuildsystem(object):
                 if compiler_weight > rule_weight:
                     compiler_weight = rule_weight;
                     compiler_identifier = rule.identifier;
-        
         compiler = self.getSpecForIdentifier(compiler_identifier);
         if compiler == None:
             logging_helper.getLogger().info('[xcbuildsystem]: Could not find valid build rule for input file!');
-        
         return compiler;
     
     def compileFiles(self, files):
         
         if self.compiler != None:
-            args = ();
+            base_args = ();
             
             # setting up default build environments
             if 'Options' in self.compiler.contents.keys():
                 self.environment.addOptions(self.compiler.contents['Options']);
-        
+            
             compiler_exec = '';
             if 'ExecPath' in self.compiler.contents.keys():
                 compiler_path = self.compiler.contents['ExecPath'];
@@ -167,38 +163,77 @@ class xcbuildsystem(object):
                     if compiler_exec_results[0] == True:
                         compiler_path = str(compiler_exec_results[1]);
                 compiler_exec = xcrun_helper.make_xcrun_with_args(('-f', compiler_path));
-                
             else:
                 logging_helper.getLogger().error('[xcbuildsystem]: No compiler executable found!');
                 return;
             
-            args += (compiler_exec,);
+            base_args += (compiler_exec,);
             
-            for file in files:
-                file_path = str(file.fileRef.fs_path.root_path);
-                args += (file_path,)
-            
-            sdk_name = self.environment.valueForKey('SDKROOT');
-            sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
-            if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
-                args += ('-sdk', sdk_path);
-            elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
-                args += ('-isysroot', sdk_path);
-            else:
-                logging_helper.getLogger().warn('[xcbuildsystem]: unknown compiler, not sure how to specify sdk path');
-            
-            # this is missing all the build settings, also needs output set
-            
-            # this is displaying the command being issued for this compiler in the build phase
-            args_str = '';
-            for word in args:
-                args_str += word;
-                args_str += ' ';
-            print args_str;
-            
-            # this is running the compiler command
-            # compiler_output = xcrun_helper.make_subprocess_call(args);
-            # if compiler_output[1] != 0:
-            #     logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
+            compile_archs = [];
+            arch_value = self.environment.valueForKey('ARCHS');
+            compile_archs.extend(arch_value.split(' '));
+            for arch in compile_archs:
+                # iterate the architectures
+                for file in files:
+                    args = ();
+                    # add base (compiler)
+                    args += base_args;
+                    
+                    sdk_name = self.environment.valueForKey('SDKROOT');
+                    sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
+                    if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
+                        args += ('-sdk', sdk_path);
+                    elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
+                        # add language dialect
+                        found_dialect = False;
+                        identifier = file.fileRef.ftype;
+                        language = '';
+                        while found_dialect == False:
+                            file_ref_spec = self.getSpecForIdentifier(identifier);
+                            if file_ref_spec != None:
+                                if 'GccDialectName' not in file_ref_spec.contents.keys():
+                                    identifier = file_ref_spec.basedOn.identifier;
+                                else:
+                                    language = file_ref_spec.contents['GccDialectName'];
+                                    found_dialect = True;
+                            else:
+                                break;
+                        
+                        if found_dialect == True:
+                            args += ('-x', language);
+                        
+                        args += ('-isysroot', sdk_path);
+                    else:
+                        logging_helper.getLogger().warn('[xcbuildsystem]: unknown compiler, not sure how to specify sdk path');
+                    
+                    args += ('-arch', arch);
+                    
+                    # this is missing all the build settings, also needs output set
+                    environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), self.environment.settings.values());
+                    for envar in environment_variables_has_flags:
+                        result = envar.commandLineFlag(self.environment);
+                        if result != None and len(result) > 0:
+                            args += (result,);
+                    
+                    file_path = str(file.fileRef.fs_path.root_path);
+                    args += ('-c', file_path);
+                    
+                    # add diags
+                    
+                    # add output
+                    args += ('-o', '<some output file path>')
+                    
+                    # this is displaying the command being issued for this compiler in the build phase
+                    args_str = '';
+                    for word in args:
+                        args_str += word;
+                        args_str += ' ';
+                    print args_str;
+                    
+                    # this is running the compiler command
+                    # compiler_output = xcrun_helper.make_subprocess_call(args);
+                    # if compiler_output[1] != 0:
+                    #     logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
+                    
         else:
             logging_helper.getLogger().error('[xcbuildsystem]: No compiler set!');

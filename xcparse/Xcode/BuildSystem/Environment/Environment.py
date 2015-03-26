@@ -49,8 +49,7 @@ class Environment(object):
     def addOptions(self, options_array):
         for item in options_array:
             if item['Name'] in self.settings.keys():
-                print 'over-write key %s' % item['Name'];
-                #print item;
+                self.settings[item['Name']].mergeDefinition(item);
             else:
                 self.settings[item['Name']] = EnvVariable(item);
     
@@ -93,7 +92,7 @@ class Environment(object):
                 while offset < string_length:
                     if key_string[offset] == '$':
                         subkey = key_string[offset:];
-                        print 'found subkey "%s"' % subkey;
+                        # print 'found subkey "%s"' % subkey;
                         sub_value = self.parseKey(subkey);
                         if sub_value[0] == False:
                             logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
@@ -111,7 +110,7 @@ class Environment(object):
                 value = self.valueForKey(key);
                 key_length = end - start;
         # the key has to contain a subtitutable value, and the value cannot be None
-        return (key_length != 0 and value != None, value, key_length);
+        return (key_length != 0 and value != None, str(value), key_length);
     
     def setValueForKey(self, key, value, condition_dict):
         if key not in self.settings.keys():
@@ -134,6 +133,10 @@ class Environment(object):
             result = self.settings[key];
             if result != None:
                 value = result.value(self);
+        if value != None:
+            test_value = self.parseKey(value);
+            if test_value[0] == True:
+                value = test_value[1];
         return value;
     
     def getBuildComponents(self):

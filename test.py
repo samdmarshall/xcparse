@@ -27,7 +27,7 @@ def main(argv):
             action_func = result[1].actionLookup('build');
             if action_func != None:
                 action_item = action_func(result[2]);
-                action_item.performAction(result, xcparser, 'Release', {});
+                action_item.performAction(result, xcparser, 'Debug', {});
 
 if __name__ == "__main__":
     main(sys.argv[1:]);
