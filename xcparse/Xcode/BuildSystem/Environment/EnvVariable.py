@@ -16,12 +16,22 @@ class EnvVariable(object):
             default_values = {
                 'Boolean': 'NO',
                 'Bool': 'NO',
-                'PathList': '',
+                'bool': 'NO',
+                
                 'String': '',
+                'string': '',
+                
                 'Enumeration': '',
-                'stringlist': '',
+                'enum': '',
+                
+                'PathList': '',
+                'pathlist': '',
+                
                 'Path': '',
+                'path': '',
+                
                 'StringList': '',
+                'stringlist': '',
             };
             
             if self.Type in default_values:

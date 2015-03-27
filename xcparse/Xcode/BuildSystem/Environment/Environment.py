@@ -11,12 +11,22 @@ class Environment(object):
     def __init__(self):
         self.settings = {};
         # load default environment types
+        self.levels = [{}, {}, {}, {}]
+        self.levels_dict = {
+            'default': self.levels[0],
+            'project': self.levels[1],
+            'config': self.levels[2],
+            'target': self.levels[3],
+        };
         
     def loadDefaults(self):
+        # load spec com.apple.buildsettings.standard
+        # load spec com.apple.build-system.core
+        
         # setting up default environment
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')));
-        # self.setValueForKey('DEVELOPER_DIR', xcrun_helper.resolve_developer_path(), {});
+        self.setValueForKey('DEVELOPER_DIR', xcrun_helper.resolve_developer_path(), {});
         platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT')));
         self.setValueForKey('PLATFORM_DIR', platform_path, {});
         sdk_path = xcrun_helper.resolve_sdk_path(self.valueForKey('SDKROOT'));
@@ -46,6 +56,7 @@ class Environment(object):
             value = sdk_info_plist['DefaultProperties'][sdk_default_setting_key];
             self.setValueForKey(sdk_default_setting_key, value, {});
         
+        self.setValueForKey('CLANG_ANALYZER_MALLOC', 'YES', {});
     
     def addOptions(self, options_array):
         for item in options_array:
@@ -76,41 +87,35 @@ class Environment(object):
                 is_envar = True;
         return is_envar;
     
-    def parseKey(self, key_string):
-        key = '';
-        value = '';
-        string_length = len(key_string);
-        offset = 0;
-        key_length = 0;
-        find_sub = key_string.find('$');
-        if find_sub != -1:
-            start = find_sub;
-            end = 0;
-            offset = find_sub + 1;
-            next_char = key_string[offset];
-            if next_char == '(' or next_char == '{':
-                offset += 1;
-                while offset < string_length:
-                    if key_string[offset] == '$':
-                        subkey = key_string[offset:];
-                        # print 'found subkey "%s"' % subkey;
-                        sub_value = self.parseKey(subkey);
-                        if sub_value[0] == False:
-                            logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
-                        append_value = '';
-                        if sub_value[1] != None:
-                            append_value = sub_value[1];
-                        key += append_value;
-                        offset += sub_value[2];
-                    elif key_string[offset] == ')' or key_string[offset] == '}':
-                        end = offset;
-                        break;
-                    else:
-                        key += key_string[offset];
-                    offset += 1;
+    def __extractKey(self, key_string):
+        return key_string[2:-1];
+
+    def __findAndSubKey(self, key_string):
+        iter = re.finditer(r'\$[\(|\{]\w*[\)|\}]', key_string);
+        new_string = '';
+        offset = 0
+        for item in iter:
+            key = self.__extractKey(item.group());
+            if key in self.settings.keys():
                 value = self.valueForKey(key);
-                key_length = end - start;
-        return (key_length != 0 and value != None, str(value), key_length);
+                new_string += key_string[offset:item.start()] + value;
+                offset = item.end();
+            else:
+                if key == 'inherited':
+                    logging_helper.getLogger().info('[Environment]: get higher level setting');
+                else:
+                    logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
+        new_string += key_string[offset:];
+        return new_string;
+    
+    def parseKey(self, key_string):
+        done_key = False;
+        while done_key == False:
+            temp = self.__findAndSubKey(key_string);
+            if temp == key_string:
+                done_key = True;
+            key_string = temp;
+        return (True, key_string, len(key_string));
     
     def setValueForKey(self, key, value, condition_dict):
         if key not in self.settings.keys():
