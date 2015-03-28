@@ -6,6 +6,7 @@ import grp
 from ...Helpers import logging_helper
 from ...Helpers import plist_helper
 from ...Helpers import xcrun_helper
+from .xccompiler import *
 from .xcspec_helper import *
 from .xcbuildrule import *
 from .LangSpec.langspec import *
@@ -187,67 +188,17 @@ class xcbuildsystem(object):
                     # iterate the architectures
                     self.environment.setValueForKey('CURRENT_ARCH', arch, {});
                     self.environment.setValueForKey('arch', arch, {});
-                    for file in files:
-                        
-                        args = ();
-                        # add base (compiler)
-                        args += base_args;
-                        
-                        sdk_name = self.environment.valueForKey('SDKROOT');
-                        sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
-                        if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
-                            args += ('-sdk', sdk_path);
-                        elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
-                            # add language dialect
-                            found_dialect = False;
-                            identifier = file.fileRef.ftype;
-                            language = '';
-                            while found_dialect == False:
-                                file_ref_spec = self.getSpecForIdentifier(identifier);
-                                if file_ref_spec != None:
-                                    if 'GccDialectName' not in file_ref_spec.contents.keys():
-                                        identifier = file_ref_spec.basedOn.identifier;
-                                    else:
-                                        language = file_ref_spec.contents['GccDialectName'];
-                                        found_dialect = True;
-                                else:
-                                    break;
-                            
-                            if found_dialect == True:
-                                args += ('-x', language);
-                            
-                            args += ('-isysroot', sdk_path);
-                        else:
-                            logging_helper.getLogger().warn('[xcbuildsystem]: unknown compiler, not sure how to specify sdk path');
-                        
-                        args += ('-arch', arch);
-                        
-                        # this is missing all the build settings, also needs output set
-                        environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), self.environment.settings.values());
-                        for envar in environment_variables_has_flags:
-                            result = envar.commandLineFlag(self.environment);
-                            if result != None and len(result) > 0:
-                                args += (result,);
-                        
-                        file_path = str(file.fileRef.fs_path.root_path);
-                        args += ('-c', file_path);
-                        
-                        # add diags
-                        
-                        # add output
-                        args += ('-o', '<some output file path>')
-                        
-                        # this is displaying the command being issued for this compiler in the build phase
-                        args_str = '';
-                        for word in args:
-                            args_str += word;
-                            args_str += ' ';
-                        print '\t'+args_str;
-                        
-                        # this is running the compiler command
-                        # compiler_output = xcrun_helper.make_subprocess_call(args);
-                        # if compiler_output[1] != 0:
-                        #     logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
+                    
+                    config_dict = {
+                        'variant': variant,
+                        'arch': arch,
+                        'files': files,
+                        'environment': self.environment,
+                        'buildsystem': self,
+                        'baseargs': base_args,
+                    };
+                    compiler_instance = xccompiler(self.compiler, config_dict);
+                    compiler_instance.build();
                     # newline between each architecture
                     print '';
                 # newline between each variant

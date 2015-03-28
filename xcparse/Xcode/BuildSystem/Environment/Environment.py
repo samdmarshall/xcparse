@@ -24,8 +24,8 @@ class Environment(object):
         # load spec com.apple.build-system.core
         
         # setting up default environment
-        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')));
-        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')));
+        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')), 'default');
+        self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')), 'default');
         self.setValueForKey('DEVELOPER_DIR', xcrun_helper.resolve_developer_path(), {});
         platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT')));
         self.setValueForKey('PLATFORM_DIR', platform_path, {});
@@ -58,17 +58,17 @@ class Environment(object):
         
         self.setValueForKey('CLANG_ANALYZER_MALLOC', 'YES', {});
     
-    def addOptions(self, options_array):
+    def addOptions(self, options_array, level_name='default'):
         for item in options_array:
             if item['Name'] in self.settings.keys():
-                self.settings[item['Name']].mergeDefinition(item);
+                self.levels_dict[level_name][item['Name']].mergeDefinition(item);
             else:
-                self.settings[item['Name']] = EnvVariable(item);
+                self.levels_dict[level_name][item['Name']] = EnvVariable(item);
     
-    def applyConfig(self, config_obj):
+    def applyConfig(self, config_obj, level_name='config'):
         for line in config_obj.lines:
             if line.type == 'KV':
-                self.setValueForKey(line.key(), line.value(None), line.conditions());
+                self.setValueForKey(line.key(), line.value(None), line.conditions(), level_name);
             if line.type == 'COMMENT':
                 # ignore this type of line
                 continue;
@@ -90,13 +90,13 @@ class Environment(object):
     def __extractKey(self, key_string):
         return key_string[2:-1];
 
-    def __findAndSubKey(self, key_string):
+    def __findAndSubKey(self, key_string, level_name='default'):
         iter = re.finditer(r'\$[\(|\{]\w*[\)|\}]', key_string);
         new_string = '';
         offset = 0
         for item in iter:
             key = self.__extractKey(item.group());
-            if key in self.settings.keys():
+            if key in self.levels_dict[level_name].keys():
                 value = self.valueForKey(key);
                 new_string += key_string[offset:item.start()] + value;
                 offset = item.end();
@@ -108,40 +108,43 @@ class Environment(object):
         new_string += key_string[offset:];
         return new_string;
     
-    def parseKey(self, key_string):
+    def parseKey(self, key_string, level_name='default'):
         done_key = False;
         while done_key == False:
-            temp = self.__findAndSubKey(key_string);
+            temp = self.__findAndSubKey(key_string, level_name);
             if temp == key_string:
                 done_key = True;
             key_string = temp;
         return (True, key_string, len(key_string));
     
-    def setValueForKey(self, key, value, condition_dict):
-        if key not in self.settings.keys():
+    def setValueForKey(self, key, value, condition_dict, level_name='default'):
+        if key not in self.levels_dict[level_name].keys():
             option_dict = {};
             option_dict['Name'] = key;
             if len(condition_dict.keys()) == 0:
                 option_dict['DefaultValue'] = value;
             else:
                 option_dict['DefaultValue'] = '';
-            self.settings[key] = EnvVariable(option_dict);
-        if key in self.settings.keys():
-            result = self.settings[key];
+            self.levels_dict[level_name][key] = EnvVariable(option_dict);
+        if key in self.levels_dict[level_name].keys():
+            result = self.levels_dict[level_name][key];
             if result != None:
                 result.addConditionalValue(EnvVarCondition(condition_dict, value));
         
     
     def valueForKey(self, key):
         value = None;
-        if key in self.settings.keys():
-            result = self.settings[key];
-            if result != None:
-                value = result.value(self);
-        if value != None:
-            test_value = self.parseKey(value);
-            if test_value[0] == True:
-                value = test_value[1];
+        for level_dict in self.levels:
+            if key in level_dict.keys():
+                result = level_dict[key];
+                if result != None:
+                    value = result.value(self);
+            else:
+                continue;
+            if value != None:
+                test_value = self.parseKey(value);
+                if test_value[0] == True:
+                    value = test_value[1];
         return value;
     
     def getBuildComponents(self):
@@ -171,7 +174,7 @@ class Environment(object):
         if action_value in additional_settings_lookup_dict.keys():
             values = additional_settings_lookup_dict[action_value];
             for value in values:
-                self.setValueForKey(value[0], value[1], {});
+                self.setValueForKey(value[0], value[1], {}, 'default');
         if action_value in components_lookup_dict.keys():
             return components_lookup_dict[action_value];
         else:
@@ -181,14 +184,14 @@ class Environment(object):
     
     def exportValues(self):
         export_list = [];
-        for key in sorted(self.settings.keys()):
+        for key in sorted(self.levels_dict[level_name].keys()):
             # this need to change to parse out the resulting values completely
             value = self.valueForKey(key);
             result = self.parseKey(value);
             if result[0] == True:
                 value = result[1];
             export_item = 'export '+key+'=';
-            if self.settings[key].type == 'String':
+            if self.levels_dict[level_name][key].type == 'String':
                 export_item += '"'+value+'"';
             else:
                 export_item += value;

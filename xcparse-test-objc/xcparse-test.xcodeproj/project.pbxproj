@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		224765C21AC717220033C183 /* foo.m in Sources */ = {isa = PBXBuildFile; fileRef = 224765C11AC717220033C183 /* foo.m */; };
+		224765C61AC7172D0033C183 /* bar.m in Sources */ = {isa = PBXBuildFile; fileRef = 224765C51AC7172D0033C183 /* bar.m */; };
 		22C4DE221AC476F600431A17 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C4DE211AC476F600431A17 /* main.m */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +35,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		224765C01AC717220033C183 /* foo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = foo.h; sourceTree = "<group>"; };
+		224765C11AC717220033C183 /* foo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = foo.m; sourceTree = "<group>"; };
+		224765C41AC7172D0033C183 /* bar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bar.h; sourceTree = "<group>"; };
+		224765C51AC7172D0033C183 /* bar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bar.m; sourceTree = "<group>"; };
 		22C4DDEE1ABF1E4200431A17 /* sub-test.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "sub-test.xcodeproj"; path = "sub-test/sub-test.xcodeproj"; sourceTree = "<group>"; };
 		22C4DE1F1AC476F600431A17 /* xcparse-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "xcparse-test"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C4DE211AC476F600431A17 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -61,6 +67,10 @@
 			isa = PBXGroup;
 			children = (
 				22C4DE211AC476F600431A17 /* main.m */,
+				224765C01AC717220033C183 /* foo.h */,
+				224765C11AC717220033C183 /* foo.m */,
+				224765C41AC7172D0033C183 /* bar.h */,
+				224765C51AC7172D0033C183 /* bar.m */,
 			);
 			path = "xcparse-test";
 			sourceTree = "<group>";
@@ -154,6 +164,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				224765C61AC7172D0033C183 /* bar.m in Sources */,
+				224765C21AC717220033C183 /* foo.m in Sources */,
 				22C4DE221AC476F600431A17 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

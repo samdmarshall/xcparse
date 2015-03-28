@@ -47,8 +47,7 @@ class xcrun_helper(object):
         return hash_path;
     
     @classmethod
-    def ResolveBuildLocation(cls, project, sym_root):
-        build_dir_path = '';
+    def ResolveDerivedDataPath(cls):
         default_dd_path = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/");
         relative_dd_path = False;
         derived_data = CoreFoundation.CFPreferencesCopyAppValue('IDECustomDerivedDataLocation', 'com.apple.dt.Xcode');
@@ -57,6 +56,12 @@ class xcrun_helper(object):
         else:
             if derived_data[0] != '/':
                 derived_data = os.path.join(project.path, derived_data);
+        return derived_data;
+    
+    @classmethod
+    def ResolveBuildLocation(cls, project, sym_root):
+        build_dir_path = '';
+        derived_data = cls.ResolveDerivedDataPath();
         
         location_style = CoreFoundation.CFPreferencesCopyAppValue('IDEBuildLocationStyle', 'com.apple.dt.Xcode');
         if location_style == 'Unique':

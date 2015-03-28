@@ -60,7 +60,6 @@ class BuildAction(Base_Action):
             else:
                 logging_helper.getLogger().error('[BuildAction]: Could not find a target with identifier "%s" in project "%s"' % (target_identifier, project.path.root_path));
             
-            
             # make sure that the project was found
             if target != None:
                 print target.name;
@@ -76,10 +75,15 @@ class BuildAction(Base_Action):
                 build_system.initEnvironment(project, configuration_name);
                 build_system.environment.setValueForKey('ACTION', 'build', {});
                 build_system.environment.setValueForKey('BUILD_COMPONENTS', build_system.environment.getBuildComponents(), {});
-                build_system.environment.setValueForKey('PRODUCT_NAME', target.productName, {});
+                build_system.environment.setValueForKey('PRODUCT_NAME', target.productName, {}, 'target');
+                # setting the project level build environment
+                project_build_settings = project.rootObject.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
+                for setting in project_build_settings.keys():
+                    build_system.environment.setValueForKey(setting, project_build_settings[setting], {}, 'project');
+                # setting the target level build environment
                 target_build_settings = target.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
                 for setting in target_build_settings.keys():
-                    build_system.environment.setValueForKey(setting, target_build_settings[setting], {});
+                    build_system.environment.setValueForKey(setting, target_build_settings[setting], {}, 'target');
                 build_system.environment.loadDefaults();
                 
                 # running build phases for this target

@@ -39,6 +39,7 @@ class EnvVariable(object):
             else:
                 logging_helper.getLogger().warning('[EnvVariable]: type not found %s' % (self.Type));
         self.values = set();
+        self.mergeDefinition(dictionary);
     
     def __attrs(self):
         return (self.name, self.type);
@@ -97,6 +98,8 @@ class EnvVariable(object):
                 # if hasattr(self, 'AllowedValues') == True and value in getattr(self, 'AllowedValues'):
                 if value in self.CommandLineArgs.keys():
                     result = self.CommandLineArgs[value];
+                    if type(result) == objc.pyobjc_unicode:
+                        result = (result,);
                 else:
                     if '<<otherwise>>' in self.CommandLineArgs.keys():
                         result = self.CommandLineArgs['<<otherwise>>'];
