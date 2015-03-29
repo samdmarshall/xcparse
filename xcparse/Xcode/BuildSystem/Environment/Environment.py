@@ -9,7 +9,6 @@ from ....Helpers import plist_helper
 class Environment(object):
     
     def __init__(self):
-        self.settings = {};
         # load default environment types
         self.levels = [{}, {}, {}, {}]
         self.levels_dict = {
@@ -57,10 +56,11 @@ class Environment(object):
             self.setValueForKey(sdk_default_setting_key, value, {});
         
         self.setValueForKey('CLANG_ANALYZER_MALLOC', 'YES', {});
+        self.setValueForKey('MODULE_CACHE_DIR', os.path.join(xcrun_helper.ResolveDerivedDataPath(), 'ModuleCache'), {});
     
     def addOptions(self, options_array, level_name='default'):
         for item in options_array:
-            if item['Name'] in self.settings.keys():
+            if item['Name'] in self.levels_dict[level_name].keys():
                 self.levels_dict[level_name][item['Name']].mergeDefinition(item);
             else:
                 self.levels_dict[level_name][item['Name']] = EnvVariable(item);
@@ -134,7 +134,7 @@ class Environment(object):
     
     def valueForKey(self, key):
         value = None;
-        for level_dict in self.levels:
+        for level_dict in reversed(self.levels):
             if key in level_dict.keys():
                 result = level_dict[key];
                 if result != None:
@@ -181,17 +181,24 @@ class Environment(object):
             logging_helper.getLogger().warn('[Environment]: Unable to find ACTION');
             return '';
     
+    def resolvedValues(self):
+        settings = {};
+        for level in self.levels:
+            for key in level.keys():
+                settings[key] = level[key];
+        return settings;
     
     def exportValues(self):
         export_list = [];
-        for key in sorted(self.levels_dict[level_name].keys()):
+        key_dict = self.resolvedValues();
+        for key in sorted(key_dict.keys()):
             # this need to change to parse out the resulting values completely
             value = self.valueForKey(key);
             result = self.parseKey(value);
             if result[0] == True:
                 value = result[1];
             export_item = 'export '+key+'=';
-            if self.levels_dict[level_name][key].type == 'String':
+            if key_dict[key].Type == 'String':
                 export_item += '"'+value+'"';
             else:
                 export_item += value;

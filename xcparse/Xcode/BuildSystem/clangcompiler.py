@@ -9,13 +9,16 @@ class clangcompiler(xccompiler):
         super(clangcompiler, self).__init__(compiler, config_dict);
     
     def build(self):
+        build_system = self.properties['buildsystem'];
+        arch = self.properties['arch'];
+        
         for file in self.properties['files']:
             
             args = ();
             # add base (compiler)
             args += self.properties['baseargs'];
             
-            sdk_name = self.properties['environment'].valueForKey('SDKROOT');
+            sdk_name = build_system.environment.valueForKey('SDKROOT');
             sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
             
             # add language dialect
@@ -23,7 +26,7 @@ class clangcompiler(xccompiler):
             identifier = file.fileRef.ftype;
             language = '';
             while found_dialect == False:
-                file_ref_spec = self.properties['buildsystem'].getSpecForIdentifier(identifier);
+                file_ref_spec = build_system.getSpecForIdentifier(identifier);
                 if file_ref_spec != None:
                     if 'GccDialectName' not in file_ref_spec.contents.keys():
                         identifier = file_ref_spec.basedOn.identifier;
@@ -38,11 +41,10 @@ class clangcompiler(xccompiler):
             
             args += ('-isysroot', sdk_path);
             
-            
             # this is missing all the build settings, also needs output set
-            environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), self.properties['environment'].settings.values());
+            environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), build_system.environment.resolvedValues().values());
             for envar in environment_variables_has_flags:
-                result = envar.commandLineFlag(self.properties['environment']);
+                result = envar.commandLineFlag(build_system.environment);
                 if result != None and len(result) > 0:
                     args += (result,);
             

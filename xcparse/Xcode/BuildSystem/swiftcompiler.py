@@ -9,18 +9,21 @@ class swiftcompiler(xccompiler):
         super(swiftcompiler, self).__init__(compiler, config_dict);
         
     def build(self):
+        build_system = self.properties['buildsystem'];
+        arch = self.properties['arch'];
+        
         args = ();
         # add base (compiler)
         args += self.properties['baseargs'];
         
-        sdk_name = self.properties['environment'].valueForKey('SDKROOT');
+        sdk_name = build_system.environment.valueForKey('SDKROOT');
         sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
         args += ('-sdk', sdk_path);
         
         # this is missing all the build settings, also needs output set
-        environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), self.properties['environment'].settings.values());
+        environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), build_system.environment.resolvedValues().values());
         for envar in environment_variables_has_flags:
-            result = envar.commandLineFlag(self.properties['environment']);
+            result = envar.commandLineFlag(build_system.environment);
             if result != None and len(result) > 0:
                 args += (result,);
         
@@ -32,20 +35,20 @@ class swiftcompiler(xccompiler):
         
         # add -target
         deployment_target = '';
-        platform = self.properties['environment'].valueForKey('PLATFORM_NAME');
+        platform = build_system.environment.valueForKey('PLATFORM_NAME');
         if platform == 'macosx':
-            deployment_target = self.properties['environment'].valueForKey('MACOSX_DEPLOYMENT_TARGET');
+            deployment_target = build_system.environment.valueForKey('MACOSX_DEPLOYMENT_TARGET');
         if platform == 'iphoneos':
-            deployment_target = self.properties['environment'].valueForKey('IPHONEOS_DEPLOYMENT_TARGET');
+            deployment_target = build_system.environment.valueForKey('IPHONEOS_DEPLOYMENT_TARGET');
             if deployment_target > '7.0':
                 logging_helper.getLogger().error('[xcbuildsystem]: Cannot deploy swift to targets less than iOS 7.0');
-        target_arch_platform_os = self.properties['arch']+'-apple-'+platform+deployment_target;
+        target_arch_platform_os = arch+'-apple-'+platform+deployment_target;
         args += ('-target', target_arch_platform_os);
         # add standard flags
         module_cache_path = os.path.join(xcrun_helper.ResolveDerivedDataPath(), 'ModuleCache')
         args += ('-module-cache-path', module_cache_path);
-        args += ('-I', os.path.join(self.properties['environment'].valueForKey('SRCROOT'), self.properties['environment'].valueForKey('CONFIGURATION_BUILD_DIR')));
-        args += ('-F', os.path.join(self.properties['environment'].valueForKey('SRCROOT'), self.properties['environment'].valueForKey('CONFIGURATION_BUILD_DIR')));
+        args += ('-I', os.path.join(build_system.environment.valueForKey('SRCROOT'), build_system.environment.valueForKey('CONFIGURATION_BUILD_DIR')));
+        args += ('-F', os.path.join(build_system.environment.valueForKey('SRCROOT'), build_system.environment.valueForKey('CONFIGURATION_BUILD_DIR')));
         args += ('-parseable-output', );
         args += ('-serialize-diagnostics', );
         args += ('-emit-dependencies', );

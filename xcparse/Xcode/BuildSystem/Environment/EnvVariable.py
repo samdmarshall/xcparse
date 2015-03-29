@@ -7,7 +7,7 @@ class EnvVariable(object):
     def __init__(self, dictionary):
         if 'Name' in dictionary.keys():
             self.name = dictionary['Name'];
-        self.type = 'String'; # default for now
+        self.Type = 'String'; # default for now
         if 'Type' in dictionary.keys():
             self.Type = dictionary['Type'];
         if 'DefaultValue' in dictionary.keys():

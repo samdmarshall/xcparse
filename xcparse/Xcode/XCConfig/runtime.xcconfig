@@ -41,6 +41,9 @@ DEVELOPER_TOOLS_DIR=$(DEVELOPER_DIR)/Tools
 DEVELOPER_USR_DIR=$(DEVELOPER_DIR)/usr
 LEGACY_DEVELOPER_DIR = $(DEVELOPER_DIR)/../PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer
 
+// Diags
+COLOR_DIAGNOSTICS = NO
+
 // Exclude
 EXCLUDED_INSTALLSRC_SUBDIRECTORY_PATTERNS=.DS_Store .svn .git .hg CVS
 
@@ -84,6 +87,9 @@ LOCAL_ADMIN_APPS_DIR=/Applications/Utilities
 LOCAL_APPS_DIR=/Applications
 LOCAL_DEVELOPER_DIR=/Library/Developer
 LOCAL_LIBRARY_DIR=/Library
+
+// Objective-C
+OBJC_ABI_VERSION = 
 
 // Platforms
 AVAILABLE_PLATFORMS=iphonesimulator macosx iphoneos
@@ -133,10 +139,10 @@ SYSTEM_KEXT_INSTALL_PATH=/System/Library/Extensions
 SYSTEM_LIBRARY_DIR=/System/Library
 
 // Temp
-TEMP_DIR=/Users/sam/Desktop/test/build/test.build/Debug/test-objc.build
-TEMP_FILES_DIR=/Users/sam/Desktop/test/build/test.build/Debug/test-objc.build
-TEMP_FILE_DIR=/Users/sam/Desktop/test/build/test.build/Debug/test-objc.build
-TEMP_ROOT=/Users/sam/Desktop/test/build
+TEMP_DIR=$(CONFIGURATION_TEMP_DIR)/$(PRODUCT_NAME).build
+TEMP_FILES_DIR=$(TEMP_DIR)
+TEMP_FILE_DIR=$(TEMP_DIR)
+TEMP_ROOT=$(SYMROOT)
 
 // Tools
 CHMOD=/bin/chmod
