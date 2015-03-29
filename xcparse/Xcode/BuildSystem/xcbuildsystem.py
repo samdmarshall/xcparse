@@ -7,6 +7,8 @@ from ...Helpers import logging_helper
 from ...Helpers import plist_helper
 from ...Helpers import xcrun_helper
 from .xccompiler import *
+from .swiftcompiler import *
+from .clangcompiler import *
 from .xcspec_helper import *
 from .xcbuildrule import *
 from .LangSpec.langspec import *
@@ -197,8 +199,17 @@ class xcbuildsystem(object):
                         'buildsystem': self,
                         'baseargs': base_args,
                     };
-                    compiler_instance = xccompiler(self.compiler, config_dict);
-                    compiler_instance.build();
+                    
+                    compiler_instance = None;
+                    if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
+                        compiler_instance = swiftcompiler(self.compiler, config_dict);
+                    elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
+                        compiler_instance = clangcompiler(self.compiler, config_dict);
+                    else:
+                        logging_helper.getLogger().error('[xcbuildsystem]: unknown compiler %s' % self.compiler);
+                    
+                    if compiler_instance != None:
+                        compiler_instance.build();
                     # newline between each architecture
                     print '';
                 # newline between each variant
