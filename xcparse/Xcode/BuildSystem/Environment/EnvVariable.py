@@ -73,6 +73,8 @@ class EnvVariable(object):
                 result_value = conditional.value;
                 break;
         # add check for parsing the value if necessary
+        if type(result_value) is unicode:
+            result_value = str(result_value);
         if type(result_value) is objc.pyobjc_unicode:
             result_value = str(result_value);
         if type(result_value) is str:

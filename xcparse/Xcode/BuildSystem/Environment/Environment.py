@@ -32,6 +32,12 @@ class Environment(object):
         # setting up default environment
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('defaults.xcconfig')), 'default');
         self.applyConfig(xcconfig(xcconfig.pathForBuiltinConfigWithName('runtime.xcconfig')), 'default');
+        xcode_version_plist_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), '../version.plist'));
+        xcode_version_plist = plist_helper.LoadPlistFromDataAtPath(xcode_version_plist_path);
+        xcode_version = xcode_version_plist['CFBundleShortVersionString'];
+        xcode_build = xcode_version_plist['ProductBuildVersion'];
+        cache_root = os.path.join(os.confstr('CS_DARWIN_USER_CACHE_DIR'), 'com.apple.DeveloperTools/'+xcode_version+'-'+xcode_build+'/Xcode');
+        self.setValueForKey('CCHROOT', cache_root, {});
         self.setValueForKey('DEVELOPER_DIR', xcrun_helper.resolve_developer_path(), {});
         platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT')));
         self.setValueForKey('PLATFORM_DIR', platform_path, {});
@@ -58,6 +64,9 @@ class Environment(object):
         sdk_info_path = os.path.join(sdk_path, 'SDKSettings.plist');
         sdk_info_plist = plist_helper.LoadPlistFromDataAtPath(sdk_info_path);
         self.setValueForKey('SDKROOT', sdk_info_plist['CanonicalName'], {});
+        self.setValueForKey('SDK_DIR', xcrun_helper.resolve_sdk_path(sdk_info_plist['CanonicalName']), {});
+        self.setValueForKey('SDK_NAME', sdk_info_plist['CanonicalName'], {});
+        self.setValueForKey('SDK_PRODUCT_BUILD_VERSION', '', {});
         for sdk_default_setting_key in sdk_info_plist['DefaultProperties'].keys():
             value = sdk_info_plist['DefaultProperties'][sdk_default_setting_key];
             self.setValueForKey(sdk_default_setting_key, value, {});
@@ -143,7 +152,7 @@ class Environment(object):
                 result.addConditionalValue(EnvVarCondition(condition_dict, value));
         
     
-    def valueForKey(self, key, level_name='project'):
+    def valueForKey(self, key, level_name='target'):
         value = None;
         for level_key in reversed(self.levels_lookup):
             if self.levels_order[level_key] > self.levels_order[level_name]:
@@ -206,9 +215,11 @@ class Environment(object):
         export_list = [];
         key_dict = self.resolvedValues();
         for key in sorted(key_dict.keys()):
-            # this need to change to parse out the resulting values completely
             value = self.valueForKey(key);
-            result = self.parseKey(value);
+            if key == 'SDKROOT':
+                result = (True, xcrun_helper.resolve_sdk_path(value), 0);
+            else:
+                result = self.parseKey(value, 'target');
             if result[0] == True:
                 value = result[1];
             export_item = 'export '+key+'=';

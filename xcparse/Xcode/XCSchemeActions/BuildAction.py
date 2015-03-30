@@ -75,6 +75,8 @@ class BuildAction(Base_Action):
                 build_system.initEnvironment(project, configuration_name);
                 build_system.environment.setValueForKey('ACTION', 'build', {});
                 build_system.environment.setValueForKey('BUILD_COMPONENTS', build_system.environment.getBuildComponents(), {});
+                build_system.environment.setValueForKey('TARGET_NAME', target.name, {}, 'target');
+                build_system.environment.setValueForKey('TARGETNAME', target.name, {}, 'target');
                 build_system.environment.setValueForKey('PRODUCT_NAME', target.productName, {}, 'target');
                 # setting the project level build environment
                 project_build_settings = project.rootObject.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;

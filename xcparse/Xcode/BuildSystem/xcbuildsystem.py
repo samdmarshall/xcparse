@@ -181,7 +181,8 @@ class xcbuildsystem(object):
             for variant in compile_variants:
                 self.environment.setValueForKey('CURRENT_VARIANT', variant, {});
                 self.environment.setValueForKey('variant', variant, {});
-                
+                self.environment.setValueForKey('OBJECT_FILE_DIR', '$(TARGET_TEMP_DIR)/Objects', {});
+                self.environment.setValueForKey('OBJECT_FILE_DIR_'+variant, '$(OBJECT_FILE_DIR)-$(CURRENT_VARIANT)', {});
                 # getting the architectures
                 compile_archs = [];
                 arch_value = self.environment.valueForKey('ARCHS');
