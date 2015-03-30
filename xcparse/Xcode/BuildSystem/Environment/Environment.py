@@ -120,8 +120,9 @@ class Environment(object):
                 if key == 'inherited':
                     index = self.levels_order[level_name] - 1;
                     if index < 0:
-                        logging_helper.getLogger().error('[Environment]: cannot resolve past default level');
+                        offset = item.end();
                     else:
+                        logging_helper.getLogger().info('[Environment]: looking up lower level!');
                         print self.parseKey(key_string, self.levels_lookup[index]);
                 else:
                     logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
@@ -223,7 +224,7 @@ class Environment(object):
             if result[0] == True:
                 value = result[1];
             export_item = 'export '+key+'=';
-            if key_dict[key].Type == 'String':
+            if key_dict[key].isString():
                 export_item += '"'+value+'"';
             else:
                 export_item += value;

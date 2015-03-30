@@ -53,6 +53,18 @@ class EnvVariable(object):
     def __hash__(self):
         return hash(self.__attrs());
     
+    def isPath(self):
+        return self.Type in ['path', 'Path', 'pathlist', 'PathList'];
+    
+    def isString(self):
+        return self.Type in ['string', 'String', 'stringlist', 'StringList'];
+    
+    def isBoolean(self):
+        return self.Type in ['Boolean', 'bool', 'Bool'];
+    
+    def isEnum(self):
+        return self.Type in ['enum', 'Enumeration'];
+    
     def mergeDefinition(self, dictionary):
         for key in dictionary.keys():
             if hasattr(self, key) == False:
