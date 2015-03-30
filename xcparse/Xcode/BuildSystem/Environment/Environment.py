@@ -17,6 +17,13 @@ class Environment(object):
             'config': self.levels[2],
             'target': self.levels[3],
         };
+        self.levels_lookup = ['default', 'project', 'config', 'target'];
+        self.levels_order = {
+            'default': 0,
+            'project': 1,
+            'config': 2,
+            'target': 3,
+        }
         
     def loadDefaults(self):
         # load spec com.apple.buildsettings.standard
@@ -102,7 +109,11 @@ class Environment(object):
                 offset = item.end();
             else:
                 if key == 'inherited':
-                    logging_helper.getLogger().info('[Environment]: get higher level setting');
+                    index = self.levels_order[level_name] - 1;
+                    if index < 0:
+                        logging_helper.getLogger().error('[Environment]: cannot resolve past default level');
+                    else:
+                        print self.parseKey(key_string, self.levels_lookup[index]);
                 else:
                     logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
         new_string += key_string[offset:];
@@ -132,7 +143,7 @@ class Environment(object):
                 result.addConditionalValue(EnvVarCondition(condition_dict, value));
         
     
-    def valueForKey(self, key):
+    def valueForKey(self, key, level_name='default'):
         value = None;
         for level_dict in reversed(self.levels):
             if key in level_dict.keys():
@@ -142,7 +153,7 @@ class Environment(object):
             else:
                 continue;
             if value != None:
-                test_value = self.parseKey(value);
+                test_value = self.parseKey(value, level_name);
                 if test_value[0] == True:
                     value = test_value[1];
         return value;
