@@ -133,4 +133,5 @@ class EnvVariable(object):
                         result = '';
                     else:
                         result = result.replace('$(value)', value);
+                result = environment.parseKey(result)[1];
         return result;
