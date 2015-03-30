@@ -143,9 +143,12 @@ class Environment(object):
                 result.addConditionalValue(EnvVarCondition(condition_dict, value));
         
     
-    def valueForKey(self, key, level_name='default'):
+    def valueForKey(self, key, level_name='project'):
         value = None;
-        for level_dict in reversed(self.levels):
+        for level_key in reversed(self.levels_lookup):
+            if self.levels_order[level_key] > self.levels_order[level_name]:
+                continue;
+            level_dict = self.levels_dict[level_key];
             if key in level_dict.keys():
                 result = level_dict[key];
                 if result != None:
