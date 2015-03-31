@@ -83,9 +83,15 @@ class BuildAction(Base_Action):
                 for setting in project_build_settings.keys():
                     build_system.environment.setValueForKey(setting, project_build_settings[setting], {}, 'project');
                 # setting the target level build environment
-                target_build_settings = target.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
+                target_build_config = target.buildConfigurationList.buildConfigurationWithName(configuration_name);
+                target_build_settings = target_build_config.buildSettings;
                 for setting in target_build_settings.keys():
                     build_system.environment.setValueForKey(setting, target_build_settings[setting], {}, 'target');
+                # setting the config level build environment
+                config_build_settings = target_build_config.xcconfig;
+                if config_build_settings != None:
+                    build_system.environment.applyConfig(config_build_settings);
+                # setting the defaults
                 build_system.environment.loadDefaults();
                 
                 # running build phases for this target
