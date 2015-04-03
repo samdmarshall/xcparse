@@ -185,7 +185,7 @@ class xcbuildsystem(object):
                 self.environment.setValueForKey('OBJECT_FILE_DIR_'+variant, '$(OBJECT_FILE_DIR)-$(CURRENT_VARIANT)', {});
                 # getting the architectures
                 compile_archs = [];
-                arch_value = self.environment.valueForKey('ARCHS');
+                arch_value = self.environment.resolvedValues()['ARCHS'].value(self.environment);
                 compile_archs.extend(arch_value.split(' '));
                 for arch in compile_archs:
                     # iterate the architectures

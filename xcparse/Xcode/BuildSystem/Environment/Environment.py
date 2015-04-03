@@ -53,12 +53,12 @@ class Environment(object):
         # load defaults from platform
         for platform_default_setting_key in platform_info_plist['DefaultProperties'].keys():
             value = platform_info_plist['DefaultProperties'][platform_default_setting_key]
-            self.setValueForKey(platform_default_setting_key, value, {});
+            self.setValueForKey(str(platform_default_setting_key), value, {});
         # load overrides
         if 'OverrideProperties' in platform_info_plist.keys():
             for platform_override_setting_key in platform_info_plist['OverrideProperties'].keys():
                 value = platform_info_plist['OverrideProperties'][platform_override_setting_key];
-                self.setValueForKey(platform_override_setting_key, value, {});
+                self.setValueForKey(str(platform_override_setting_key), value, {});
         
         # load these from sdk info.plist
         sdk_info_path = os.path.join(sdk_path, 'SDKSettings.plist');
@@ -69,7 +69,7 @@ class Environment(object):
         self.setValueForKey('SDK_PRODUCT_BUILD_VERSION', '', {});
         for sdk_default_setting_key in sdk_info_plist['DefaultProperties'].keys():
             value = sdk_info_plist['DefaultProperties'][sdk_default_setting_key];
-            self.setValueForKey(sdk_default_setting_key, value, {});
+            self.setValueForKey(str(sdk_default_setting_key), value, {});
         
         self.setValueForKey('CLANG_ANALYZER_MALLOC', 'YES', {});
         self.setValueForKey('MODULE_CACHE_DIR', os.path.join(xcrun_helper.ResolveDerivedDataPath(), 'ModuleCache'), {});
@@ -92,7 +92,7 @@ class Environment(object):
     def applyConfig(self, config_obj, level_name='config'):
         for line in config_obj.lines:
             if line.type == 'KV':
-                self.setValueForKey(line.key(), line.value(None), line.conditions(), level_name);
+                self.setValueForKey(str(line.key()), line.value(None), line.conditions(), level_name);
             if line.type == 'COMMENT':
                 # ignore this type of line
                 continue;
@@ -114,33 +114,40 @@ class Environment(object):
     def __extractKey(self, key_string):
         return key_string[2:-1];
 
-    def __findAndSubKey(self, key_string, level_name='default'):
+    def __findAndSubKey(self, key_string, level_name='default', lookup_dict=None):
+        if lookup_dict == None:
+            lookup_dict = self.levels_dict[level_name];
         iter = re.finditer(r'\$[\(|\{]\w*[\)|\}]', key_string);
         new_string = '';
         offset = 0
         for item in iter:
             key = self.__extractKey(item.group());
-            if key in self.levels_dict[level_name].keys():
-                value = self.valueForKey(key);
+            if key in lookup_dict.keys():
+                #value = self.valueForKey(key);
+                value = lookup_dict[key].value(self);
                 new_string += key_string[offset:item.start()] + value;
                 offset = item.end();
             else:
-                if key == 'inherited':
-                    index = self.levels_order[level_name] - 1;
-                    if index < 0:
-                        offset = item.end();
-                    else:
-                        logging_helper.getLogger().info('[Environment]: looking up lower level!');
-                        print self.parseKey(key_string, self.levels_lookup[index]);
+                index = self.levels_order[level_name] - 1;
+                lookup_name = None;
+                if index >= 0:
+                    lookup_name = self.levels_lookup[index];
                 else:
-                    logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % key_string);
+                    offset = item.end();
+                if key == 'inherited':
+                    if index >= 0:
+                        resolved_value = self.parseKey(key_string, lookup_dict=lookup_dict);
+                        new_string += key_string[offset:item.start()] + resolved_value[1];
+                        offset = item.end();
+                else:
+                    logging_helper.getLogger().error('[Environment]: Error in parsing key "%s" on "%s"' % (key_string, level_name));
         new_string += key_string[offset:];
         return new_string;
     
-    def parseKey(self, key_string, level_name='default'):
+    def parseKey(self, key_string, level_name='default', lookup_dict=None):
         done_key = False;
         while done_key == False:
-            temp = self.__findAndSubKey(key_string, level_name);
+            temp = self.__findAndSubKey(key_string, level_name, lookup_dict);
             if temp == key_string:
                 done_key = True;
             key_string = temp;
@@ -159,7 +166,14 @@ class Environment(object):
             result = self.levels_dict[level_name][key];
             if result != None:
                 result.addConditionalValue(EnvVarCondition(condition_dict, value));
-        
+    
+    def levelForVariable(self, variable):
+        for level_name in self.levels_lookup:
+            level = self.levels_dict[level_name];
+            if variable.name in level.keys():
+                if level[variable.name] == variable:
+                    return (True, level_name);
+        return (False, None);
     
     def valueForKey(self, key, level_name='target'):
         value = None;
@@ -206,7 +220,7 @@ class Environment(object):
         if action_value in additional_settings_lookup_dict.keys():
             values = additional_settings_lookup_dict[action_value];
             for value in values:
-                self.setValueForKey(value[0], value[1], {}, 'default');
+                self.setValueForKey(str(value[0]), value[1], {}, 'default');
         if action_value in components_lookup_dict.keys():
             return components_lookup_dict[action_value];
         else:

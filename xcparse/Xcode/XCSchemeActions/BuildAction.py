@@ -75,18 +75,18 @@ class BuildAction(Base_Action):
                 build_system.initEnvironment(project, configuration_name);
                 build_system.environment.setValueForKey('ACTION', 'build', {});
                 build_system.environment.setValueForKey('BUILD_COMPONENTS', build_system.environment.getBuildComponents(), {});
-                build_system.environment.setValueForKey('TARGET_NAME', target.name, {});
-                build_system.environment.setValueForKey('TARGETNAME', target.name, {});
+                build_system.environment.setValueForKey('TARGET_NAME', target.name, {}, 'target');
+                build_system.environment.setValueForKey('TARGETNAME', target.name, {}, 'target');
                 build_system.environment.setValueForKey('PRODUCT_NAME', target.productName, {});
                 # setting the project level build environment
                 project_build_settings = project.rootObject.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
                 for setting in project_build_settings.keys():
-                    build_system.environment.setValueForKey(setting, project_build_settings[setting], {}, 'project');
+                    build_system.environment.setValueForKey(str(setting), project_build_settings[setting], {}, 'project');
                 # setting the target level build environment
                 target_build_config = target.buildConfigurationList.buildConfigurationWithName(configuration_name);
                 target_build_settings = target_build_config.buildSettings;
                 for setting in target_build_settings.keys():
-                    build_system.environment.setValueForKey(setting, target_build_settings[setting], {}, 'target');
+                    build_system.environment.setValueForKey(str(setting), target_build_settings[setting], {}, 'target');
                 # setting the config level build environment
                 config_build_settings = target_build_config.xcconfig;
                 if config_build_settings != None:

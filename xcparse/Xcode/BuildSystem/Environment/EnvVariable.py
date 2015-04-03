@@ -534,17 +534,20 @@ class EnvVariable(object):
         self.values = set();
         self.mergeDefinition(dictionary);
     
-    def __attrs(self):
-        return (self.name, self.type);
-    
+    # def __attrs(self):
+    #     return (self.name, self.type);
+    #
     def __repr__(self):
         return '(%s : %s : %s : %s - %s)' % (type(self), self.name, self.Type, self.DefaultValue, self.values);
     
-    def __eq__(self, other):
-        return isinstance(other, type(self)) and self.name == other.name and self.Type == other.Type;
+    # def __eq__(self, other):
+    #     return isinstance(other, type(self)) and self.name == other.name and self.Type == other.Type;
+    #
+    # def __hash__(self):
+    #     return hash(self.__attrs());
     
-    def __hash__(self):
-        return hash(self.__attrs());
+    def isList(self):
+        return self.Type in ['stringlist', 'StringList', 'pathlist', 'PathList'];
     
     def isPath(self):
         return self.Type in ['path', 'Path', 'pathlist', 'PathList'];
@@ -598,48 +601,105 @@ class EnvVariable(object):
         if type(result_value) is objc.pyobjc_unicode:
             result_value = str(result_value);
         if type(result_value) is str:
-            test_result_value = environment.parseKey(result_value);
+            test_result_value = environment.parseKey(result_value, 'target', environment.resolvedValues());
             if test_result_value[0] == True:
                 result_value = test_result_value[1];
+            else:
+                logging_helper.getLogger().error('[EnvVariable]: BAD VARIABLE :(');
         else:
             result_str = '';
             for item in result_value:
                 result_str += str(item)+' ';
             result_value = result_str;
         if '$(inherited)' in result_value:
-            # is this correct?
-            result_value = result_value.replace('$(inherited)', ' ');
+            # is this correct
+            current_level = environment.levelForVariable(self);
+            if current_level[0] == True:
+                index = environment.levels_order[current_level[1]] - 1;
+                inherited_value = ' ';
+                if index >= 0:
+                    inherited_value = environment.parseKey(result_value, environment.levels_lookup[index])[1];
+            result_value = result_value.replace('$(inherited)', inherited_value);
         return result_value;
     
+    def hasCommandLineArgs(self):
+        return hasattr(self, 'CommandLinePrefixFlag') or hasattr(self, 'CommandLineArgs');
+    
     def commandLineFlag(self, environment):
-        result = None;
-        value = self.value(environment);
+        output = '';
+        
+        prefix_flag = '';
+        if hasattr(self, 'CommandLinePrefixFlag') == True:
+            prefix_flag = self.CommandLinePrefixFlag;
+        
+        primary_flag = '';
+        flag_lookup_keys = [];
+        flag_lookup_values = {};
         if hasattr(self, 'CommandLineArgs') == True:
             if hasattr(self.CommandLineArgs, 'keys') and callable(getattr(self.CommandLineArgs, 'keys')):
-                # this is checking allowed values to be passed and looked up
-                # if hasattr(self, 'AllowedValues') == True and value in getattr(self, 'AllowedValues'):
-                if value in self.CommandLineArgs.keys():
-                    result = self.CommandLineArgs[value];
-                    if type(result) == objc.pyobjc_unicode:
-                        result = (result,);
+                for key in self.CommandLineArgs.keys():
+                    flag_lookup_values[str(key)] = self.CommandLineArgs[key];
+                flag_lookup_keys = list(map(lambda item: str(item), self.CommandLineArgs.keys()));
+            elif len(self.CommandLineArgs) > 0:
+                args_list = map(lambda item: str(item), self.CommandLineArgs);
+                if hasattr(self, 'AllowedValues') == True:
+                    flag_lookup_keys = list(map(lambda item: str(item), getattr(self, 'AllowedValues')));
+                    for key in flag_lookup_keys:
+                        flag_lookup_values[str(key)] = args_list
                 else:
-                    if '<<otherwise>>' in self.CommandLineArgs.keys():
-                        result = self.CommandLineArgs['<<otherwise>>'];
-                    else:
-                        logging_helper.getLogger().warn('[EnvVariable]: Could not look-up value "%s" in args dictionary "%s"' % (value, self.CommandLineArgs));
+                    primary_flag = ' '.join(args_list);
+        
+        flag_list = [];
+        
+        
+        value = self.value(environment);
+        if self.isList():
+            value_list = filter(lambda item: len(item) > 0, value.split(' '));
+            if len(flag_lookup_keys) > 0:
+                if value in flag_lookup_values.keys():
+                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                elif '<<otherwise>>' in flag_lookup_keys:
+                    flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                else:
+                    logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
             else:
-                result = self.CommandLineArgs;
-        # change array to string
-        if result != None:
-            if len(result) > 0:
-                result_str = '';
-                for item in result:
-                    result_str += str(item)+' ';
-                result = result_str;
-                if '$(value)' in result:
-                    if len(value) == 0:
-                        result = '';
-                    else:
-                        result = result.replace('$(value)', value);
-                result = environment.parseKey(result)[1];
-        return result;
+                # use primary flag
+                for item in value_list:
+                    flag_list.append(primary_flag.replace('$(value)', item));
+        elif self.isString() or self.isPath():
+            value = str(value);
+            if len(flag_lookup_values) > 0:
+                if value in flag_lookup_values.keys():
+                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                elif '<<otherwise>>' in flag_lookup_keys:
+                    flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                else:
+                    logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
+            else:
+                # prefix flag check
+                flag_list.append(prefix_flag.replace('$(value)', value)+value);
+        elif self.isBoolean():
+            value = str(value);
+            if value in flag_lookup_keys:
+                flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+        elif self.isEnum():
+            value = str(value);
+            if hasattr(self, 'AllowedValues') == True:
+                value_list = list(map(lambda item: str(item), getattr(self, 'AllowedValues')));
+                if value in value_list and value in flag_lookup_values.keys():
+                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                elif value in flag_lookup_values.keys():
+                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                elif '<<otherwise>>' in flag_lookup_keys:
+                    flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                else:
+                    logging_helper.getLogger().error('[EnvVariable]: Value %s not allowed (%s) for %s' % (value, str(value_list), self.name));
+            else:
+                logging_helper.getLogger().warn('[EnvVariable]: Could not find "AllowedValues" on %s' % self.name);
+        else:
+            logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
+        
+        output = ' '.join(map(lambda item: item.replace('$(value)', value), flag_list));
+        
+        output = environment.parseKey(output)[1];
+        return output;

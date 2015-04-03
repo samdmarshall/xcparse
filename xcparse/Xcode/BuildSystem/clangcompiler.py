@@ -45,7 +45,7 @@ class clangcompiler(xccompiler):
             
             # this is missing all the build settings, also needs output set
             resolved_settings = build_system.environment.resolvedValues();
-            environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), resolved_settings.values());
+            environment_variables_has_flags = filter(lambda envar: envar.hasCommandLineArgs() == True, resolved_settings.values());
             for envar in environment_variables_has_flags:
                 if envar.satisfiesCondition(build_system.environment) == True:
                     if hasattr(envar, 'FileTypes'):
