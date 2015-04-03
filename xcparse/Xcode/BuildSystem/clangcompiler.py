@@ -14,6 +14,8 @@ class clangcompiler(xccompiler):
         
         for file in self.properties['files']:
             
+            file_name = file.name.split('.')[0];
+            
             args = ();
             # add base (compiler)
             args += self.properties['baseargs'];
@@ -42,21 +44,35 @@ class clangcompiler(xccompiler):
             args += ('-isysroot', sdk_path);
             
             # this is missing all the build settings, also needs output set
-            environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), build_system.environment.resolvedValues().values());
+            resolved_settings = build_system.environment.resolvedValues();
+            environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), resolved_settings.values());
             for envar in environment_variables_has_flags:
-                result = envar.commandLineFlag(build_system.environment);
-                if result != None and len(result) > 0:
-                    args += (result,);
+                if envar.satisfiesCondition(build_system.environment) == True:
+                    if hasattr(envar, 'FileTypes'):
+                        file_ref_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
+                        file_types = file_ref_spec.inheritedTypes();
+                        skip_file = True;
+                        for allowed_file_type_for_var in envar.FileTypes:
+                            if allowed_file_type_for_var in file_types:
+                                skip_file = False;
+                                break;
+                        if skip_file == True:
+                            continue;
+                    result = envar.commandLineFlag(build_system.environment);
+                    if result != None and len(result) > 0:
+                        args += (result,);
             
             file_path = str(file.fileRef.fs_path.root_path);
             args += ('-c', file_path);
             
-            # add arch
-            args += ('-arch', self.properties['arch']);
+            # # add arch
+            # args += ('-arch', self.properties['arch']);
             # add diag
             args += ('',);
             # add output
-            args += ('-o', '<some output file path>')
+            object_file = file_name + '.o';
+            output_file_path = os.path.join(build_system.environment.parseKey('$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)')[1], object_file);
+            args += ('-o', output_file_path)
             
             # this is displaying the command being issued for this compiler in the build phase
             args_str = '';

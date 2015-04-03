@@ -76,10 +76,18 @@ class Environment(object):
     
     def addOptions(self, options_array, level_name='default'):
         for item in options_array:
-            if item['Name'] in self.levels_dict[level_name].keys():
-                self.levels_dict[level_name][item['Name']].mergeDefinition(item);
-            else:
-                self.levels_dict[level_name][item['Name']] = EnvVariable(item);
+            for current_level_name in self.levels_lookup:
+                level = self.levels_dict[current_level_name];
+                if level_name == current_level_name:
+                    # this is the level we want to add or merge the setting properties of
+                    if item['Name'] in self.levels_dict[level_name].keys():
+                        self.levels_dict[level_name][item['Name']].mergeDefinition(item);
+                    else:
+                        self.levels_dict[level_name][item['Name']] = EnvVariable(item);
+                else:
+                    # non-aggressively propogate the additional properties to the same setting on other levels
+                    if item['Name'] in level.keys():
+                        level[item['Name']].mergeDefinition(item, False);
     
     def applyConfig(self, config_obj, level_name='config'):
         for line in config_obj.lines:
@@ -207,7 +215,8 @@ class Environment(object):
     
     def resolvedValues(self):
         settings = {};
-        for level in self.levels:
+        for level_name in self.levels_lookup:
+            level = self.levels_dict[level_name];
             for key in level.keys():
                 settings[key] = level[key];
         return settings;
