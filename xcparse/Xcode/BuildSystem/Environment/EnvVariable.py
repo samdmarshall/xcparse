@@ -2,6 +2,7 @@ from .EnvVarCondition import *
 from ....Helpers import logging_helper
 import objc
 
+# move this to another file
 kENVIRONMENT_LOOKUP =  {
     'ACTION': 'String',
     'ADDITIONAL_SDKS': 'String',
