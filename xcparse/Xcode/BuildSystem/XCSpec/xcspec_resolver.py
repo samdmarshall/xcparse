@@ -11,6 +11,8 @@ from .XCSpecTool import *
 from .XCSpecLinker import *
 from .XCSpecBuildPhase import *
 from .XCSpecBuildSystem import *
+from .XCSpecPackageType import *
+from .XCSpecArchitecture import *
 
 
 XCSPEC_TYPE_RESOLVER = {
@@ -23,6 +25,8 @@ XCSPEC_TYPE_RESOLVER = {
     'Linker': XCSpecLinker,
     'BuildPhase': XCSpecBuildPhase,
     'BuildSystem': XCSpecBuildSystem,
+    'Architecture': XCSpecArchitecture,
+    'PackageType': XCSpecPackageType,
 };
 
 def xcspec_resolver(dictionary):

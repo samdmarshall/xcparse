@@ -12,6 +12,12 @@ class clangcompiler(xccompiler):
         build_system = self.properties['buildsystem'];
         arch = self.properties['arch'];
         
+        product_name = build_system.environment.parseKey(None, '$(PRODUCT_NAME)')[1];
+        output_dir = build_system.environment.parseKey(None, '$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)')[1];
+        
+        link_file_list = os.path.join(output_dir, product_name+'.LinkFileList')
+        link_file_list_fd = open(link_file_list, 'w');
+        
         for file in self.properties['files']:
             
             file_name = file.name.split('.')[0];
@@ -71,7 +77,9 @@ class clangcompiler(xccompiler):
             args += ('',);
             # add output
             object_file = file_name + '.o';
-            output_file_path = os.path.join(build_system.environment.parseKey(None, '$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)', lookup_dict=resolved_settings)[1], object_file);
+            output_file_path = os.path.join(output_dir, object_file);
+            # writing the object file path to the linkfilelist
+            print >> link_file_list_fd, output_file_path;
             args += ('-o', output_file_path)
             
             # this is displaying the command being issued for this compiler in the build phase
@@ -81,7 +89,10 @@ class clangcompiler(xccompiler):
                 args_str += ' ';
             print '\t'+args_str;
             
+            print '';
             # this is running the compiler command
             # compiler_output = xcrun_helper.make_subprocess_call(args);
             # if compiler_output[1] != 0:
             #     logging_helper.getLogger().error('[xcbuildsystem]: Compiler error %s' % compiler_output[0]);
+        
+        link_file_list_fd.close();

@@ -9,6 +9,8 @@ from .xccompiler import *
 from .swiftcompiler import *
 from .clangcompiler import *
 
+from .xclinker import *
+
 from .XCSpec.xcspec import *
 
 from .LangSpec.langspec import *

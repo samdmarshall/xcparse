@@ -77,18 +77,35 @@ class Environment(object):
     
     def addOptions(self, options_array, level_name='default'):
         for item in options_array:
+            item_name = str(item['Name']);
             for current_level_name in self.levels_lookup:
                 level = self.levels_dict[current_level_name];
                 if level_name == current_level_name:
                     # this is the level we want to add or merge the setting properties of
-                    if item['Name'] in self.levels_dict[level_name].keys():
-                        self.levels_dict[level_name][item['Name']].mergeDefinition(item);
+                    if item_name in self.levels_dict[level_name].keys():
+                        self.levels_dict[level_name][item_name].mergeDefinition(item);
                     else:
-                        self.levels_dict[level_name][item['Name']] = EnvVariable(item);
+                        self.levels_dict[level_name][item_name] = EnvVariable(item);
                 else:
                     # non-aggressively propogate the additional properties to the same setting on other levels
-                    if item['Name'] in level.keys():
-                        level[item['Name']].mergeDefinition(item, False);
+                    if item_name in level.keys():
+                        level[item_name].mergeDefinition(item, False);
+    
+    def removeOptions(self, options_array, level_name='default'):
+        for item in options_array:
+            item_name = str(item['Name']);
+            for current_level_name in self.levels_lookup:
+                level = self.levels_dict[current_level_name];
+                if level_name == current_level_name:
+                    # this is the level we want to add or merge the setting properties of
+                    if item_name in self.levels_dict[level_name].keys():
+                        self.levels_dict[level_name][item_name].removeDefinition(item);
+                    else:
+                        self.levels_dict[level_name][item_name] = None;
+                else:
+                    # non-aggressively propogate the additional properties to the same setting on other levels
+                    if item_name in level.keys():
+                        level[item_name].removeDefinition(item, False);
     
     def applyConfig(self, config_obj, level_name='config'):
         for line in config_obj.lines:
@@ -139,7 +156,9 @@ class Environment(object):
                     new_string += key_string[offset:item.start()] + resolved_value;
                     offset = item.end();
                 else:
-                    logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % (key_string));
+                    logging_helper.getLogger().warn('[Environment]: Substituting empty string for "%s" in "%s"' % (key, key_string));
+                    new_string += key_string[offset:item.start()] + '';
+                    offset = item.end();
         new_string += key_string[offset:];
         return new_string;
     
@@ -238,17 +257,18 @@ class Environment(object):
         export_list = [];
         key_dict = self.resolvedValues();
         for key in sorted(key_dict.keys()):
-            value = self.valueForKey(key, lookup_dict=key_dict);
-            if key == 'SDKROOT':
-                result = (True, xcrun_helper.resolve_sdk_path(value), 0);
-            else:
-                result = self.parseKey(key, value, lookup_dict=key_dict);
-            if result[0] == True:
-                value = result[1];
-            export_item = 'export '+key+'=';
-            if key_dict[key].isString():
-                export_item += '"'+value+'"';
-            else:
-                export_item += value;
-            export_list.append(export_item);
+            #if key_dict[key].added_after == False:
+                value = self.valueForKey(key, lookup_dict=key_dict);
+                if key == 'SDKROOT':
+                    result = (True, xcrun_helper.resolve_sdk_path(value), 0);
+                else:
+                    result = self.parseKey(key, value, lookup_dict=key_dict);
+                if result[0] == True:
+                    value = result[1];
+                export_item = 'export '+key+'=';
+                if key_dict[key].isString():
+                    export_item += '"'+value+'"';
+                else:
+                    export_item += value;
+                export_list.append(export_item);
         return export_list;

@@ -7,6 +7,8 @@ from .EnvConstants import *
 class EnvVariable(object):
     
     def __init__(self, dictionary):
+        self.added_after = False;
+        self.mergedKeys = set();
         self.parentValue = None;
         if 'Name' in dictionary.keys():
             self.name = dictionary['Name'];
@@ -78,12 +80,22 @@ class EnvVariable(object):
         return self.Type in ['enum', 'Enumeration'];
     
     def mergeDefinition(self, dictionary, aggressive=True):
+        self.added_after = True;
         for key in dictionary.keys():
             if hasattr(self, key) == False:
+                self.mergedKeys.add(key);
                 setattr(self, key, dictionary[key]);
             else:
                 if dictionary[key] != getattr(self, key) and aggressive == True:
                     setattr(self, key, dictionary[key]);
+    
+    def removeDefinition(self, dictionary, aggressive=True):
+        self.added_after = False;
+        for key in dictionary.keys():
+            if hasattr(self, key) == True:
+                if key in self.mergedKeys:
+                    delattr(self, key);
+                    self.mergedKeys.remove(key);
     
     def addConditionalValue(self, conditional):
         if len(conditional.keys) == 0:
@@ -142,12 +154,18 @@ class EnvVariable(object):
             result_value = result_value.replace('$(inherited)', inherited_value);
         return result_value;
     
+    @classmethod
+    def commandLineArgsPropNames(cls):
+        return ['CommandLinePrefixFlag', 'CommandLineArgs', 'CommandLineFlag'];
+    
     def hasCommandLineArgs(self):
-        return hasattr(self, 'CommandLinePrefixFlag') or hasattr(self, 'CommandLineArgs');
+        return len(filter(lambda item: hasattr(self, item) and getattr(self, item) != None, EnvVariable.commandLineArgsPropNames())) > 0;
     
     def commandLineFlag(self, environment, lookup_dict=None):
         if lookup_dict == None:
             lookup_dict = environment.resolvedValues();
+        
+        flag_list = [];
         
         output = '';
         
@@ -172,55 +190,65 @@ class EnvVariable(object):
                 else:
                     primary_flag = ' '.join(args_list);
         
-        flag_list = [];
-        
-        
         value = self.value(environment, lookup_dict=lookup_dict);
-        if self.isList():
-            value_list = filter(lambda item: len(item) > 0, value.split(' '));
-            if len(flag_lookup_keys) > 0:
-                if value in flag_lookup_values.keys():
-                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
-                elif '<<otherwise>>' in flag_lookup_keys:
-                    flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+        
+        if hasattr(self, 'CommandLinePrefixFlag') == True or hasattr(self, 'CommandLineArgs') == True:
+            if self.isList():
+                value_list = filter(lambda item: len(item) > 0, value.split(' '));
+                if len(flag_lookup_keys) > 0:
+                    if value in flag_lookup_values.keys():
+                        flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                    elif '<<otherwise>>' in flag_lookup_keys:
+                        flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                    else:
+                        logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
                 else:
-                    logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
-            else:
-                # use primary flag
-                for item in value_list:
-                    flag_list.append(primary_flag.replace('$(value)', item));
-        elif self.isString() or self.isPath():
-            value = str(value);
-            if len(flag_lookup_values) > 0:
-                if value in flag_lookup_values.keys():
-                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
-                elif '<<otherwise>>' in flag_lookup_keys:
-                    flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                    # use primary flag
+                    for item in value_list:
+                        flag_list.append(primary_flag.replace('$(value)', item));
+            elif self.isString() or self.isPath():
+                value = str(value);
+                if len(flag_lookup_values) > 0:
+                    if value in flag_lookup_values.keys():
+                        flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                    elif '<<otherwise>>' in flag_lookup_keys:
+                        flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                    else:
+                        logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
                 else:
-                    logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
-            else:
-                # prefix flag check
-                flag_list.append(prefix_flag.replace('$(value)', value)+value);
-        elif self.isBoolean():
-            value = str(value);
-            if value in flag_lookup_keys:
-                flag_list = map(lambda item: str(item), flag_lookup_values[value]);
-        elif self.isEnum():
-            value = str(value);
-            if hasattr(self, 'AllowedValues') == True:
-                value_list = list(map(lambda item: str(item), getattr(self, 'AllowedValues')));
-                if value in value_list and value in flag_lookup_values.keys():
+                    # prefix flag check
+                    flag_list.append(prefix_flag.replace('$(value)', value)+value);
+            elif self.isBoolean():
+                value = str(value);
+                if value in flag_lookup_keys:
                     flag_list = map(lambda item: str(item), flag_lookup_values[value]);
-                elif value in flag_lookup_values.keys():
-                    flag_list = map(lambda item: str(item), flag_lookup_values[value]);
-                elif '<<otherwise>>' in flag_lookup_keys:
-                    flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+            elif self.isEnum():
+                value = str(value);
+                if hasattr(self, 'AllowedValues') == True:
+                    value_list = list(map(lambda item: str(item), getattr(self, 'AllowedValues')));
+                    if value in value_list and value in flag_lookup_values.keys():
+                        flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                    elif value in flag_lookup_values.keys():
+                        flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                    elif '<<otherwise>>' in flag_lookup_keys:
+                        flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                    else:
+                        logging_helper.getLogger().error('[EnvVariable]: Value %s not allowed (%s) for %s' % (value, str(value_list), self.name));
                 else:
-                    logging_helper.getLogger().error('[EnvVariable]: Value %s not allowed (%s) for %s' % (value, str(value_list), self.name));
+                    logging_helper.getLogger().warn('[EnvVariable]: Could not find "AllowedValues" on %s' % self.name);
             else:
-                logging_helper.getLogger().warn('[EnvVariable]: Could not find "AllowedValues" on %s' % self.name);
-        else:
-            logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
+                logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
+        elif hasattr(self, 'CommandLineFlag') == True:
+            if self.isList():
+                value_list = filter(lambda item: len(item) > 0, value.split(' '));
+            elif self.isString() or self.isPath():
+                value = str(value);
+            elif self.isBoolean():
+                value = str(value);
+            elif self.isEnum():
+                value = str(value);
+            else:
+                logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
         
         output = ' '.join(map(lambda item: item.replace('$(value)', value), flag_list));
         

@@ -23,7 +23,7 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
             file_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
             default_compiler_identifier = build_system.environment.valueForKey('DEFAULT_COMPILER');
             compiler = build_system.getCompilerForFileReference(file.fileRef, default_compiler_identifier);
-            logging_helper.getLogger().info('[PBXSourcesBuildPhase]: File "%s" wants Compiler "%s"' % (file, compiler));
+            # logging_helper.getLogger().info('[PBXSourcesBuildPhase]: File "%s" wants Compiler "%s"' % (file, compiler));
             
             if compiler.identifier not in compiler_dict.keys():
                 compiler_dict[compiler.identifier] = set();
@@ -34,6 +34,6 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         for compiler_key in compiler_dict.keys():
             build_system.compiler = build_system.getSpecForIdentifier(compiler_key);
             files = compiler_dict[compiler_key];
-            build_system.compileFiles(files);
+            build_system.processFiles(files, build_system.compileFiles);
         
         print '';

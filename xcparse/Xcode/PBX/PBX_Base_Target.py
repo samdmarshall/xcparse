@@ -30,6 +30,9 @@ class PBX_Base_Target(PBX_Build_Setting):
         
         if kPBX_TARGET_productReference in dictionary.keys():
             self.productReference = self.parseProperty(kPBX_TARGET_productReference, lookup_func, dictionary, project, False);
+        
+        if kPBX_TARGET_productType in dictionary.keys():
+            self.productType = dictionary[kPBX_TARGET_productType];
     
     def sourceFiles(self):
         file_list = [];

@@ -8,3 +8,5 @@ from .XCSpecTool import *
 from .XCSpecLinker import *
 from .XCSpecBuildPhase import *
 from .XCSpecBuildSystem import *
+from .XCSpecPackageType import *
+from .XCSpecArchitecture import *

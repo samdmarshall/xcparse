@@ -9,6 +9,7 @@ from ...Helpers import xcrun_helper
 from .xccompiler import *
 from .swiftcompiler import *
 from .clangcompiler import *
+from .xclinker import *
 from .xcspec_helper import *
 from .xcbuildrule import *
 from .LangSpec.langspec import *
@@ -20,10 +21,9 @@ class xcbuildsystem(object):
     def __init__(self):
         self.specs = set();
         # loading default specs
-        found_specs = self.__findFilesFromPath('../Plugins', 'spec');
-        
-        for path in found_specs:
-            self.specs.update(xcspecLoadFromContentsAtPath(path));
+        search_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), '../Plugins'));
+        self.loadSpecsAtPath(search_path);
+       
         
         # updating specs to point to each other and form inheritence.
         for spec_item in self.specs:
@@ -41,6 +41,15 @@ class xcbuildsystem(object):
         
         # this will be used for the current compiler
         self.compiler = None;
+        
+        # this will be used for the current linker
+        self.linker = None;
+    
+    def loadSpecsAtPath(self, search_path):
+        found_specs = self.__findFilesFromPath(search_path, 'spec');
+        
+        for path in found_specs:
+            self.specs.update(xcspecLoadFromContentsAtPath(path));
     
     def initEnvironment(self, project, configuration_name):
         if self.environment == None:
@@ -63,9 +72,8 @@ class xcbuildsystem(object):
         self.environment.setValueForKey('USER_LIBRARY_DIR', os.path.join(os.getenv('HOME'), 'Library'), {});
         self.environment.setValueForKey('DT_TOOLCHAIN_DIR', os.path.join(xcrun_helper.resolve_developer_path(), 'Toolchains/XcodeDefault.xctoolchain'), {});
     
-    def __findFilesFromPath(self, path, extension):
+    def __findFilesFromPath(self, search_path, extension):
         found_items = [];
-        search_path = os.path.normpath(os.path.join(xcrun_helper.resolve_developer_path(), path));
         if os.path.exists(search_path) == True:
             for root, dirs, files in os.walk(search_path, followlinks=False):
                 for name in files:
@@ -151,8 +159,35 @@ class xcbuildsystem(object):
             logging_helper.getLogger().info('[xcbuildsystem]: Could not find valid build rule for input file!');
         return compiler;
     
+    def processFiles(self, files, function):
+        # getting the build variant
+        compile_variants = [];
+        variant_value = self.environment.valueForKey('BUILD_VARIANTS');
+        compile_variants.extend(variant_value.split(' '));
+        for variant in compile_variants:
+            self.environment.setValueForKey('CURRENT_VARIANT', variant, {});
+            self.environment.setValueForKey('variant', variant, {});
+            self.environment.setValueForKey('OBJECT_FILE_DIR', '$(TARGET_TEMP_DIR)/Objects', {});
+            self.environment.setValueForKey('OBJECT_FILE_DIR_'+variant, '$(OBJECT_FILE_DIR)-$(CURRENT_VARIANT)', {});
+            # getting the architectures
+            compile_archs = [];
+            resolved_values = self.environment.resolvedValues();
+            arch_value = resolved_values['ARCHS'].value(self.environment, lookup_dict=resolved_values);
+            compile_archs.extend(arch_value.split(' '));
+            for arch in compile_archs:
+                # iterate the architectures
+                self.environment.setValueForKey('CURRENT_ARCH', arch, {});
+                self.environment.setValueForKey('arch', arch, {});
+                
+                if callable(function):
+                    function(files);
+                
+                # newline between each architecture
+                print '';
+            # newline between each variant
+            print '';
+    
     def compileFiles(self, files):
-        
         if self.compiler != None:
             base_args = ();
             
@@ -174,47 +209,74 @@ class xcbuildsystem(object):
             
             base_args += (compiler_exec,);
             
-            # getting the build variant
-            compile_variants = [];
-            variant_value = self.environment.valueForKey('BUILD_VARIANTS');
-            compile_variants.extend(variant_value.split(' '));
-            for variant in compile_variants:
-                self.environment.setValueForKey('CURRENT_VARIANT', variant, {});
-                self.environment.setValueForKey('variant', variant, {});
-                self.environment.setValueForKey('OBJECT_FILE_DIR', '$(TARGET_TEMP_DIR)/Objects', {});
-                self.environment.setValueForKey('OBJECT_FILE_DIR_'+variant, '$(OBJECT_FILE_DIR)-$(CURRENT_VARIANT)', {});
-                # getting the architectures
-                compile_archs = [];
-                resolved_values = self.environment.resolvedValues();
-                arch_value = resolved_values['ARCHS'].value(self.environment, lookup_dict=resolved_values);
-                compile_archs.extend(arch_value.split(' '));
-                for arch in compile_archs:
-                    # iterate the architectures
-                    self.environment.setValueForKey('CURRENT_ARCH', arch, {});
-                    self.environment.setValueForKey('arch', arch, {});
-                    
-                    config_dict = {
-                        'variant': variant,
-                        'arch': arch,
-                        'files': files,
-                        'environment': self.environment,
-                        'buildsystem': self,
-                        'baseargs': base_args,
-                    };
-                    
-                    compiler_instance = None;
-                    if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
-                        compiler_instance = swiftcompiler(self.compiler, config_dict);
-                    elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
-                        compiler_instance = clangcompiler(self.compiler, config_dict);
-                    else:
-                        logging_helper.getLogger().error('[xcbuildsystem]: unknown compiler %s' % self.compiler);
-                    
-                    if compiler_instance != None:
-                        compiler_instance.build();
-                    # newline between each architecture
-                    print '';
-                # newline between each variant
-                print '';
+            config_dict = {
+                'variant': self.environment.valueForKey('variant'),
+                'arch': self.environment.valueForKey('arch'),
+                'files': files,
+                'environment': self.environment,
+                'buildsystem': self,
+                'baseargs': base_args,
+            };
+            
+            compiler_instance = None;
+            if self.compiler.identifier == 'com.apple.xcode.tools.swift.compiler':
+                compiler_instance = swiftcompiler(self.compiler, config_dict);
+            elif self.compiler.identifier.startswith('com.apple.compilers.llvm.clang'):
+                compiler_instance = clangcompiler(self.compiler, config_dict);
+            else:
+                logging_helper.getLogger().error('[xcbuildsystem]: unknown compiler %s' % self.compiler);
+            
+            if compiler_instance != None:
+                compiler_instance.build();
+            
+            if 'Options' in self.compiler.contents.keys():
+                self.environment.removeOptions(self.compiler.contents['Options']);
+                
         else:
             logging_helper.getLogger().error('[xcbuildsystem]: No compiler set!');
+    
+    def linkFiles(self, files):
+        if self.linker != None:
+            base_args = ();
+            
+            # setting up default build environments
+            if 'Options' in self.linker.contents.keys():
+                self.environment.addOptions(self.linker.contents['Options']);
+            
+            linker_exec = '';
+            if 'Name' in self.linker.contents.keys():
+                linker_path = self.linker.contents['Name'];
+                linker_exec = xcrun_helper.make_xcrun_with_args(('-f', linker_path));
+            else:
+                logging_helper.getLogger().error('[xcbuildsystem]: No linker executable found!');
+                return;
+            
+            base_args += (linker_exec,);
+            
+            product_name = self.environment.parseKey(None, '$(PRODUCT_NAME)')[1];
+            output_dir = self.environment.parseKey(None, '$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)')[1];
+        
+            link_file_list = os.path.join(output_dir, product_name+'.LinkFileList')
+        
+            link_file_input_var = self.environment.parseKey(None, 'LINK_FILE_LIST_$(variant)_$(arch)')[1]
+            self.environment.setValueForKey(str(link_file_input_var), link_file_list, {});
+            
+            config_dict = {
+                'variant': self.environment.valueForKey('variant'),
+                'arch': self.environment.valueForKey('arch'),
+                'files': files,
+                'environment': self.environment,
+                'buildsystem': self,
+                'baseargs': base_args,
+            };
+            
+            linker_instance = xclinker(self.linker, config_dict);
+            
+            if linker_instance != None:
+                linker_instance.link();
+            
+            if 'Options' in self.linker.contents.keys():
+                self.environment.removeOptions(self.linker.contents['Options']);
+        else:
+            logging_helper.getLogger().error('[xcbuildsystem]: No linker set!');
+        

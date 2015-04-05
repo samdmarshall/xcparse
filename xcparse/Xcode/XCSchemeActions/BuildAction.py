@@ -6,6 +6,7 @@ from ..BuildSystem import xcbuildsystem
 from .Base_Action import *
 from .BuildActionEntry import *
 from ...Helpers import logging_helper
+import os
 
 class BuildAction(Base_Action):
     
@@ -93,6 +94,18 @@ class BuildAction(Base_Action):
                     build_system.environment.applyConfig(config_build_settings);
                 # setting the defaults
                 build_system.environment.loadDefaults();
+                
+                platform_specs_path = os.path.join(build_system.environment.valueForKey('PLATFORM_DIR'), 'Developer/Library/Xcode/Specifications');
+                build_system.loadSpecsAtPath(platform_specs_path);
+                
+                if hasattr(target, kPBX_TARGET_productType):
+                    target_spec = build_system.getSpecForIdentifier(target.productType);
+                    for setting in target_spec.contents['DefaultBuildProperties'].keys():
+                        build_system.environment.setValueForKey(str(setting), target_spec.contents['DefaultBuildProperties'][setting], {}, 'target');
+                    
+                    package_spec = build_system.getSpecForIdentifier(str(target_spec.contents['PackageTypes'][0]));
+                    for setting in package_spec.contents['DefaultBuildSettings'].keys():
+                        build_system.environment.setValueForKey(str(setting), package_spec.contents['DefaultBuildSettings'][setting], {}, 'target');
                 
                 # running build phases for this target
                 target.executeBuildPhases(build_system);

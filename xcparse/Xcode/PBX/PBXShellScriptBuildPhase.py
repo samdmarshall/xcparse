@@ -34,7 +34,6 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
         
-        
         resolved_values = build_system.environment.resolvedValues();
         
         config_name = build_system.environment.valueForKey('CONFIGURATION', lookup_dict=resolved_values);
