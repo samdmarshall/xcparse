@@ -190,6 +190,9 @@ class EnvVariable(object):
                 else:
                     primary_flag = ' '.join(args_list);
         
+        if hasattr(self, 'CommandLineFlag') == True:
+            primary_flag = self.CommandLineFlag;
+        
         value = self.value(environment, lookup_dict=lookup_dict);
         
         if hasattr(self, 'CommandLinePrefixFlag') == True or hasattr(self, 'CommandLineArgs') == True:
@@ -243,8 +246,13 @@ class EnvVariable(object):
                 value_list = filter(lambda item: len(item) > 0, value.split(' '));
             elif self.isString() or self.isPath():
                 value = str(value);
+                if value != '':
+                    flag_list.append(primary_flag);
+                    flag_list.append(value);
             elif self.isBoolean():
                 value = str(value);
+                if value == 'YES' or value == 'True':
+                    flag_list.append(primary_flag);
             elif self.isEnum():
                 value = str(value);
             else:
