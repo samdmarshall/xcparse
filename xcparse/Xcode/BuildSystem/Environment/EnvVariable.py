@@ -7,6 +7,7 @@ from .EnvConstants import *
 class EnvVariable(object):
     
     def __init__(self, dictionary):
+        self.parentValue = None;
         if 'Name' in dictionary.keys():
             self.name = dictionary['Name'];
         if self.name in kENVIRONMENT_LOOKUP.keys():
@@ -58,6 +59,9 @@ class EnvVariable(object):
     # def __hash__(self):
     #     return hash(self.__attrs());
     
+    def inheritedValue(self):
+        return self.parentValue;
+    
     def isList(self):
         return self.Type in ['stringlist', 'StringList', 'pathlist', 'PathList'];
     
@@ -86,9 +90,12 @@ class EnvVariable(object):
             self.DefaultValue = conditional.value;
         self.values.add(conditional);
     
-    def satisfiesCondition(self, environment):
+    def satisfiesCondition(self, environment, lookup_dict=None):
+        if lookup_dict == None:
+            lookup_dict = environment.resolvedValues();
+        
         if hasattr(self, 'Condition') == True:
-            expression = str(environment.parseKey(self.Condition)[1]);
+            expression = str(environment.parseKey(None, self.Condition, lookup_dict=lookup_dict)[1]);
             expression_list = expression.split(' ');
             list_filter_yes = map(lambda item: 'True' if item == 'YES' else item, expression_list);
             list_filter_no = map(lambda item: 'False' if item == 'NO' else item, list_filter_yes);
@@ -101,10 +108,13 @@ class EnvVariable(object):
         else:
             return True;
     
-    def value(self, environment):
+    def value(self, environment, lookup_dict=None):
+        if lookup_dict == None:
+            lookup_dict = environment.resolvedValues();
+            
         result_value = self.DefaultValue;
         for conditional in self.values:
-            if conditional.evaluate(environment) == True:
+            if conditional.evaluate(environment, lookup_dict=lookup_dict) == True:
                 result_value = conditional.value;
                 break;
         # add check for parsing the value if necessary
@@ -113,7 +123,7 @@ class EnvVariable(object):
         if type(result_value) is objc.pyobjc_unicode:
             result_value = str(result_value);
         if type(result_value) is str:
-            test_result_value = environment.parseKey(result_value, 'target', environment.resolvedValues());
+            test_result_value = environment.parseKey(self.name, result_value, lookup_dict=lookup_dict);
             if test_result_value[0] == True:
                 result_value = test_result_value[1];
             else:
@@ -124,20 +134,21 @@ class EnvVariable(object):
                 result_str += str(item)+' ';
             result_value = result_str;
         if '$(inherited)' in result_value:
-            # is this correct
-            current_level = environment.levelForVariable(self);
-            if current_level[0] == True:
-                index = environment.levels_order[current_level[1]] - 1;
-                inherited_value = ' ';
-                if index >= 0:
-                    inherited_value = environment.parseKey(result_value, environment.levels_lookup[index])[1];
+            inherited_value = self.inheritedValue();
+            if inherited_value != None:
+                inherited_value = inherited_value.value(environment, lookup_dict=lookup_dict);
+            else:
+                inherited_value = '';
             result_value = result_value.replace('$(inherited)', inherited_value);
         return result_value;
     
     def hasCommandLineArgs(self):
         return hasattr(self, 'CommandLinePrefixFlag') or hasattr(self, 'CommandLineArgs');
     
-    def commandLineFlag(self, environment):
+    def commandLineFlag(self, environment, lookup_dict=None):
+        if lookup_dict == None:
+            lookup_dict = environment.resolvedValues();
+        
         output = '';
         
         prefix_flag = '';
@@ -164,7 +175,7 @@ class EnvVariable(object):
         flag_list = [];
         
         
-        value = self.value(environment);
+        value = self.value(environment, lookup_dict=lookup_dict);
         if self.isList():
             value_list = filter(lambda item: len(item) > 0, value.split(' '));
             if len(flag_lookup_keys) > 0:
@@ -213,5 +224,5 @@ class EnvVariable(object):
         
         output = ' '.join(map(lambda item: item.replace('$(value)', value), flag_list));
         
-        output = environment.parseKey(output)[1];
+        output = environment.parseKey(self.name, output, lookup_dict=lookup_dict)[1];
         return output;

@@ -47,7 +47,7 @@ class clangcompiler(xccompiler):
             resolved_settings = build_system.environment.resolvedValues();
             environment_variables_has_flags = filter(lambda envar: envar.hasCommandLineArgs() == True, resolved_settings.values());
             for envar in environment_variables_has_flags:
-                if envar.satisfiesCondition(build_system.environment) == True:
+                if envar.satisfiesCondition(build_system.environment, resolved_settings) == True:
                     if hasattr(envar, 'FileTypes'):
                         file_ref_spec = build_system.getSpecForIdentifier(file.fileRef.ftype);
                         file_types = file_ref_spec.inheritedTypes();
@@ -58,7 +58,7 @@ class clangcompiler(xccompiler):
                                 break;
                         if skip_file == True:
                             continue;
-                    result = envar.commandLineFlag(build_system.environment);
+                    result = envar.commandLineFlag(build_system.environment, lookup_dict=resolved_settings);
                     if result != None and len(result) > 0:
                         args += (result,);
             
@@ -71,7 +71,7 @@ class clangcompiler(xccompiler):
             args += ('',);
             # add output
             object_file = file_name + '.o';
-            output_file_path = os.path.join(build_system.environment.parseKey('$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)')[1], object_file);
+            output_file_path = os.path.join(build_system.environment.parseKey(None, '$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)', lookup_dict=resolved_settings)[1], object_file);
             args += ('-o', output_file_path)
             
             # this is displaying the command being issued for this compiler in the build phase

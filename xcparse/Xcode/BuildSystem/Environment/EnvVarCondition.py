@@ -8,7 +8,10 @@ class EnvVarCondition(object):
         self.eval = condition_dict;
         self.value = value;
     
-    def evaluate(self, environment):
+    def evaluate(self, environment, lookup_dict=None):
+        if lookup_dict == None:
+            lookup_dict = environment.resolvedValues();
+        
         conditional_key_lookup_dict = {
             'sdk': 'SDKROOT',
             'variant': 'BUILD_VARIANT',
@@ -26,7 +29,7 @@ class EnvVarCondition(object):
                 eval_result = False;
                 break;
             # lookup the conditional
-            lookup_value = environment.valueForKey(key);
+            lookup_value = environment.valueForKey(key, lookup_dict=lookup_dict);
             # some check here
             value_compare = re.compile(value);
             result = value_compare.match(lookup_value);

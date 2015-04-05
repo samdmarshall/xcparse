@@ -21,9 +21,10 @@ class swiftcompiler(xccompiler):
         args += ('-sdk', sdk_path);
         
         # this is missing all the build settings, also needs output set
-        environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), build_system.environment.resolvedValues().values());
+        resolved_values = build_system.environment.resolvedValues();
+        environment_variables_has_flags = filter(lambda envar: hasattr(envar, 'CommandLineArgs'), resolved_values.values());
         for envar in environment_variables_has_flags:
-            result = envar.commandLineFlag(build_system.environment);
+            result = envar.commandLineFlag(build_system.environment, resolved_values);
             if result != None and len(result) > 0:
                 args += (result,);
         
@@ -47,8 +48,10 @@ class swiftcompiler(xccompiler):
         # add standard flags
         module_cache_path = os.path.join(xcrun_helper.ResolveDerivedDataPath(), 'ModuleCache')
         args += ('-module-cache-path', module_cache_path);
-        args += ('-I', os.path.join(build_system.environment.valueForKey('SRCROOT'), build_system.environment.valueForKey('CONFIGURATION_BUILD_DIR')));
-        args += ('-F', os.path.join(build_system.environment.valueForKey('SRCROOT'), build_system.environment.valueForKey('CONFIGURATION_BUILD_DIR')));
+        source_root = build_system.environment.valueForKey('SRCROOT');
+        config_build_dir = build_system.environment.valueForKey('CONFIGURATION_BUILD_DIR');
+        args += ('-I', os.path.join(source_root, config_build_dir));
+        args += ('-F', os.path.join(source_root, config_build_dir));
         args += ('-parseable-output', );
         args += ('-serialize-diagnostics', );
         args += ('-emit-dependencies', );

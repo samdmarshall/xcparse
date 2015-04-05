@@ -29,8 +29,9 @@ class PBXLegacyTarget(PBX_Base_Target):
             self.shouldUseHeadermap = dictionary[kPBX_TARGET_shouldUseHeadermap];
     
     def executeBuildPhases(self, build_system):
-        resolved_working_dir = build_system.environment.parseKey(self.buildWorkingDirectory);
-        resolved_passed_args = build_system.environment.parseKey(self.buildArgumentsString);
+        lookup_key_dict = build_system.environment.resolvedValues();
+        resolved_working_dir = build_system.environment.parseKey(None, self.buildWorkingDirectory, lookup_dict=lookup_key_dict);
+        resolved_passed_args = build_system.environment.parseKey(None, self.buildArgumentsString, lookup_dict=lookup_key_dict);
         if resolved_passed_args[0] == True and resolved_working_dir[0] == True:
             args = ['cd '+resolved_working_dir[1]];
             args.extend(build_system.environment.exportValues());

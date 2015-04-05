@@ -34,10 +34,11 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
         
-        config_name = build_system.environment.valueForKey('CONFIGURATION');
-        symroot = build_system.environment.valueForKey('SYMROOT');
-        # temp until this is resolved correctly
-        symroot = 'build';
+        
+        resolved_values = build_system.environment.resolvedValues();
+        
+        config_name = build_system.environment.valueForKey('CONFIGURATION', lookup_dict=resolved_values);
+        symroot = build_system.environment.valueForKey('SYMROOT', lookup_dict=resolved_values);
         
         script_dir_path = xcrun_helper.IntermediatesBuildLocation(target.project_container.rootObject, target.name, config_name, symroot);
         path_helper.create_directories(script_dir_path);

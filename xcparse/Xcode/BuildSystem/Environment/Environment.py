@@ -39,9 +39,10 @@ class Environment(object):
         cache_root = os.path.join(os.confstr('CS_DARWIN_USER_CACHE_DIR'), 'com.apple.DeveloperTools/'+xcode_version+'-'+xcode_build+'/Xcode');
         self.setValueForKey('CCHROOT', cache_root, {});
         self.setValueForKey('DEVELOPER_DIR', xcrun_helper.resolve_developer_path(), {});
-        platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', self.valueForKey('SDKROOT')));
+        current_sdk = self.valueForKey('SDKROOT');
+        platform_path = xcrun_helper.make_xcrun_with_args(('--show-sdk-platform-path', '--sdk', current_sdk));
         self.setValueForKey('PLATFORM_DIR', platform_path, {});
-        sdk_path = xcrun_helper.resolve_sdk_path(self.valueForKey('SDKROOT'));
+        sdk_path = xcrun_helper.resolve_sdk_path(current_sdk);
         self.setValueForKey('PLATFORM_DEVELOPER_SDK_DIR', os.path.dirname(sdk_path), {});
         
         # load these from the platform info.plist
@@ -114,40 +115,40 @@ class Environment(object):
     def __extractKey(self, key_string):
         return key_string[2:-1];
 
-    def __findAndSubKey(self, key_string, level_name='default', lookup_dict=None):
-        if lookup_dict == None:
-            lookup_dict = self.levels_dict[level_name];
+    def __findAndSubKey(self, key_name, key_string, lookup_dict):
+        # finding variable keys
         iter = re.finditer(r'\$[\(|\{]\w*[\)|\}]', key_string);
         new_string = '';
         offset = 0
         for item in iter:
+            # extracting the key name
             key = self.__extractKey(item.group());
+            # check if the key is found
             if key in lookup_dict.keys():
-                #value = self.valueForKey(key);
-                value = lookup_dict[key].value(self);
+                value = self.valueForKey(key, lookup_dict=lookup_dict);
                 new_string += key_string[offset:item.start()] + value;
                 offset = item.end();
             else:
-                index = self.levels_order[level_name] - 1;
-                lookup_name = None;
-                if index >= 0:
-                    lookup_name = self.levels_lookup[index];
-                else:
-                    offset = item.end();
+                offset = item.end();
                 if key == 'inherited':
-                    if index >= 0:
-                        resolved_value = self.parseKey(key_string, lookup_dict=lookup_dict);
-                        new_string += key_string[offset:item.start()] + resolved_value[1];
-                        offset = item.end();
+                    resolved_value = lookup_dict[key_name].inheritedValue();
+                    if resolved_value != None:
+                        resolved_value = resolved_value.value(self, lookup_dict=lookup_dict);
+                    else:
+                        resolved_value = '';
+                    new_string += key_string[offset:item.start()] + resolved_value;
+                    offset = item.end();
                 else:
-                    logging_helper.getLogger().error('[Environment]: Error in parsing key "%s" on "%s"' % (key_string, level_name));
+                    logging_helper.getLogger().error('[Environment]: Error in parsing key "%s"' % (key_string));
         new_string += key_string[offset:];
         return new_string;
     
-    def parseKey(self, key_string, level_name='default', lookup_dict=None):
+    def parseKey(self, key, key_string, lookup_dict=None):
+        if lookup_dict == None:
+            lookup_dict = self.resolvedValues();
         done_key = False;
         while done_key == False:
-            temp = self.__findAndSubKey(key_string, level_name, lookup_dict);
+            temp = self.__findAndSubKey(key, key_string, lookup_dict=lookup_dict);
             if temp == key_string:
                 done_key = True;
             key_string = temp;
@@ -175,20 +176,16 @@ class Environment(object):
                     return (True, level_name);
         return (False, None);
     
-    def valueForKey(self, key, level_name='target'):
+    def valueForKey(self, key, level_name='target', lookup_dict=None):
         value = None;
-        for level_key in reversed(self.levels_lookup):
-            if self.levels_order[level_key] > self.levels_order[level_name]:
-                continue;
-            level_dict = self.levels_dict[level_key];
-            if key in level_dict.keys():
-                result = level_dict[key];
-                if result != None:
-                    value = result.value(self);
-            else:
-                continue;
+        if lookup_dict == None:
+            lookup_dict = self.resolvedValues();
+        if key in lookup_dict.keys():
+            result = lookup_dict[key];
+            if result != None:
+                value = result.value(self, lookup_dict=lookup_dict);
             if value != None:
-                test_value = self.parseKey(value, level_name);
+                test_value = self.parseKey(key, value, lookup_dict=lookup_dict);
                 if test_value[0] == True:
                     value = test_value[1];
         return value;
@@ -232,6 +229,8 @@ class Environment(object):
         for level_name in self.levels_lookup:
             level = self.levels_dict[level_name];
             for key in level.keys():
+                if key in settings.keys():
+                    level[key].parentValue = settings[key];
                 settings[key] = level[key];
         return settings;
     
@@ -239,11 +238,11 @@ class Environment(object):
         export_list = [];
         key_dict = self.resolvedValues();
         for key in sorted(key_dict.keys()):
-            value = self.valueForKey(key);
+            value = self.valueForKey(key, lookup_dict=key_dict);
             if key == 'SDKROOT':
                 result = (True, xcrun_helper.resolve_sdk_path(value), 0);
             else:
-                result = self.parseKey(value, 'target');
+                result = self.parseKey(key, value, lookup_dict=key_dict);
             if result[0] == True:
                 value = result[1];
             export_item = 'export '+key+'=';

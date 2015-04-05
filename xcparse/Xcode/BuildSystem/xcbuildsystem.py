@@ -164,7 +164,7 @@ class xcbuildsystem(object):
             if 'ExecPath' in self.compiler.contents.keys():
                 compiler_path = self.compiler.contents['ExecPath'];
                 if self.environment.isEnvironmentVariable(compiler_path) == True:
-                    compiler_exec_results = self.environment.parseKey(self.compiler.contents['ExecPath']);
+                    compiler_exec_results = self.environment.parseKey(None, self.compiler.contents['ExecPath']);
                     if compiler_exec_results[0] == True:
                         compiler_path = str(compiler_exec_results[1]);
                 compiler_exec = xcrun_helper.make_xcrun_with_args(('-f', compiler_path));
@@ -185,7 +185,8 @@ class xcbuildsystem(object):
                 self.environment.setValueForKey('OBJECT_FILE_DIR_'+variant, '$(OBJECT_FILE_DIR)-$(CURRENT_VARIANT)', {});
                 # getting the architectures
                 compile_archs = [];
-                arch_value = self.environment.resolvedValues()['ARCHS'].value(self.environment);
+                resolved_values = self.environment.resolvedValues();
+                arch_value = resolved_values['ARCHS'].value(self.environment, lookup_dict=resolved_values);
                 compile_archs.extend(arch_value.split(' '));
                 for arch in compile_archs:
                     # iterate the architectures
