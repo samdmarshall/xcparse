@@ -22,6 +22,7 @@ class PBXFrameworksBuildPhase(PBX_Base_Phase):
         
         build_system.linker = build_system.getSpecForIdentifier(linker_identifier);
         
+        # send files off to the linker
         build_system.processFiles(self.files, build_system.linkFiles);
         
         print '';

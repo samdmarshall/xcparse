@@ -34,6 +34,7 @@ class PBXSourcesBuildPhase(PBX_Base_Phase):
         for compiler_key in compiler_dict.keys():
             build_system.compiler = build_system.getSpecForIdentifier(compiler_key);
             files = compiler_dict[compiler_key];
+            # send files off to the compiler
             build_system.processFiles(files, build_system.compileFiles);
         
         print '';
