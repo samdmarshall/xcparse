@@ -13,6 +13,8 @@ class PBXFrameworksBuildPhase(PBX_Base_Phase):
         print '%s Phase: %s' % (self.phase_type, phase_spec.name);
         print '* %s' % (phase_spec.contents['Description']);
         
+        # as far as I can tell, the linker is chosen based on binary type. There doesn't seem to be rules in place for handling it per platform 
+        # as a result this is just going to be hardcoded to check for static lib target type to use libtool otherwise use ld
         linker_identifier = '';
         product_type = build_system.environment.valueForKey('MACH_O_TYPE');
         if product_type == 'staticlib':
