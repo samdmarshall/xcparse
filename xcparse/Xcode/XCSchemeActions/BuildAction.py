@@ -98,11 +98,14 @@ class BuildAction(Base_Action):
                 platform_specs_path = os.path.join(build_system.environment.valueForKey('PLATFORM_DIR'), 'Developer/Library/Xcode/Specifications');
                 build_system.loadSpecsAtPath(platform_specs_path);
                 
+                # getting the target type from the target
                 if hasattr(target, kPBX_TARGET_productType):
+                    # locating the target type spec to load the default build settings from it
                     target_spec = build_system.getSpecForIdentifier(target.productType);
                     for setting in target_spec.contents['DefaultBuildProperties'].keys():
                         build_system.environment.setValueForKey(str(setting), target_spec.contents['DefaultBuildProperties'][setting], {}, 'target');
                     
+                    # locating the package type spec to load the default build settings
                     package_spec = build_system.getSpecForIdentifier(str(target_spec.contents['PackageTypes'][0]));
                     for setting in package_spec.contents['DefaultBuildSettings'].keys():
                         build_system.environment.setValueForKey(str(setting), package_spec.contents['DefaultBuildSettings'][setting], {}, 'target');
