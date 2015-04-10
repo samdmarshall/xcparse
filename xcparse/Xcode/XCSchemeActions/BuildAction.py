@@ -95,6 +95,7 @@ class BuildAction(Base_Action):
                 # setting the defaults
                 build_system.environment.loadDefaults();
                 
+                # this loads the platform target and package types
                 platform_specs_path = os.path.join(build_system.environment.valueForKey('PLATFORM_DIR'), 'Developer/Library/Xcode/Specifications');
                 build_system.loadSpecsAtPath(platform_specs_path);
                 
