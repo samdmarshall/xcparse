@@ -54,12 +54,12 @@ class Environment(object):
         # load defaults from platform
         for platform_default_setting_key in platform_info_plist['DefaultProperties'].keys():
             value = platform_info_plist['DefaultProperties'][platform_default_setting_key]
-            self.setValueForKey(str(platform_default_setting_key), value, {});
+            self.setValueForKey(platform_default_setting_key, value, {});
         # load overrides
         if 'OverrideProperties' in platform_info_plist.keys():
             for platform_override_setting_key in platform_info_plist['OverrideProperties'].keys():
                 value = platform_info_plist['OverrideProperties'][platform_override_setting_key];
-                self.setValueForKey(str(platform_override_setting_key), value, {});
+                self.setValueForKey(platform_override_setting_key, value, {});
         
         # load these from sdk info.plist
         sdk_info_path = os.path.join(sdk_path, 'SDKSettings.plist');
@@ -70,7 +70,7 @@ class Environment(object):
         self.setValueForKey('SDK_PRODUCT_BUILD_VERSION', '', {});
         for sdk_default_setting_key in sdk_info_plist['DefaultProperties'].keys():
             value = sdk_info_plist['DefaultProperties'][sdk_default_setting_key];
-            self.setValueForKey(str(sdk_default_setting_key), value, {});
+            self.setValueForKey(sdk_default_setting_key, value, {});
         
         self.setValueForKey('CLANG_ANALYZER_MALLOC', 'YES', {});
         self.setValueForKey('MODULE_CACHE_DIR', os.path.join(xcrun_helper.ResolveDerivedDataPath(), 'ModuleCache'), {});
@@ -110,7 +110,7 @@ class Environment(object):
     def applyConfig(self, config_obj, level_name='config'):
         for line in config_obj.lines:
             if line.type == 'KV':
-                self.setValueForKey(str(line.key()), line.value(None), line.conditions(), level_name);
+                self.setValueForKey(line.key(), line.value(None), line.conditions(), level_name);
             if line.type == 'COMMENT':
                 # ignore this type of line
                 continue;
@@ -173,7 +173,8 @@ class Environment(object):
             key_string = temp;
         return (True, key_string, len(key_string));
     
-    def setValueForKey(self, key, value, condition_dict, level_name='default'):
+    def setValueForKey(self, key_str, value, condition_dict, level_name='default'):
+        key = str(key_str);
         if key not in self.levels_dict[level_name].keys():
             option_dict = {};
             option_dict['Name'] = key;
@@ -236,7 +237,7 @@ class Environment(object):
         if action_value in additional_settings_lookup_dict.keys():
             values = additional_settings_lookup_dict[action_value];
             for value in values:
-                self.setValueForKey(str(value[0]), value[1], {}, 'default');
+                self.setValueForKey(value[0], value[1], {}, 'default');
         if action_value in components_lookup_dict.keys():
             return components_lookup_dict[action_value];
         else:

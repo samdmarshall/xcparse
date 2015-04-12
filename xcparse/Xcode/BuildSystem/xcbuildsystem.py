@@ -259,7 +259,7 @@ class xcbuildsystem(object):
             link_file_list = os.path.join(output_dir, product_name+'.LinkFileList')
         
             link_file_input_var = self.environment.parseKey(None, 'LINK_FILE_LIST_$(variant)_$(arch)')[1]
-            self.environment.setValueForKey(str(link_file_input_var), link_file_list, {});
+            self.environment.setValueForKey(link_file_input_var, link_file_list, {});
             
             config_dict = {
                 'variant': self.environment.valueForKey('variant'),

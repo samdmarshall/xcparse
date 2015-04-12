@@ -82,12 +82,12 @@ class BuildAction(Base_Action):
                 # setting the project level build environment
                 project_build_settings = project.rootObject.buildConfigurationList.buildConfigurationWithName(configuration_name).buildSettings;
                 for setting in project_build_settings.keys():
-                    build_system.environment.setValueForKey(str(setting), project_build_settings[setting], {}, 'project');
+                    build_system.environment.setValueForKey(setting, project_build_settings[setting], {}, 'project');
                 # setting the target level build environment
                 target_build_config = target.buildConfigurationList.buildConfigurationWithName(configuration_name);
                 target_build_settings = target_build_config.buildSettings;
                 for setting in target_build_settings.keys():
-                    build_system.environment.setValueForKey(str(setting), target_build_settings[setting], {}, 'target');
+                    build_system.environment.setValueForKey(setting, target_build_settings[setting], {}, 'target');
                 # setting the config level build environment
                 config_build_settings = target_build_config.xcconfig;
                 if config_build_settings != None:
@@ -104,12 +104,12 @@ class BuildAction(Base_Action):
                     # locating the target type spec to load the default build settings from it
                     target_spec = build_system.getSpecForIdentifier(target.productType);
                     for setting in target_spec.contents['DefaultBuildProperties'].keys():
-                        build_system.environment.setValueForKey(str(setting), target_spec.contents['DefaultBuildProperties'][setting], {}, 'target');
+                        build_system.environment.setValueForKey(setting, target_spec.contents['DefaultBuildProperties'][setting], {}, 'target');
                     
                     # locating the package type spec to load the default build settings
                     package_spec = build_system.getSpecForIdentifier(str(target_spec.contents['PackageTypes'][0]));
                     for setting in package_spec.contents['DefaultBuildSettings'].keys():
-                        build_system.environment.setValueForKey(str(setting), package_spec.contents['DefaultBuildSettings'][setting], {}, 'target');
+                        build_system.environment.setValueForKey(setting, package_spec.contents['DefaultBuildSettings'][setting], {}, 'target');
                 
                 # running build phases for this target
                 target.executeBuildPhases(build_system);
