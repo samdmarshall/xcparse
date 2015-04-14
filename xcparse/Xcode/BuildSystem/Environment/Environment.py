@@ -242,9 +242,10 @@ class Environment(object):
             return components_lookup_dict[action_value];
         else:
             logging_helper.getLogger().warn('[Environment]: Unable to find ACTION');
-            return '';
+        return '';
     
     def resolvedValues(self):
+        # this might have to change due to how the environment variables aren't actually represented on 'levels'
         settings = {};
         for level_name in self.levels_lookup:
             level = self.levels_dict[level_name];
