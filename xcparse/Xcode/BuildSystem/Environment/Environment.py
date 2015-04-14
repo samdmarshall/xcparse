@@ -211,6 +211,7 @@ class Environment(object):
         return value;
     
     def getBuildComponents(self):
+        # I know there are more to this that aren't formally documented, check xnu for this
         components_lookup_dict = {
             'build': 'headers build',
             'analyze': 'headers build',
@@ -225,6 +226,7 @@ class Environment(object):
             'installsrc': 'source',
             'installrsrcs': 'resources',
         };
+        # this is incomplete
         additional_settings_lookup_dict = {
             'installdebugonly': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES'), ('BUILD_VARIANTS', 'debug')],
             'installprofileonly': [('DEPLOYMENT_LOCATION', 'YES'), ('DEPLOYMENT_POSTPROCESSING', 'YES'), ('BUILD_VARIANTS', 'profile')],
