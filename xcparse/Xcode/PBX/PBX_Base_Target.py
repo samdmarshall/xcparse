@@ -56,6 +56,7 @@ class PBX_Base_Target(PBX_Build_Setting):
         return explicit_dep_list;
     
     def implicitDependencies(self):
+        # this needs to be checked to make sure it can resolve these correct, not just built products, but also exported files (headers)
         implicit_dep_list = [];
         library_refs = set(map(lambda ref: ref.fileRef, self.linkedLibraries()));
         dependency_refs = set(map(lambda dep: dep.target.productReference, self.dependencies));
@@ -63,5 +64,6 @@ class PBX_Base_Target(PBX_Build_Setting):
         return implicit_dep_list;
     
     def executeBuildPhases(self, build_system):
+        # build phases are listed in order, must be executed in that order to be successful.
         for phase in self.buildPhases:
             phase.performPhase(build_system, self);
