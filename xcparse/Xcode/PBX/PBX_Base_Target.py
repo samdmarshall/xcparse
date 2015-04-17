@@ -34,6 +34,8 @@ class PBX_Base_Target(PBX_Build_Setting):
         if kPBX_TARGET_productType in dictionary.keys():
             self.productType = dictionary[kPBX_TARGET_productType];
     
+    # maybe worth adding a method on here to resolve the dependency graph of a target to find duplicates
+    
     def sourceFiles(self):
         file_list = [];
         source_phase_list = self.resolve(PBXSourcesBuildPhase, self.buildPhases);
