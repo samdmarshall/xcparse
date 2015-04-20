@@ -16,6 +16,7 @@ class swiftcompiler(xccompiler):
         # add base (compiler)
         args += self.properties['baseargs'];
         
+        # I think this should be handled by something in the xcspec
         sdk_name = build_system.environment.valueForKey('SDKROOT');
         sdk_path = xcrun_helper.make_xcrun_with_args(('--sdk', sdk_name, '--show-sdk-path'));
         args += ('-sdk', sdk_path);

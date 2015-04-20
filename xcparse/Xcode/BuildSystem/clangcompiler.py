@@ -46,7 +46,7 @@ class clangcompiler(xccompiler):
             
             if found_dialect == True:
                 args += ('-x', language);
-            
+            # I think this should be handled by something in the xcspec
             args += ('-isysroot', sdk_path);
             
             # this is missing all the build settings, also needs output set
