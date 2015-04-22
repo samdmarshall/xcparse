@@ -46,6 +46,9 @@ class clangcompiler(xccompiler):
             
             if found_dialect == True:
                 args += ('-x', language);
+            else:
+                # should this be an error?
+                logging_helper.getLogger().warn('[clangcompiler]: unknown language used: "%s"' % (language));
             # I think this should be handled by something in the xcspec
             args += ('-isysroot', sdk_path);
             
