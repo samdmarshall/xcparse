@@ -92,10 +92,10 @@ class PBX_Base_Reference(PBX_Base):
             'BUILT_PRODUCTS_DIR': self.resolveBuildProductsPath,
             'SDKROOT': self.resolveSDKPath
         };
+        result_action = None;
         if action_name in lookup.keys():
-            return lookup[action_name];
-        else:
-            return None;
+            result_action = lookup[action_name];
+        return result_action;
         
     def resolvePath(self, project, parent_path):
         action = self.lookupPathType(self.sourceTree);
