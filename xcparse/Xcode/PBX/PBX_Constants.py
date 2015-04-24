@@ -43,3 +43,6 @@ kPBX_REFERENCE_fileEncoding = 'fileEncoding';
 kPBX_REFERENCE_explicitFileType = 'explicitFileType';
 kPBX_REFERENCE_includeInIndex = 'includeInIndex';
 kPBX_REFERENCE_children = 'children';
+
+kPBX_BUILDFILE_fileRef = 'fileRef';
+kPBX_BUILDFILE_settings = 'settings';
