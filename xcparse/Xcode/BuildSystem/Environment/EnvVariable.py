@@ -236,9 +236,19 @@ class EnvVariable(object):
                     elif '<<otherwise>>' in flag_lookup_keys:
                         flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
                     else:
-                        logging_helper.getLogger().error('[EnvVariable]: Value %s not allowed (%s) for %s' % (value, str(value_list), self.name));
+                        logging_helper.getLogger().error('[EnvVariable]: Value "%s" not allowed (%s) for %s' % (value, str(value_list), self.name));
+                elif hasattr(self, 'Values') == True:
+                    value_list = list(map(lambda item: str(item), getattr(self, 'Values')));
+                    if value in value_list and value in flag_lookup_values.keys():
+                        flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                    elif value in flag_lookup_values.keys():
+                        flag_list = map(lambda item: str(item), flag_lookup_values[value]);
+                    elif '<<otherwise>>' in flag_lookup_keys:
+                        flag_list = map(lambda item: str(item), flag_lookup_values['<<otherwise>>']);
+                    else:
+                        logging_helper.getLogger().warn('[EnvVariable]: Value "%s" not found in (%s) for %s, going to use anyway' % (value, str(value_list), self.name));
                 else:
-                    logging_helper.getLogger().warn('[EnvVariable]: Could not find "AllowedValues" on %s' % self.name);
+                    logging_helper.getLogger().warn('[EnvVariable]: Could not find Enumation Values on %s, going to use "%s" anyway' % (self.name, value));
             else:
                 logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
         elif hasattr(self, 'CommandLineFlag') == True:
@@ -259,6 +269,5 @@ class EnvVariable(object):
                 logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
         
         output = ' '.join(map(lambda item: item.replace('$(value)', value), flag_list));
-        
         output = environment.parseKey(self.name, output, lookup_dict=lookup_dict)[1];
         return output;
