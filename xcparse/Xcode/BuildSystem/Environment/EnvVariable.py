@@ -49,17 +49,8 @@ class EnvVariable(object):
         self.values = set();
         self.mergeDefinition(dictionary);
     
-    # def __attrs(self):
-    #     return (self.name, self.type);
-    #
     def __repr__(self):
         return '(%s : %s : %s : %s - %s)' % (type(self), self.name, self.Type, self.DefaultValue, self.values);
-    
-    # def __eq__(self, other):
-    #     return isinstance(other, type(self)) and self.name == other.name and self.Type == other.Type;
-    #
-    # def __hash__(self):
-    #     return hash(self.__attrs());
     
     def inheritedValue(self):
         return self.parentValue;
