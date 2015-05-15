@@ -102,5 +102,6 @@ class PBX_Base_Reference(PBX_Base):
             self.fs_found = os.path.exists(self.fs_path.obj_path);
             
             if hasattr(self, kPBX_REFERENCE_children):
-                self.children = list(map(lambda child: child.resolvePath(project, self.fs_path), self.children));
+                for child in self.children:
+                    child.resolvePath(project, self.fs_path);
         
