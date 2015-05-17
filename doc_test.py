@@ -27,8 +27,8 @@ def make_file(path, item):
     if not os.path.exists(path):
         file = open(path, 'w+');
         file.write(item.identifier);
-        file.write('\n\r');
-        file.write('#'+item.name+'\n\r');
+        file.write('\r\n');
+        file.write('#'+item.name+'\r\n');
         file.close();
 
 def print_name(item, depth):
