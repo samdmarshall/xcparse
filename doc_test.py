@@ -4,6 +4,21 @@ import argparse
 import xcparse
 from xcparse.Xcode.PBX.PBXGroup import PBXGroup
 
+"""
+!!!!!!!! This is a Proof of Concept !!!!!!!!
+
+How to use:
+$ python doc_test.py ~/Path/To/Your/Xcode.xcodeproj
+
+This will build a visual graph of the groups/files in the project file, and then create a new folder alongside the project file named 'ProjectDocs'
+
+This contains all the markdown files. Folders are created for each group, named the same as the group in the xcodeproj file. Each group gets a folder and a markdown file of the same name. Each file will get a markdown file name the same way.
+
+The markdown files contain the identifier used in the pbxproj file -- this will be used in the future to safely update document files when the project file is reorganized.
+
+This was created for personal use and shouldn't be used in production.
+"""
+
 def make_dir(path):
     if not os.path.exists(path):
         os.makedirs(path);
