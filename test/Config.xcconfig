@@ -1,0 +1,12 @@
+//
+//  Config.xcconfig
+//  test
+//
+//  Created by Sam Marshall on 3/4/15.
+//  Copyright (c) 2015 Sam Marshall. All rights reserved.
+//
+
+FOO_test_objc = foo
+FOO_testing = bar
+PRODUCT_NAME = testing
+OTHER_CPLUSPLUSFLAGS = $(FOO_$(PRODUCT_NAME))

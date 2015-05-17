@@ -41,10 +41,7 @@ def print_level(item_array, depth, docs_path):
 def file_structure_docs(proj, project_root_path):
     docs_path = os.path.join(project_root_path, 'ProjectDocs');
     make_dir(docs_path);
-    top_level_groups = [];
-    for item in proj.rootObject.mainGroup.children:
-        if item.identifier != proj.rootObject.productRefGroup:
-            top_level_groups.append(item);
+    top_level_groups = filter(lambda item: item.identifier != proj.rootObject.productRefGroup, proj.rootObject.mainGroup.children)
     print_level(top_level_groups, 0, docs_path);
 
 def main(argv):

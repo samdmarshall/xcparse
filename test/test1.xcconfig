@@ -1,0 +1,11 @@
+//
+//  test1.xcconfig
+//  test
+//
+//  Created by Sam Marshall on 3/15/15.
+//  Copyright (c) 2015 Sam Marshall. All rights reserved.
+//
+
+TEST_1_CONFIG = -DBAR
+
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) $(TEST_1_CONFIG)
