@@ -150,10 +150,10 @@
 		2203500A1AB72EAB00A40F71 /* libtest-iosstaiticlib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libtest-iosstaiticlib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2203500C1AB72EAB00A40F71 /* test_iosstaiticlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = test_iosstaiticlib.h; sourceTree = "<group>"; };
 		2203500E1AB72EAB00A40F71 /* test_iosstaiticlib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = test_iosstaiticlib.m; sourceTree = "<group>"; };
-		224C19A71AA74F710013F567 /* test_objc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_objc; sourceTree = BUILT_PRODUCTS_DIR; };
+		224C19A71AA74F710013F567 /* test-objc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-objc"; sourceTree = BUILT_PRODUCTS_DIR; };
 		224C19AA1AA74F710013F567 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		224C19B11AA74F8F0013F567 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		22D2F2C91AB5E2AB00E51861 /* test1.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = test1.xcconfig; sourceTree = "<group>"; };
+		22D2F2C91AB5E2AB00E51861 /* 😱.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "😱.xcconfig"; sourceTree = "<group>"; };
 		22D2F2CA1AB5E2B300E51861 /* test2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = test2.xcconfig; sourceTree = "<group>"; };
 		22E39EE11ABB343C00D892D6 /* foo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = foo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -250,7 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				224C19B11AA74F8F0013F567 /* Config.xcconfig */,
-				22D2F2C91AB5E2AB00E51861 /* test1.xcconfig */,
+				22D2F2C91AB5E2AB00E51861 /* 😱.xcconfig */,
 				22D2F2CA1AB5E2B300E51861 /* test2.xcconfig */,
 				224C19A91AA74F710013F567 /* test */,
 				22034FD11AB7201E00A40F71 /* test-c */,
@@ -265,7 +265,7 @@
 		224C19A81AA74F710013F567 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				224C19A71AA74F710013F567 /* test_objc */,
+				224C19A71AA74F710013F567 /* test-objc */,
 				22034FD01AB7201E00A40F71 /* test-c */,
 				22034FDB1AB7202D00A40F71 /* test-c++ */,
 				22034FE61AB7203700A40F71 /* test-objc++ */,
@@ -406,7 +406,7 @@
 			);
 			name = "test-objc";
 			productName = test;
-			productReference = 224C19A71AA74F710013F567 /* test_objc */;
+			productReference = 224C19A71AA74F710013F567 /* test-objc */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -700,6 +700,7 @@
 		2203501C1AB72EAB00A40F71 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -716,6 +717,7 @@
 		2203501D1AB72EAB00A40F71 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				ONLY_ACTIVE_ARCH = NO;
@@ -729,6 +731,7 @@
 		};
 		224C19AC1AA74F710013F567 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 22D2F2CA1AB5E2B300E51861 /* test2.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -747,7 +750,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -791,7 +794,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -810,10 +813,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 224C19B11AA74F8F0013F567 /* Config.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				MACOSX_DEPLOYMENT_TARGET = "";
-				PRODUCT_NAME = test_objc;
-				SDKROOT = macosx;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "test-objc";
 			};
 			name = Debug;
 		};
@@ -821,10 +826,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 224C19B11AA74F8F0013F567 /* Config.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				MACOSX_DEPLOYMENT_TARGET = "";
-				PRODUCT_NAME = test_objc;
-				SDKROOT = macosx;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "test-objc";
 			};
 			name = Release;
 		};

@@ -6,7 +6,11 @@
 //  Copyright (c) 2015 Sam Marshall. All rights reserved.
 //
 
-FOO_test_objc = foo
-FOO_testing = bar
 PRODUCT_NAME = testing
-OTHER_CPLUSPLUSFLAGS = $(FOO_$(PRODUCT_NAME))
+PRODUCT_NAME_ORIGINAL = $(PRODUCT_NAME)
+FOO_test_objc = UsingOriginalName
+FOO_new_name = UsingNewName
+
+INHERITED_NAME_VALUE = $(FOO_$(PRODUCT_NAME_ORIGINAL))
+
+

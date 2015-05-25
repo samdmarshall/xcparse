@@ -17,6 +17,7 @@ class EnvVarCondition(object):
             'variant': 'BUILD_VARIANT',
             'arch': 'ARCH',
             'config': 'CONFIGURATION',
+            'dialect': 'LOST_TO_TIME_AND_NEVER_SEEN_AGAIN'
         };
         eval_result = True;
         for key in self.keys:

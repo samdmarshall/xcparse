@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Sam Marshall. All rights reserved.
 //
 
-TEST_1_CONFIG = -DBAR
+TEST_1_CONFIG = BAR
+FOO = world
 
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) $(TEST_1_CONFIG)
+GCC_PREPROCESSOR_DEFINITIONS = ${inherited} $(TEST_1_CONFIG)
