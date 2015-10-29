@@ -13,11 +13,11 @@ class xcspec(object):
         if 'Identifier' in self.keys():
             self.identifier = str(self.contents['Identifier']);
         if 'Type' in self.keys():
-            self.type = self.contents['Type'];
+            self.type = str(self.contents['Type']);
         if 'Name' in self.keys():
-            self.name = self.contents['Name'];
+            self.name = str(self.contents['Name']);
         if 'BasedOn' in self.keys():
-            self.basedOn = self.contents['BasedOn'];
+            self.basedOn = str(self.contents['BasedOn']);
     
     def __attrs(self):
         return (self.identifier, self.type);

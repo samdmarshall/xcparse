@@ -134,6 +134,8 @@ class Environment(object):
 
     def __findAndSubKey(self, key_name, key_string, lookup_dict):
         # finding variable keys
+        if type(key_string) != str:
+            key_string = str(key_string)
         iter = re.finditer(r'\$[\(|\{]\w*[\)|\}]', key_string);
         new_string = '';
         offset = 0

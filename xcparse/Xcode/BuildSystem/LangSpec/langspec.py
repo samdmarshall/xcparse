@@ -17,7 +17,7 @@ class langspec(object):
             self.name = self.contents['Name'];
         if 'BasedOn' in self.keys():
             self.basedOn = self.contents['BasedOn'];
-        if 'Syntax' in self.key():
+        if 'Syntax' in self.keys():
             self.syntax = self.contents['Syntax'];
     
     def __attrs(self):

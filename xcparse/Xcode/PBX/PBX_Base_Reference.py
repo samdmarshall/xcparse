@@ -13,7 +13,7 @@ class PBX_Base_Reference(PBX_Base):
         
         self.path = None;
         if kPBX_REFERENCE_path in dictionary.keys():
-            self.path = path_helper(dictionary[kPBX_REFERENCE_path], '');
+            self.path = path_helper(str(dictionary[kPBX_REFERENCE_path]), '');
             self.name = os.path.basename(self.path.obj_path);
         
         if kPBX_REFERENCE_name in dictionary.keys():

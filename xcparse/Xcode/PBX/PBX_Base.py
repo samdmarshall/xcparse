@@ -7,7 +7,7 @@ class PBX_Base(object):
         # default 'name' property of a PBX object is the type 
         self.name = self.__class__.__name__;
         # this is the identifier for this object
-        self.identifier = identifier;
+        self.identifier = str(identifier);
         # set of any referenced identifiers on this object
         self.referencedIdentifiers = set();
     

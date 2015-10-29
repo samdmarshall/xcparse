@@ -31,4 +31,4 @@ class path_helper(object):
     @classmethod
     def create_directories(cls, path):
         if os.path.exists(path) == False:
-            os.mkdir(path);
+            os.makedirs(path);

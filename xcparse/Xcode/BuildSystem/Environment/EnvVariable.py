@@ -1,6 +1,8 @@
 from .EnvVarCondition import *
 from ....Helpers import logging_helper
+from ....Helpers.pbPlist import pbItem
 import objc
+import re
 from .EnvConstants import *
 
 
@@ -73,6 +75,8 @@ class EnvVariable(object):
     def mergeDefinition(self, dictionary, aggressive=True):
         self.added_after = True;
         for key in dictionary.keys():
+            if type(key) is pbItem.pbString or type(key) is pbItem.pbQString:
+                key = key.value
             if hasattr(self, key) == False:
                 self.mergedKeys.add(key);
                 setattr(self, key, dictionary[key]);
@@ -83,6 +87,7 @@ class EnvVariable(object):
     def removeDefinition(self, dictionary, aggressive=True):
         self.added_after = False;
         for key in dictionary.keys():
+            key = str(key)
             if hasattr(self, key) == True:
                 if key in self.mergedKeys:
                     delattr(self, key);
@@ -98,14 +103,15 @@ class EnvVariable(object):
             lookup_dict = environment.resolvedValues();
         
         if hasattr(self, 'Condition') == True:
-            expression = str(environment.parseKey(None, self.Condition, lookup_dict=lookup_dict)[1]);
+            expr = environment.parseKey(None, self.Condition, lookup_dict=lookup_dict)[1]
+            expression = re.sub(' +',' ',str(expr))
             expression_list = expression.split(' ');
             list_filter_yes = map(lambda item: 'True' if item == 'YES' else item, expression_list);
             list_filter_no = map(lambda item: 'False' if item == 'NO' else item, list_filter_yes);
             list_filter_not = map(lambda item: 'not' if item == '!' else item, list_filter_no);
             list_filter_and = map(lambda item: 'and' if item == '&&' else item, list_filter_not);
             list_filter_or = map(lambda item: 'or' if item == '||' else item, list_filter_and);
-            list_filter_strings = map(lambda item: '"'+item+'"' if item not in ['True', 'False', 'not', 'and', 'or', '==', '!='] and not item.startswith('\\"') else item, list_filter_or);
+            list_filter_strings = map(lambda item: '"'+item+'"' if item not in ['True', 'False', 'not', 'and', 'or', '==', '!=', '(', ')'] and not item.startswith('\\"') else item, list_filter_or);
             eval_string = ' '.join(list_filter_strings).replace('\\"', '"');
             return eval(eval_string);
         else:
@@ -121,6 +127,8 @@ class EnvVariable(object):
                 result_value = conditional.value;
                 break;
         # add check for parsing the value if necessary
+        if type(result_value) is pbItem.pbString or type(result_value) is pbItem.pbQString:
+            result_value = result_value.value
         if type(result_value) is unicode:
             result_value = str(result_value);
         if type(result_value) is objc.pyobjc_unicode:
@@ -211,7 +219,7 @@ class EnvVariable(object):
                         logging_helper.getLogger().warn('[EnvVariable]: Error in parsing flag_lookup_values: %s' % flag_lookup_values);
                 else:
                     # prefix flag check
-                    flag_list.append(prefix_flag.replace('$(value)', value)+value);
+                    flag_list.append(str(prefix_flag).replace('$(value)', value)+value);
             elif self.isBoolean():
                 value = str(value);
                 if value in flag_lookup_keys:
@@ -259,6 +267,6 @@ class EnvVariable(object):
             else:
                 logging_helper.getLogger().error('[EnvVariable]: Unknown variable type!');
         
-        output = ' '.join(map(lambda item: item.replace('$(value)', value), flag_list));
+        output = ' '.join(map(lambda item: str(item).replace('$(value)', value), flag_list));
         output = environment.parseKey(self.name, output, lookup_dict=lookup_dict)[1];
         return output;

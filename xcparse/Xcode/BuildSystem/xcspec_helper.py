@@ -19,7 +19,11 @@ def xcspecLoadFromContentsAtPath(spec_path):
     if spec_path.endswith('spec'):
         path = path_helper(spec_path, '');
         
-        contents = plist_helper.LoadPlistFromStringAtPath(path.root_path);
+        try:
+            contents = plist_helper.LoadPlistFromStringAtPath(path.root_path);
+        except:
+            print('Error in loading spec at path "%s"' % path.root_path)
+            raise
     else:
         logging_helper.getLogger().error('[xcspec_helper]: Not a spec file!');
         return items;

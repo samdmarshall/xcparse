@@ -12,9 +12,9 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         self.bundleid = 'com.apple.buildphase.shell-script';
         self.phase_type = 'Run Shell Script';
         if kPBX_PHASE_shellScript in dictionary.keys():
-            self.shellScript = dictionary[kPBX_PHASE_shellScript];
+            self.shellScript = str(dictionary[kPBX_PHASE_shellScript]);
         if kPBX_PHASE_shellPath in dictionary.keys():
-            self.shellPath = dictionary[kPBX_PHASE_shellPath];
+            self.shellPath = str(dictionary[kPBX_PHASE_shellPath]);
         if kPBX_PHASE_inputPaths in dictionary.keys():
             inputPaths = [];
             for inputPath in dictionary[kPBX_PHASE_inputPaths]:
@@ -39,7 +39,7 @@ class PBXShellScriptBuildPhase(PBX_Base_Phase):
         config_name = build_system.environment.valueForKey('CONFIGURATION', lookup_dict=resolved_values);
         symroot = build_system.environment.valueForKey('SYMROOT', lookup_dict=resolved_values);
         
-        script_dir_path = xcrun_helper.IntermediatesBuildLocation(target.project_container.rootObject, target.name, config_name, symroot);
+        script_dir_path = xcrun_helper.IntermediatesBuildLocation(target.project_container.rootObject, target.name.value, config_name, symroot);
         path_helper.create_directories(script_dir_path);
         script_path = os.path.join(script_dir_path, str('Script-'+self.identifier+'.sh'));
         

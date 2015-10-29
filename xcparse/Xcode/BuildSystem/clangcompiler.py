@@ -2,6 +2,7 @@ import os
 from .xccompiler import *
 from ...Helpers import logging_helper
 from ...Helpers import xcrun_helper
+from ...Helpers import path_helper
 
 class clangcompiler(xccompiler):
     
@@ -14,7 +15,7 @@ class clangcompiler(xccompiler):
         
         product_name = build_system.environment.parseKey(None, '$(PRODUCT_NAME)')[1];
         output_dir = build_system.environment.parseKey(None, '$(OBJECT_FILE_DIR_$(CURRENT_VARIANT))/$(CURRENT_ARCH)')[1];
-        
+        path_helper.create_directories(output_dir)
         link_file_list = os.path.join(output_dir, product_name+'.LinkFileList')
         link_file_list_fd = open(link_file_list, 'w');
         
@@ -88,8 +89,10 @@ class clangcompiler(xccompiler):
             # this is displaying the command being issued for this compiler in the build phase
             args_str = '';
             for word in args:
-                args_str += word;
-                args_str += ' ';
+                flag = str(word)
+                if flag != '\'\'':
+                    args_str += flag
+                    args_str += ' ';
             print '\t'+args_str;
             
             print '';

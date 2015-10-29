@@ -1,6 +1,8 @@
-import Cocoa
-import Foundation
+# import Cocoa
+# import Foundation
+import pbPlist
 import os
+import sys
 import logging_helper
 
 class plist_helper(object):
@@ -8,15 +10,15 @@ class plist_helper(object):
     def LoadPlistFromDataAtPath(cls, path):
         contents = None;
         if os.path.exists(path) == True:
-            plistNSData, errorMessage = Foundation.NSData.dataWithContentsOfFile_options_error_(path, Foundation.NSUncachedRead, None);
-            if errorMessage == None:
-                plistContents, plistFormat, errorMessage = Foundation.NSPropertyListSerialization.propertyListFromData_mutabilityOption_format_errorDescription_(plistNSData, Foundation.NSPropertyListMutableContainers, None, None);
-                if errorMessage == None:
-                    contents = plistContents;
-                else:
-                    logging_helper.getLogger().error('[plist_helper]: %s' % errorMessage);
-            else:
-                logging_helper.getLogger().error('[plist_helper]: %s' % errorMessage);
+            try:
+                result = pbPlist.PBPlist(path);
+                contents = result.root
+                # if result.file_type == 'ascii':
+                #     contents = result.root.value
+                # else:
+                #     contents = result.root
+            except:
+                raise
         else:
             logging_helper.getLogger().error('[plist_helper]: path doesn\'t exist!');
         return contents;
@@ -26,15 +28,14 @@ class plist_helper(object):
         contents = None;
         if os.path.exists(path) == True:
             # loading spec file
-            specNSData, errorMessage = Foundation.NSData.dataWithContentsOfFile_options_error_(path, Foundation.NSUncachedRead, None);
-            if errorMessage == None:
-                specString = Foundation.NSString.alloc().initWithData_encoding_(specNSData, Foundation.NSUTF8StringEncoding);
-                if specString != None:
-                    contents = specString.propertyList();
+            try:
+                result = pbPlist.PBPlist(path);
+                if result.file_type == 'ascii':
+                    contents = result.root.value
                 else:
-                    logging_helper.getLogger().error('[plist_helper]: Could not load string from data');
-            else:
-                logging_helper.getLogger().error('[plist_helper]: %s' % errorMessage);
+                    contents = result.root
+            except:
+                raise
         else:
             logging_helper.getLogger().error('[plist_helper]: Path does not exist!');
         return contents;
